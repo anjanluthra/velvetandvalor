@@ -110,6 +110,36 @@
 
 .gallery-display:hover { border-color: var(--gold-subtle); }
 
+.gallery-main-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  z-index: 1;
+  transition: transform 0.6s var(--ease-out);
+}
+.gallery-display:hover .gallery-main-img {
+  transform: scale(1.03);
+}
+
+.thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  z-index: 0;
+}
+
+.gallery-thumb.active::before {
+  z-index: 2;
+}
+
 .gallery-phone-wrap {
   position: relative;
   z-index: 2;

@@ -40,32 +40,16 @@ const COLOR_CONFIG = {
 
 /* ── Colour Selector ─────────────────────────────────────────── */
 (function initColorSelector() {
-  const swatches      = document.querySelectorAll('.color-swatch');
-  const colorNameEl   = document.getElementById('colorName');
-  const caseDisplay   = document.querySelector('.case-display');
-  const emblemIcon    = document.querySelector('.emblem-icon');
-  const thumbPhones   = document.querySelectorAll('.thumb-phone');
-  if (!swatches.length || !caseDisplay) return;
+  const swatches    = document.querySelectorAll('.color-swatch');
+  const colorNameEl = document.getElementById('colorName');
+  if (!swatches.length) return;
 
   function applyColor(colorKey) {
     const cfg = COLOR_CONFIG[colorKey];
     if (!cfg) return;
 
-    // Update display phone
-    caseDisplay.style.background = cfg.bg;
-
-    // Update emblem colour
-    if (emblemIcon) emblemIcon.style.color = cfg.emblem;
-
-    // Update colour name label
     if (colorNameEl) colorNameEl.textContent = cfg.name;
 
-    // Update thumbnails
-    thumbPhones.forEach(tp => {
-      tp.style.background = cfg.thumbBg;
-    });
-
-    // Active swatch state
     swatches.forEach(s => s.classList.remove('active'));
     const activeEl = document.querySelector(`.color-swatch[data-color="${colorKey}"]`);
     if (activeEl) activeEl.classList.add('active');
@@ -77,7 +61,6 @@ const COLOR_CONFIG = {
     });
   });
 
-  // Init with first active
   const initialActive = document.querySelector('.color-swatch.active');
   if (initialActive) applyColor(initialActive.dataset.color);
 })();
@@ -97,40 +80,19 @@ const COLOR_CONFIG = {
 })();
 
 
-/* ── Gallery Thumbnails & 3D Hover ───────────────────────────── */
+/* ── Gallery Thumbnails ───────────────────────────────────────── */
 (function initGallery() {
-  const thumbs      = document.querySelectorAll('.gallery-thumb');
-  const phoneWrap   = document.querySelector('.gallery-phone-wrap');
-  const display     = document.querySelector('.gallery-display');
-  if (!thumbs.length || !phoneWrap) return;
+  const thumbs  = document.querySelectorAll('.gallery-thumb');
+  const mainImg = document.getElementById('galleryMainImg');
+  if (!thumbs.length || !mainImg) return;
 
-  // Thumbnail switching
-  thumbs.forEach((thumb, i) => {
+  thumbs.forEach((thumb) => {
     thumb.addEventListener('click', () => {
       thumbs.forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
-      // Future: swap display image per index
+      const src = thumb.dataset.img;
+      if (src) mainImg.src = src;
     });
-  });
-
-  // 3D tilt on mouse move
-  if (!display) return;
-
-  display.addEventListener('mousemove', (e) => {
-    const rect  = display.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
-    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
-
-    phoneWrap.style.transform = `
-      perspective(900px)
-      rotateY(${x * 13}deg)
-      rotateX(${-y * 13}deg)
-      translateZ(8px)
-    `;
-  });
-
-  display.addEventListener('mouseleave', () => {
-    phoneWrap.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0)';
   });
 })();
 

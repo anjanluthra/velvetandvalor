@@ -14,14 +14,14 @@
   --obsidian-light:   #122448;
   --obsidian-surface: #1A2E52;
 
-  /* Gold / Yellow Palette */
-  --gold:             #D4AF3A;
-  --gold-bright:      #E8C84A;
-  --gold-pale:        #F5E08A;
-  --gold-dark:        #A88820;
-  --gold-muted:       rgba(212, 175, 58, 0.45);
-  --gold-subtle:      rgba(212, 175, 58, 0.14);
-  --gold-whisper:     rgba(212, 175, 58, 0.08);
+  /* Teal Accent Palette */
+  --gold:             #1A9090;
+  --gold-bright:      #22AAAA;
+  --gold-pale:        #7FCDCD;
+  --gold-dark:        #116868;
+  --gold-muted:       rgba(26, 144, 144, 0.45);
+  --gold-subtle:      rgba(26, 144, 144, 0.14);
+  --gold-whisper:     rgba(26, 144, 144, 0.08);
 
   /* White / Text Palette */
   --cream:            #FFFFFF;

@@ -95,6 +95,7 @@
 .hero-amp {
   font-style: italic;
   font-weight: 400;
+  color: var(--gold);
 }
 
 .hero-subtitle {
@@ -693,7 +694,7 @@
 
 .story-heading {
   font-family: var(--font-authority);
-  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  font-size: clamp(1.25rem, 2.2vw, 1.875rem);
   letter-spacing: 0.08em;
   color: var(--cream);
   margin-bottom: 28px;

@@ -204,17 +204,60 @@ function updateSKU() {
 })();
 
 
-/* ── Buy Now ─────────────────────────────────────────────────── */
+/* ── Buy Now — Stripe Checkout ───────────────────────────────── */
 (function initBuyNow() {
   const btn = document.getElementById('buyNow');
   if (!btn) return;
 
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('click', async (e) => {
     e.preventDefault();
     const textEl = btn.querySelector('.btn-atb-text');
-    if (textEl) {
-      textEl.textContent = 'Coming Soon';
-      setTimeout(() => { textEl.textContent = 'Buy Now'; }, 2500);
+    const originalText = textEl ? textEl.textContent : 'Buy Now';
+
+    // Show loading state
+    if (textEl) textEl.textContent = 'Processing...';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.7';
+
+    // Get selected design name from the active swatch label
+    const activeSwatch = document.querySelector('.color-swatch.active[data-design]');
+    const designKey = activeSwatch ? activeSwatch.dataset.design : 'champagne-nude';
+    const designLabel = activeSwatch ? activeSwatch.getAttribute('aria-label') : 'Champagne Nude';
+
+    // Get selected model
+    const activeModel = document.querySelector('.device-option.active[data-model]');
+    const modelLabel = activeModel ? activeModel.textContent.trim() : 'iPhone 17 Pro Max';
+
+    // Get selected finish
+    const activeFinish = document.querySelector('.device-option.active[data-finish]');
+    const finishLabel = activeFinish ? activeFinish.textContent.trim() : 'Glossy';
+
+    try {
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          design: designLabel,
+          model: modelLabel,
+          finish: finishLabel,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Checkout failed');
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      if (textEl) textEl.textContent = 'Try Again';
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+      setTimeout(() => {
+        if (textEl) textEl.textContent = originalText;
+      }, 2500);
     }
   });
 })();

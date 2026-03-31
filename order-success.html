@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — Velvet &amp; Valor</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-height) + 40px) var(--page-padding) 80px;
+      background: var(--obsidian-deep);
+    }
+
+    .success-box {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      padding: 56px 40px;
+      border: 1px solid var(--gold-muted);
+      position: relative;
+    }
+
+    .success-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 40px; height: 40px;
+      border-top: 1px solid var(--gold-muted);
+      border-left: 1px solid var(--gold-muted);
+    }
+    .success-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 40px; height: 40px;
+      border-bottom: 1px solid var(--gold-muted);
+      border-right: 1px solid var(--gold-muted);
+    }
+
+    .success-check {
+      width: 64px;
+      height: 64px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      color: var(--gold);
+      font-size: 1.75rem;
+    }
+
+    .success-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+
+    .success-subtitle {
+      font-size: 1rem;
+      color: var(--cream-mid);
+      font-weight: 400;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .success-details {
+      border-top: 1px solid var(--gold-whisper);
+      padding-top: 24px;
+      margin-bottom: 32px;
+    }
+
+    .success-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .success-detail-label {
+      color: var(--cream-muted);
+      font-weight: 400;
+    }
+
+    .success-detail-value {
+      color: var(--cream);
+      font-weight: 500;
+    }
+
+    .success-total {
+      border-top: 1px solid var(--gold-whisper);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+
+    .success-total .success-detail-value {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .success-shipping-note {
+      font-size: 0.8rem;
+      color: var(--cream-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .success-email-note {
+      font-size: 0.75rem;
+      color: var(--cream-whisper);
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <nav class="nav scrolled" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Velvet and Valor home">
+        Velvet <span class="amp">&amp;</span> Valor
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="collections/iphone-cases.html" class="nav-link">iPhone Cases</a></li>
+        <li><a href="index.html#story" class="nav-link">Our Story</a></li>
+        <li><a href="index.html#featured" class="nav-link">Shop</a></li>
+        <li><a href="blog/index.html" class="nav-link">Journal</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="collections/iphone-cases.html" class="btn-primary" style="padding: 10px 24px; font-size: 0.75rem;">Shop Now</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="success-page">
+    <div class="success-box">
+
+      <div class="success-check" aria-hidden="true">&#10003;</div>
+
+      <h1 class="success-title">Order Confirmed</h1>
+      <p class="success-subtitle">
+        Thank you for your order. Your Velvet &amp; Valor case is on its way.
+      </p>
+
+      <div class="success-details">
+        <div class="success-detail-row">
+          <span class="success-detail-label">Product</span>
+          <span class="success-detail-value">The Cavalry Case</span>
+        </div>
+        <div class="success-detail-row">
+          <span class="success-detail-label">Price</span>
+          <span class="success-detail-value">$55.00</span>
+        </div>
+        <div class="success-detail-row">
+          <span class="success-detail-label">Shipping</span>
+          <span class="success-detail-value">$5.49</span>
+        </div>
+        <div class="success-detail-row success-total">
+          <span class="success-detail-label">Total</span>
+          <span class="success-detail-value">$60.49</span>
+        </div>
+      </div>
+
+      <p class="success-shipping-note">
+        Your case will ship within 5-10 business days. You'll receive a confirmation email from Stripe with your receipt.
+      </p>
+
+      <div class="success-actions">
+        <a href="collections/iphone-cases.html" class="btn-primary" style="width: 100%; justify-content: center;">Continue Shopping</a>
+        <a href="index.html" class="btn-ghost" style="width: 100%; justify-content: center;">Back to Home</a>
+      </div>
+
+      <p class="success-email-note">
+        Questions? Email us at hello@velvetandvalor.com
+      </p>
+
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+
+</body>
+</html>

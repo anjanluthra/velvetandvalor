@@ -6,7 +6,7 @@
 const VV_PRODUCTS = {
   currency: 'USD',
   currencySymbol: '$',
-  basePrice: 45.00,
+  basePrice: 55.00,
 
   designs: [
     {

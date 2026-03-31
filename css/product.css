@@ -1230,6 +1230,107 @@
 }
 .related-link:hover { color: var(--gold); gap: 12px; }
 
+/* ── Device Dropdown (Mous-style) ────────────────────────────── */
+.device-select {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--obsidian-mid);
+  border: 1px solid var(--gold-whisper);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%237FCDCD' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border-color 0.3s;
+}
+.device-select:hover { border-color: var(--gold-muted); }
+.device-select:focus { border-color: var(--gold); outline: none; }
+.device-select option { background: var(--obsidian-mid); color: var(--cream); }
+.device-select optgroup { color: var(--gold); font-style: normal; }
+
+/* ── Trust Inline (Mous-style) ───────────────────────────────── */
+.trust-inline {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  margin: 4px 0 8px;
+  border-top: 1px solid var(--gold-whisper);
+  border-bottom: 1px solid var(--gold-whisper);
+  font-size: 0.8rem;
+  color: var(--cream-muted);
+}
+
+/* ── Also Like Section ───────────────────────────────────────── */
+.also-like {
+  padding: 80px 0;
+  background: var(--obsidian);
+  border-top: 1px solid var(--gold-whisper);
+}
+
+.also-like-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.also-like-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--gold-whisper);
+  background: var(--obsidian-mid);
+  transition: border-color 0.3s, transform 0.3s var(--ease-out);
+}
+.also-like-card:hover {
+  border-color: var(--gold-muted);
+  transform: translateY(-4px);
+}
+
+.also-like-img {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--obsidian);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.also-like-img img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.also-like-name {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--cream);
+  padding: 14px 14px 2px;
+}
+
+.also-like-price {
+  font-family: var(--font-authority);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  padding: 0 14px 14px;
+}
+
+@media (max-width: 768px) {
+  .also-like-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .trust-inline { flex-direction: column; gap: 6px; }
+}
+
+@media (max-width: 480px) {
+  .also-like-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* ── Generation Tabs ─────────────────────────────────────────── */
 .model-gen-tabs {
   display: flex;

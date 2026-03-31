@@ -126,117 +126,128 @@
 
           <nav class="product-meta" aria-label="Breadcrumb">
             <span class="product-collection"><a href="/collections/iphone-cases">iPhone Cases</a> / Noble Steed</span>
-            <div class="product-rating-inline" aria-label="Rated 4.9 out of 5">
-              <span class="stars" aria-hidden="true">
-                <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
-                <span class="star">&#9733;</span><span class="star">&#9733;</span>
-              </span>
-              <span class="rating-count">4.9 (127 reviews)</span>
-            </div>
           </nav>
 
           <h1 class="product-name" id="product-heading">Noble Steed</h1>
 
           <div class="product-price-row">
             <span class="product-price">$55.00</span>
-            <span class="product-price-vat">USD &bull; Worldwide Shipping</span>
+            <div class="product-rating-inline" aria-label="Rated 4.9 out of 5">
+              <span class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span class="rating-count">127 Reviews</span>
+            </div>
           </div>
 
-          <p class="product-short-desc">
-            Artist-designed equestrian phone case inspired by the elegance and power of the horse. Available in Glossy and Matte finishes for 19 iPhone models.
-          </p>
-
-          <!-- Design -->
+          <!-- Your device (dropdown like Mous) -->
           <div class="option-group">
             <div class="option-label">
-              <span class="option-label-text">Design</span>
+              <span class="option-label-text">Your device</span>
+            </div>
+            <select class="device-select" id="deviceSelect" aria-label="Select your iPhone model">
+              <optgroup label="iPhone 17 Series">
+                <option value="iphone17" selected>iPhone 17</option>
+                <option value="iphone17air">iPhone 17 Air</option>
+                <option value="iphone17pro">iPhone 17 Pro</option>
+                <option value="iphone17promax">iPhone 17 Pro Max</option>
+              </optgroup>
+              <optgroup label="iPhone 16 Series">
+                <option value="iphone16">iPhone 16</option>
+                <option value="iphone16pro">iPhone 16 Pro</option>
+                <option value="iphone16promax">iPhone 16 Pro Max</option>
+                <option value="iphone16plus">iPhone 16 Plus</option>
+              </optgroup>
+              <optgroup label="iPhone 15 Series">
+                <option value="iphone15">iPhone 15</option>
+                <option value="iphone15pro">iPhone 15 Pro</option>
+                <option value="iphone15promax">iPhone 15 Pro Max</option>
+                <option value="iphone15plus">iPhone 15 Plus</option>
+              </optgroup>
+              <optgroup label="iPhone 14 Series">
+                <option value="iphone14">iPhone 14</option>
+                <option value="iphone14pro">iPhone 14 Pro</option>
+                <option value="iphone14promax">iPhone 14 Pro Max</option>
+                <option value="iphone14plus">iPhone 14 Plus</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Colour (small swatches like Mous material selector) -->
+          <div class="option-group">
+            <div class="option-label">
+              <span class="option-label-text">Colour</span>
               <span class="option-label-value" id="designName">Nude</span>
             </div>
-            <div class="color-swatches" role="radiogroup" aria-label="Select design">
-              <button class="color-swatch swatch-nude active" data-color="nude" aria-label="Nude" role="radio" aria-checked="true"></button>
-              <button class="color-swatch swatch-pink" data-color="pink" aria-label="Pink" role="radio" aria-checked="false"></button>
-              <button class="color-swatch swatch-plum" data-color="plum" aria-label="Plum" role="radio" aria-checked="false"></button>
-              <button class="color-swatch swatch-teal" data-color="teal" aria-label="Teal" role="radio" aria-checked="false"></button>
+            <div class="color-swatches" role="radiogroup" aria-label="Select colour">
+              <a href="/products/noble-steed-nude" class="color-swatch swatch-nude active" data-color="nude" aria-label="Nude" role="radio" aria-checked="true"></a>
+              <a href="/products/noble-steed-pink" class="color-swatch swatch-pink" data-color="pink" aria-label="Pink" role="radio" aria-checked="false"></a>
+              <a href="/products/noble-steed-plum" class="color-swatch swatch-plum" data-color="plum" aria-label="Plum" role="radio" aria-checked="false"></a>
+              <a href="/products/noble-steed-teal" class="color-swatch swatch-teal" data-color="teal" aria-label="Teal" role="radio" aria-checked="false"></a>
             </div>
           </div>
 
           <!-- Surface -->
           <div class="option-group">
             <div class="option-label">
-              <span class="option-label-text">Surface</span>
+              <span class="option-label-text">Finish</span>
               <span class="option-label-value" id="surfaceName">Glossy</span>
             </div>
-            <div class="surface-options" role="radiogroup" aria-label="Select surface finish">
+            <div class="surface-options" role="radiogroup" aria-label="Select finish">
               <button class="device-option active" data-surface="glossy" role="radio" aria-checked="true">Glossy</button>
               <button class="device-option" data-surface="matte" role="radio" aria-checked="false">Matte</button>
             </div>
           </div>
 
-          <!-- Device Model -->
-          <div class="option-group">
-            <div class="option-label">
-              <span class="option-label-text">iPhone Model</span>
-            </div>
-            <div class="device-options device-options-grid" role="radiogroup" aria-label="Select iPhone model">
-              <button class="device-option active" data-device="iphone17">iPhone 17</button>
-              <button class="device-option" data-device="iphone17air">iPhone 17 Air</button>
-              <button class="device-option" data-device="iphone17pro">iPhone 17 Pro</button>
-              <button class="device-option" data-device="iphone17promax">iPhone 17 Pro Max</button>
-              <button class="device-option" data-device="iphone16">iPhone 16</button>
-              <button class="device-option" data-device="iphone16pro">iPhone 16 Pro</button>
-              <button class="device-option" data-device="iphone16promax">iPhone 16 Pro Max</button>
-              <button class="device-option" data-device="iphone16plus">iPhone 16 Plus</button>
-              <button class="device-option" data-device="iphone15">iPhone 15</button>
-              <button class="device-option" data-device="iphone15pro">iPhone 15 Pro</button>
-              <button class="device-option" data-device="iphone15promax">iPhone 15 Pro Max</button>
-              <button class="device-option" data-device="iphone15plus">iPhone 15 Plus</button>
-              <button class="device-option" data-device="iphone14">iPhone 14</button>
-              <button class="device-option" data-device="iphone14pro">iPhone 14 Pro</button>
-              <button class="device-option" data-device="iphone14promax">iPhone 14 Pro Max</button>
-              <button class="device-option" data-device="iphone14plus">iPhone 14 Plus</button>
-            </div>
+          <!-- Trust line (like Mous) -->
+          <div class="trust-inline">
+            <span>&#10003; Worldwide shipping</span>
+            <span>&#8634; 30-day returns &amp; exchanges</span>
           </div>
 
           <!-- Buy Now -->
           <div class="buy-controls">
-            <a href="#" class="btn-atb" id="buyNow" style="flex:1; text-decoration:none; justify-content:center;">
-              <span class="btn-atb-text">Buy Now</span>
-              <span class="btn-atb-price" id="atbPrice">&nbsp;&mdash;&nbsp;$55.00</span>
+            <a href="#" class="btn-atb" id="buyNow">
+              <span class="btn-atb-text">Add to Bag</span>
+              <span class="btn-atb-price" id="atbPrice">&mdash; $55.00</span>
             </a>
           </div>
 
-          <!-- Trust Badges -->
-          <div class="trust-badges" aria-label="Purchase assurances">
-            <div class="trust-badge">
-              <span class="trust-icon" aria-hidden="true">&#10003;</span>
-              <span class="trust-text">Worldwide<br/>Shipping</span>
-            </div>
-            <div class="trust-badge">
-              <span class="trust-icon" aria-hidden="true">&#8634;</span>
-              <span class="trust-text">30-Day<br/>Returns</span>
-            </div>
-            <div class="trust-badge">
-              <span class="trust-icon" aria-hidden="true">&#9733;</span>
-              <span class="trust-text">4.9/5 Star<br/>Rating</span>
-            </div>
-          </div>
-
-          <!-- Accordion -->
+          <!-- Accordion (Mous-style product details) -->
           <div class="accordion" aria-label="Product details">
             <div class="accordion-item">
-              <button class="accordion-trigger" aria-expanded="true" aria-controls="panel-details">
-                Product Details <span class="accordion-icon" aria-hidden="true"></span>
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-desc">
+                Description <span class="accordion-icon" aria-hidden="true"></span>
               </button>
-              <div class="accordion-panel" id="panel-details" role="region">
+              <div class="accordion-panel" id="panel-desc" role="region">
+                <div class="accordion-content">
+                  <p>Artist-designed equestrian phone case by Velvet &amp; Valor. Each design is inspired by the elegance and power of the horse, created for riders and horse lovers who carry quiet confidence wherever they go.</p>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-features">
+                Features <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" id="panel-features" role="region">
                 <div class="accordion-content">
                   <ul>
-                    <li>Artist-designed equestrian artwork</li>
                     <li>Premium polycarbonate shell with precise fit</li>
-                    <li>Glossy and Matte finishes available</li>
                     <li>Raised edges protect screen and camera</li>
                     <li>All ports, buttons, and cameras fully accessible</li>
                     <li>Wireless and MagSafe charging compatible</li>
-                    <li>Available for 19 iPhone models (17, 16, 15, 14 series)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-surfaces">
+                Materials <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" id="panel-surfaces" role="region">
+                <div class="accordion-content">
+                  <ul>
+                    <li><strong>Glossy:</strong> Vibrant colours with a smooth, reflective finish</li>
+                    <li><strong>Matte:</strong> Soft-touch texture, fingerprint-resistant and grippy</li>
+                    <li>Impact-resistant polycarbonate construction</li>
                   </ul>
                 </div>
               </div>
@@ -248,29 +259,59 @@
               <div class="accordion-panel" id="panel-shipping" role="region">
                 <div class="accordion-content">
                   <ul>
-                    <li>Worldwide Shipping on all orders</li>
                     <li>Ships within 3&ndash;5 business days</li>
-                    <li>Returns accepted within 30 days &mdash; item must be unused</li>
+                    <li>Worldwide shipping available</li>
+                    <li>30-day returns &mdash; no questions asked</li>
                     <li>Tracking number provided via email</li>
                   </ul>
                 </div>
               </div>
             </div>
             <div class="accordion-item">
-              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-surfaces">
-                About Finishes <span class="accordion-icon" aria-hidden="true"></span>
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-faq">
+                FAQs <span class="accordion-icon" aria-hidden="true"></span>
               </button>
-              <div class="accordion-panel" id="panel-surfaces" role="region">
+              <div class="accordion-panel" id="panel-faq" role="region">
                 <div class="accordion-content">
                   <ul>
-                    <li><strong>Glossy:</strong> Vibrant colours with a smooth, reflective finish. Maximum artwork impact.</li>
-                    <li><strong>Matte:</strong> Soft-touch texture with a refined look. Fingerprint-resistant and grippy.</li>
+                    <li><strong>What's the difference between Glossy and Matte?</strong> Glossy gives vivid colours with a reflective finish. Matte has a soft-touch feel that resists fingerprints.</li>
+                    <li><strong>Will it fit with a screen protector?</strong> Yes, all our cases are designed to work with standard screen protectors.</li>
+                    <li><strong>Does wireless charging work?</strong> Yes, both Qi and MagSafe charging work perfectly.</li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- You may also like -->
+    <section class="also-like" aria-labelledby="also-like-heading">
+      <div class="container">
+        <h2 class="section-heading" id="also-like-heading" style="text-align:center; margin-bottom:40px;">You may also like</h2>
+        <div class="also-like-grid" id="alsoLikeGrid">
+          <a href="/products/noble-steed-nude" class="also-like-card" data-also="nude">
+            <div class="also-like-img"><img src="/images/nude product image.webp" alt="Noble Steed Nude" loading="lazy" /></div>
+            <p class="also-like-name">Noble Steed &mdash; Nude</p>
+            <p class="also-like-price">$55.00</p>
+          </a>
+          <a href="/products/noble-steed-pink" class="also-like-card" data-also="pink">
+            <div class="also-like-img"><img src="/images/pink product image.webp" alt="Noble Steed Pink" loading="lazy" /></div>
+            <p class="also-like-name">Noble Steed &mdash; Pink</p>
+            <p class="also-like-price">$55.00</p>
+          </a>
+          <a href="/products/noble-steed-plum" class="also-like-card" data-also="plum">
+            <div class="also-like-img"><img src="/images/plum product image.webp" alt="Noble Steed Plum" loading="lazy" /></div>
+            <p class="also-like-name">Noble Steed &mdash; Plum</p>
+            <p class="also-like-price">$55.00</p>
+          </a>
+          <a href="/products/noble-steed-teal" class="also-like-card" data-also="teal">
+            <div class="also-like-img"><img src="/images/teal product image.webp" alt="Noble Steed Teal" loading="lazy" /></div>
+            <p class="also-like-name">Noble Steed &mdash; Teal</p>
+            <p class="also-like-price">$55.00</p>
+          </a>
         </div>
       </div>
     </section>

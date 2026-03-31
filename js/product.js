@@ -1,7 +1,6 @@
 /* ============================================================
    VELVET & VALOR — Product Page JavaScript
-   Design selector, surface selector, model selector, gallery,
-   accordion, Stripe checkout
+   Mous-style UX: dropdown device, color navigation, URL variants
    ============================================================ */
 
 'use strict';
@@ -20,7 +19,7 @@ let currentSurface = 'glossy';
 let currentDevice = 'iphone17';
 
 
-/* ── URL Parsing — read design from slug, variant from query ──── */
+/* ── URL Parsing ─────────────────────────────────────────────── */
 (function initFromURL() {
   // Parse design from URL path: /products/noble-steed-{color}
   const pathMatch = window.location.pathname.match(/\/products\/noble-steed-(\w+)/);
@@ -28,7 +27,7 @@ let currentDevice = 'iphone17';
     currentDesign = pathMatch[1];
   }
 
-  // Fallback: ?design= query param (for old links)
+  // Fallback: ?design= query param
   const params = new URLSearchParams(window.location.search);
   const d = params.get('design');
   if (d && DESIGNS[d]) {
@@ -39,12 +38,10 @@ let currentDevice = 'iphone17';
   const variant = params.get('variant');
   if (variant) {
     const parts = variant.split('-');
-    // Last part is surface
     const surface = parts.pop();
     if (surface === 'glossy' || surface === 'matte') {
       currentSurface = surface;
     }
-    // Rest is the device
     const device = parts.join('');
     if (device) {
       currentDevice = device;
@@ -53,22 +50,27 @@ let currentDevice = 'iphone17';
 })();
 
 
-/* ── Design Selector (color swatches with data-color) ────────── */
-(function initDesignSelector() {
+/* ── Update URL with current variant (without reload) ────────── */
+function updateURL() {
+  const newUrl = `/products/noble-steed-${currentDesign}?variant=${currentDevice}-${currentSurface}`;
+  window.history.replaceState(null, '', newUrl);
+}
+
+
+/* ── Apply Design (set images, active swatch) ────────────────── */
+(function initDesign() {
   const swatches = document.querySelectorAll('.color-swatch[data-color]');
   const nameEl = document.getElementById('designName');
   const mainImg = document.getElementById('galleryMainImg');
-  if (!swatches.length) return;
 
-  function applyDesign(key) {
-    const cfg = DESIGNS[key];
+  function applyDesign() {
+    const cfg = DESIGNS[currentDesign];
     if (!cfg) return;
-    currentDesign = key;
 
     if (nameEl) nameEl.textContent = cfg.name;
     if (mainImg) mainImg.src = cfg.image;
 
-    // Update first gallery thumbnail to match
+    // Update gallery first thumb
     const firstThumb = document.querySelector('.gallery-thumb');
     if (firstThumb) {
       firstThumb.dataset.img = cfg.image;
@@ -76,27 +78,53 @@ let currentDevice = 'iphone17';
       if (thumbImg) thumbImg.src = cfg.image;
     }
 
+    // Update active swatch
     swatches.forEach(s => {
       s.classList.remove('active');
       s.setAttribute('aria-checked', 'false');
     });
-    const active = document.querySelector(`.color-swatch[data-color="${key}"]`);
+    const active = document.querySelector(`.color-swatch[data-color="${currentDesign}"]`);
     if (active) {
       active.classList.add('active');
       active.setAttribute('aria-checked', 'true');
     }
+
+    // Hide current color from "You may also like"
+    document.querySelectorAll('.also-like-card').forEach(card => {
+      card.style.display = card.dataset.also === currentDesign ? 'none' : '';
+    });
   }
 
+  // Color swatches navigate to new URL (but update variant params)
   swatches.forEach(swatch => {
-    swatch.addEventListener('click', () => applyDesign(swatch.dataset.color));
+    swatch.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentDesign = swatch.dataset.color;
+      applyDesign();
+      updateURL();
+    });
   });
 
-  // Apply from URL or default
-  applyDesign(currentDesign);
+  applyDesign();
 })();
 
 
-/* ── Surface Selector (data-surface) ─────────────────────────── */
+/* ── Device Dropdown ─────────────────────────────────────────── */
+(function initDeviceSelect() {
+  const select = document.getElementById('deviceSelect');
+  if (!select) return;
+
+  // Set initial value from URL
+  select.value = currentDevice;
+
+  select.addEventListener('change', () => {
+    currentDevice = select.value;
+    updateURL();
+  });
+})();
+
+
+/* ── Surface Selector ────────────────────────────────────────── */
 (function initSurfaceSelector() {
   const options = document.querySelectorAll('[data-surface]');
   const nameEl = document.getElementById('surfaceName');
@@ -114,35 +142,14 @@ let currentDevice = 'iphone17';
       active.setAttribute('aria-checked', 'true');
     }
     if (nameEl) nameEl.textContent = key === 'glossy' ? 'Glossy' : 'Matte';
+    updateURL();
   }
 
   options.forEach(opt => {
     opt.addEventListener('click', () => applySurface(opt.dataset.surface));
   });
 
-  // Apply initial from URL
   applySurface(currentSurface);
-})();
-
-
-/* ── Device Model Selector (data-device) ─────────────────────── */
-(function initDeviceSelector() {
-  const options = document.querySelectorAll('[data-device]');
-  if (!options.length) return;
-
-  function applyDevice(key) {
-    currentDevice = key;
-    options.forEach(o => o.classList.remove('active'));
-    const active = document.querySelector(`[data-device="${key}"]`);
-    if (active) active.classList.add('active');
-  }
-
-  options.forEach(opt => {
-    opt.addEventListener('click', () => applyDevice(opt.dataset.device));
-  });
-
-  // Apply initial from URL
-  applyDevice(currentDevice);
 })();
 
 
@@ -174,6 +181,7 @@ let currentDevice = 'iphone17';
       const panel = item.querySelector('.accordion-panel');
       const isOpen = trigger.classList.contains('open');
 
+      // Close all others
       document.querySelectorAll('.accordion-trigger.open').forEach(t => {
         if (t !== trigger) {
           t.classList.remove('open');
@@ -187,14 +195,6 @@ let currentDevice = 'iphone17';
       panel.classList.toggle('open', !isOpen);
     });
   });
-
-  // Open first by default
-  const first = triggers[0];
-  if (first) {
-    first.classList.add('open');
-    first.setAttribute('aria-expanded', 'true');
-    first.closest('.accordion-item').querySelector('.accordion-panel').classList.add('open');
-  }
 })();
 
 
@@ -206,22 +206,16 @@ let currentDevice = 'iphone17';
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     const textEl = btn.querySelector('.btn-atb-text');
-    const originalText = textEl ? textEl.textContent : 'Buy Now';
+    const originalText = textEl ? textEl.textContent : 'Add to Bag';
 
-    // Show loading state
     if (textEl) textEl.textContent = 'Processing...';
     btn.style.pointerEvents = 'none';
     btn.style.opacity = '0.7';
 
-    // Get selected values
-    const activeSwatch = document.querySelector('.color-swatch.active[data-color]');
-    const designLabel = activeSwatch ? activeSwatch.getAttribute('aria-label') : 'Nude';
-
-    const activeDevice = document.querySelector('[data-device].active');
-    const modelLabel = activeDevice ? activeDevice.textContent.trim() : 'iPhone 17';
-
-    const activeSurface = document.querySelector('[data-surface].active');
-    const finishLabel = activeSurface ? activeSurface.textContent.trim() : 'Glossy';
+    const designLabel = DESIGNS[currentDesign]?.name || 'Nude';
+    const select = document.getElementById('deviceSelect');
+    const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
+    const finishLabel = currentSurface === 'glossy' ? 'Glossy' : 'Matte';
 
     try {
       const res = await fetch('/api/create-checkout', {
@@ -235,7 +229,6 @@ let currentDevice = 'iphone17';
       });
 
       const data = await res.json();
-
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -246,15 +239,13 @@ let currentDevice = 'iphone17';
       if (textEl) textEl.textContent = 'Try Again';
       btn.style.pointerEvents = '';
       btn.style.opacity = '';
-      setTimeout(() => {
-        if (textEl) textEl.textContent = originalText;
-      }, 2500);
+      setTimeout(() => { if (textEl) textEl.textContent = originalText; }, 2500);
     }
   });
 })();
 
 
-/* ── Mobile Menu Toggle ──────────────────────────────────────── */
+/* ── Mobile Menu ─────────────────────────────────────────────── */
 (function initMobileMenu() {
   const toggle = document.querySelector('.nav-mobile-toggle');
   const menu = document.querySelector('.nav-mobile-menu');
@@ -277,25 +268,13 @@ let currentDevice = 'iphone17';
 })();
 
 
-/* ── Scroll progress ─────────────────────────────────────────── */
+/* ── Scroll Progress ─────────────────────────────────────────── */
 (function initScrollProgress() {
   const bar = document.createElement('div');
-  bar.style.cssText = `
-    position: fixed;
-    top: 0; left: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
-    z-index: 99999;
-    width: 0%;
-    transition: width 0.1s linear;
-    pointer-events: none;
-  `;
+  bar.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));z-index:99999;width:0%;transition:width .1s linear;pointer-events:none;';
   document.body.appendChild(bar);
-
   window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = pct + '%';
+    const pct = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (pct > 0 ? (window.scrollY / pct) * 100 : 0) + '%';
   }, { passive: true });
 })();

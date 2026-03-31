@@ -1,64 +1,52 @@
 /* ============================================================
    VELVET & VALOR — Product Page JavaScript
-   Design selector, model selector, gallery, accordion
+   Design selector, surface selector, model selector, gallery,
+   accordion, Stripe checkout
    ============================================================ */
 
 'use strict';
 
 /* ── Design Data ─────────────────────────────────────────────── */
 const DESIGNS = {
-  'champagne-nude': { name: 'Champagne Nude', image: 'images/nude product image.webp' },
-  'blush-rose':     { name: 'Blush Rose',     image: 'images/pink product image.webp' },
-  'royal-plum':     { name: 'Royal Plum',     image: 'images/plum product image.webp' },
-  'emerald-teal':   { name: 'Emerald Teal',   image: 'images/teal product image.webp' },
+  nude: { name: 'Nude', image: 'images/nude product image.webp' },
+  pink: { name: 'Pink', image: 'images/pink product image.webp' },
+  plum: { name: 'Plum', image: 'images/plum product image.webp' },
+  teal: { name: 'Teal', image: 'images/teal product image.webp' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */
-let currentDesign = 'champagne-nude';
-let currentFinish = 'glossy';
-let currentModel  = 'iphone-17-pro-max';
+let currentDesign = 'nude';
+let currentSurface = 'glossy';
+let currentDevice = 'iphone17';
+
 
 /* ── URL Params — preselect design from query string ─────────── */
 (function initFromURL() {
   const params = new URLSearchParams(window.location.search);
-  const designParam = params.get('design');
-  if (designParam && DESIGNS[designParam]) {
-    currentDesign = designParam;
+  const d = params.get('design');
+  if (d && DESIGNS[d]) {
+    currentDesign = d;
   }
 })();
 
 
-/* ── SKU Generator ───────────────────────────────────────────── */
-function generateSKU() {
-  const d = currentDesign.toUpperCase();
-  const m = currentModel.toUpperCase();
-  const f = currentFinish === 'glossy' ? 'GLO' : 'MAT';
-  return `VV-${d}-${m}-${f}`;
-}
-
-function updateSKU() {
-  const el = document.getElementById('skuDisplay');
-  if (el) el.textContent = 'SKU: ' + generateSKU();
-}
-
-
-/* ── Design Selector ─────────────────────────────────────────── */
+/* ── Design Selector (color swatches with data-color) ────────── */
 (function initDesignSelector() {
-  const swatches = document.querySelectorAll('.color-swatch[data-design]');
+  const swatches = document.querySelectorAll('.color-swatch[data-color]');
   const nameEl = document.getElementById('designName');
   const mainImg = document.getElementById('galleryMainImg');
-  const firstThumb = document.querySelector('.gallery-thumb[data-img]');
   if (!swatches.length) return;
 
-  function applyDesign(designKey) {
-    const cfg = DESIGNS[designKey];
+  function applyDesign(key) {
+    const cfg = DESIGNS[key];
     if (!cfg) return;
-    currentDesign = designKey;
+    currentDesign = key;
 
     if (nameEl) nameEl.textContent = cfg.name;
     if (mainImg) mainImg.src = cfg.image;
 
-    // Update first thumbnail to match design
+    // Update first gallery thumbnail to match
+    const firstThumb = document.querySelector('.gallery-thumb');
     if (firstThumb) {
       firstThumb.dataset.img = cfg.image;
       const thumbImg = firstThumb.querySelector('.thumb-img');
@@ -69,17 +57,15 @@ function updateSKU() {
       s.classList.remove('active');
       s.setAttribute('aria-checked', 'false');
     });
-    const active = document.querySelector(`.color-swatch[data-design="${designKey}"]`);
+    const active = document.querySelector(`.color-swatch[data-color="${key}"]`);
     if (active) {
       active.classList.add('active');
       active.setAttribute('aria-checked', 'true');
     }
-
-    updateSKU();
   }
 
   swatches.forEach(swatch => {
-    swatch.addEventListener('click', () => applyDesign(swatch.dataset.design));
+    swatch.addEventListener('click', () => applyDesign(swatch.dataset.color));
   });
 
   // Apply from URL or default
@@ -87,66 +73,37 @@ function updateSKU() {
 })();
 
 
-/* ── Finish Selector ─────────────────────────────────────────── */
-(function initFinishSelector() {
-  const options = document.querySelectorAll('.device-option[data-finish]');
-  const nameEl = document.getElementById('finishName');
+/* ── Surface Selector (data-surface) ─────────────────────────── */
+(function initSurfaceSelector() {
+  const options = document.querySelectorAll('[data-surface]');
+  const nameEl = document.getElementById('surfaceName');
+  if (!options.length) return;
+
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      options.forEach(o => {
+        o.classList.remove('active');
+        o.setAttribute('aria-checked', 'false');
+      });
+      opt.classList.add('active');
+      opt.setAttribute('aria-checked', 'true');
+      currentSurface = opt.dataset.surface;
+      if (nameEl) nameEl.textContent = currentSurface === 'glossy' ? 'Glossy' : 'Matte';
+    });
+  });
+})();
+
+
+/* ── Device Model Selector (data-device) ─────────────────────── */
+(function initDeviceSelector() {
+  const options = document.querySelectorAll('[data-device]');
   if (!options.length) return;
 
   options.forEach(opt => {
     opt.addEventListener('click', () => {
       options.forEach(o => o.classList.remove('active'));
       opt.classList.add('active');
-      currentFinish = opt.dataset.finish;
-      if (nameEl) nameEl.textContent = opt.dataset.finish === 'glossy' ? 'Glossy' : 'Matte';
-      updateSKU();
-    });
-  });
-})();
-
-
-/* ── Model Generation Tabs ───────────────────────────────────── */
-(function initModelSelector() {
-  const genTabs = document.querySelectorAll('.gen-tab');
-  const modelButtons = document.querySelectorAll('.device-option[data-model]');
-  const nameEl = document.getElementById('modelName');
-  if (!genTabs.length) return;
-
-  function showGeneration(gen) {
-    modelButtons.forEach(btn => {
-      if (btn.dataset.gen === gen) {
-        btn.style.display = '';
-      } else {
-        btn.style.display = 'none';
-      }
-    });
-
-    genTabs.forEach(t => t.classList.remove('active'));
-    const activeTab = document.querySelector(`.gen-tab[data-gen="${gen}"]`);
-    if (activeTab) activeTab.classList.add('active');
-
-    // Select first visible model in this generation
-    const firstVisible = document.querySelector(`.device-option[data-gen="${gen}"]`);
-    if (firstVisible) {
-      modelButtons.forEach(b => b.classList.remove('active'));
-      firstVisible.classList.add('active');
-      currentModel = firstVisible.dataset.model;
-      if (nameEl) nameEl.textContent = firstVisible.textContent.trim();
-      updateSKU();
-    }
-  }
-
-  genTabs.forEach(tab => {
-    tab.addEventListener('click', () => showGeneration(tab.dataset.gen));
-  });
-
-  modelButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      modelButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentModel = btn.dataset.model;
-      if (nameEl) nameEl.textContent = btn.textContent.trim();
-      updateSKU();
+      currentDevice = opt.dataset.device;
     });
   });
 })();
@@ -219,18 +176,15 @@ function updateSKU() {
     btn.style.pointerEvents = 'none';
     btn.style.opacity = '0.7';
 
-    // Get selected design name from the active swatch label
-    const activeSwatch = document.querySelector('.color-swatch.active[data-design]');
-    const designKey = activeSwatch ? activeSwatch.dataset.design : 'champagne-nude';
-    const designLabel = activeSwatch ? activeSwatch.getAttribute('aria-label') : 'Champagne Nude';
+    // Get selected values
+    const activeSwatch = document.querySelector('.color-swatch.active[data-color]');
+    const designLabel = activeSwatch ? activeSwatch.getAttribute('aria-label') : 'Nude';
 
-    // Get selected model
-    const activeModel = document.querySelector('.device-option.active[data-model]');
-    const modelLabel = activeModel ? activeModel.textContent.trim() : 'iPhone 17 Pro Max';
+    const activeDevice = document.querySelector('[data-device].active');
+    const modelLabel = activeDevice ? activeDevice.textContent.trim() : 'iPhone 17';
 
-    // Get selected finish
-    const activeFinish = document.querySelector('.device-option.active[data-finish]');
-    const finishLabel = activeFinish ? activeFinish.textContent.trim() : 'Glossy';
+    const activeSurface = document.querySelector('[data-surface].active');
+    const finishLabel = activeSurface ? activeSurface.textContent.trim() : 'Glossy';
 
     try {
       const res = await fetch('/api/create-checkout', {

@@ -417,6 +417,10 @@
 .swatch-forest    { background: radial-gradient(circle at 35% 35%, #2A5A30, #0E2416); }
 .swatch-champagne { background: radial-gradient(circle at 35% 35%, #C8A040, #705820); }
 .swatch-obsidian  { background: radial-gradient(circle at 35% 35%, #22223A, #08080F); }
+.swatch-nude      { background: radial-gradient(circle at 35% 35%, #D4B896, #A08060); }
+.swatch-pink      { background: radial-gradient(circle at 35% 35%, #D4A0A0, #A06070); }
+.swatch-plum      { background: radial-gradient(circle at 35% 35%, #8B4A8B, #4A1A4A); }
+.swatch-teal      { background: radial-gradient(circle at 35% 35%, #2A9090, #0A5050); }
 
 /* ── Device Options ─────────────────────────────────────────── */
 .device-options {

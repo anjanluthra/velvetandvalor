@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
         submit: { message: 'Your case will ship within 5-10 business days.' },
       },
       success_url: `${req.headers.origin || 'https://velvetandvalor.com'}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin || 'https://velvetandvalor.com'}/product.html`,
+      cancel_url: `${req.headers.origin || 'https://velvetandvalor.com'}/collections/iphone-cases`,
     });
 
     return res.status(200).json({ url: session.url });

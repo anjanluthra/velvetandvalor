@@ -1,6 +1,6 @@
 /* ============================================================
    VELVET & VALOR — Homepage JavaScript
-   Marquee pause, parallax accents
+   Marquee, popup, mobile menu
    ============================================================ */
 
 'use strict';
@@ -20,72 +20,93 @@
 })();
 
 
-/* ── Hero Parallax (subtle) ─────────────────────────────────── */
-(function initHeroParallax() {
-  const heroRight = document.querySelector('.hero-right');
-  const phoneWrap = document.querySelector('.phone-wrap');
-  if (!heroRight || !phoneWrap) return;
+/* ── Email Popup ───────────────────────────────────────────────── */
+(function initPopup() {
+  const overlay = document.getElementById('emailPopup');
+  const closeBtn = document.getElementById('popupClose');
+  const form = document.getElementById('popupForm');
+  if (!overlay) return;
 
-  let ticking = false;
+  const POPUP_KEY = 'vv_popup_dismissed';
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        if (scrollY < window.innerHeight) {
-          phoneWrap.style.transform = `translateY(${scrollY * 0.06}px)`;
-        }
-        ticking = false;
-      });
-      ticking = true;
+  // Don't show if already dismissed
+  if (localStorage.getItem(POPUP_KEY)) return;
+
+  // Show after 4 seconds
+  const timer = setTimeout(() => {
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+  }, 4000);
+
+  function closePopup() {
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+    localStorage.setItem(POPUP_KEY, 'true');
+    clearTimeout(timer);
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closePopup);
+  }
+
+  // Close on overlay click (not box)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closePopup();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closePopup();
     }
-  }, { passive: true });
+  });
+
+  // Handle form submit
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = form.querySelector('.popup-input');
+      if (input && input.value) {
+        form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1rem; padding: 16px 0;">Your code: <strong>VELVET10</strong><br><span style="font-weight: 400; font-size: 0.85rem; color: var(--cream-muted); margin-top: 8px; display: block;">Use at checkout for 10% off</span></p>';
+        setTimeout(closePopup, 3000);
+      }
+    });
+  }
 })();
 
 
-/* ── Collection Card — subtle pointer tracking glow ─────────── */
-(function initCardGlow() {
-  const cards = document.querySelectorAll('.collection-card');
-  if (!cards.length) return;
+/* ── Mobile Menu Toggle ─────────────────────────────────────── */
+(function initMobileMenu() {
+  const toggle = document.querySelector('.nav-mobile-toggle');
+  const menu = document.querySelector('.nav-mobile-menu');
+  if (!toggle || !menu) return;
 
-  cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--mx', x + '%');
-      card.style.setProperty('--my', y + '%');
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', !isOpen);
+    menu.classList.toggle('open');
+    menu.setAttribute('aria-hidden', isOpen);
+  });
+
+  // Close menu when clicking a link
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
     });
   });
 })();
 
 
-/* ── Process Step stagger on scroll ─────────────────────────── */
-(function initProcessStagger() {
-  const steps = document.querySelectorAll('.process-step');
-  if (!steps.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-
-  steps.forEach(step => observer.observe(step));
-})();
-
-
-/* ── Scroll progress indicator (thin gold line top) ─────────── */
+/* ── Scroll progress indicator (thin line at top) ────────────── */
 (function initScrollProgress() {
   const bar = document.createElement('div');
   bar.style.cssText = `
     position: fixed;
     top: 0; left: 0;
     height: 2px;
-    background: linear-gradient(90deg, #C8A84B, #DDB85E);
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
     z-index: 99999;
     width: 0%;
     transition: width 0.1s linear;

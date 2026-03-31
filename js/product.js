@@ -20,12 +20,35 @@ let currentSurface = 'glossy';
 let currentDevice = 'iphone17';
 
 
-/* ── URL Params — preselect design from query string ─────────── */
+/* ── URL Parsing — read design from slug, variant from query ──── */
 (function initFromURL() {
+  // Parse design from URL path: /products/the-cavalry-case-{color}
+  const pathMatch = window.location.pathname.match(/\/products\/the-cavalry-case-(\w+)/);
+  if (pathMatch && DESIGNS[pathMatch[1]]) {
+    currentDesign = pathMatch[1];
+  }
+
+  // Fallback: ?design= query param (for old links)
   const params = new URLSearchParams(window.location.search);
   const d = params.get('design');
   if (d && DESIGNS[d]) {
     currentDesign = d;
+  }
+
+  // Parse variant: ?variant=iphone17pro-glossy
+  const variant = params.get('variant');
+  if (variant) {
+    const parts = variant.split('-');
+    // Last part is surface
+    const surface = parts.pop();
+    if (surface === 'glossy' || surface === 'matte') {
+      currentSurface = surface;
+    }
+    // Rest is the device
+    const device = parts.join('');
+    if (device) {
+      currentDevice = device;
+    }
   }
 })();
 
@@ -79,18 +102,26 @@ let currentDevice = 'iphone17';
   const nameEl = document.getElementById('surfaceName');
   if (!options.length) return;
 
-  options.forEach(opt => {
-    opt.addEventListener('click', () => {
-      options.forEach(o => {
-        o.classList.remove('active');
-        o.setAttribute('aria-checked', 'false');
-      });
-      opt.classList.add('active');
-      opt.setAttribute('aria-checked', 'true');
-      currentSurface = opt.dataset.surface;
-      if (nameEl) nameEl.textContent = currentSurface === 'glossy' ? 'Glossy' : 'Matte';
+  function applySurface(key) {
+    currentSurface = key;
+    options.forEach(o => {
+      o.classList.remove('active');
+      o.setAttribute('aria-checked', 'false');
     });
+    const active = document.querySelector(`[data-surface="${key}"]`);
+    if (active) {
+      active.classList.add('active');
+      active.setAttribute('aria-checked', 'true');
+    }
+    if (nameEl) nameEl.textContent = key === 'glossy' ? 'Glossy' : 'Matte';
+  }
+
+  options.forEach(opt => {
+    opt.addEventListener('click', () => applySurface(opt.dataset.surface));
   });
+
+  // Apply initial from URL
+  applySurface(currentSurface);
 })();
 
 
@@ -99,13 +130,19 @@ let currentDevice = 'iphone17';
   const options = document.querySelectorAll('[data-device]');
   if (!options.length) return;
 
+  function applyDevice(key) {
+    currentDevice = key;
+    options.forEach(o => o.classList.remove('active'));
+    const active = document.querySelector(`[data-device="${key}"]`);
+    if (active) active.classList.add('active');
+  }
+
   options.forEach(opt => {
-    opt.addEventListener('click', () => {
-      options.forEach(o => o.classList.remove('active'));
-      opt.classList.add('active');
-      currentDevice = opt.dataset.device;
-    });
+    opt.addEventListener('click', () => applyDevice(opt.dataset.device));
   });
+
+  // Apply initial from URL
+  applyDevice(currentDevice);
 })();
 
 

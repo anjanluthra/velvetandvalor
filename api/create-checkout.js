@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
   const { design, model, finish } = req.body;
 
   // Build a readable description for the order
-  const designName = design || 'Cavalry Case';
+  const designName = design || 'Noble Steed Case';
   const modelName = model || 'iPhone';
   const finishName = finish || 'Glossy';
   const description = `${designName} — ${modelName} (${finishName})`;

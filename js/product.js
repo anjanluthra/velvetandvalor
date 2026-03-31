@@ -8,10 +8,10 @@
 
 /* ── Design Data ─────────────────────────────────────────────── */
 const DESIGNS = {
-  nude: { name: 'Nude', image: 'images/nude product image.webp' },
-  pink: { name: 'Pink', image: 'images/pink product image.webp' },
-  plum: { name: 'Plum', image: 'images/plum product image.webp' },
-  teal: { name: 'Teal', image: 'images/teal product image.webp' },
+  nude: { name: 'Nude', image: '/images/nude product image.webp' },
+  pink: { name: 'Pink', image: '/images/pink product image.webp' },
+  plum: { name: 'Plum', image: '/images/plum product image.webp' },
+  teal: { name: 'Teal', image: '/images/teal product image.webp' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */
@@ -22,8 +22,8 @@ let currentDevice = 'iphone17';
 
 /* ── URL Parsing — read design from slug, variant from query ──── */
 (function initFromURL() {
-  // Parse design from URL path: /products/the-cavalry-case-{color}
-  const pathMatch = window.location.pathname.match(/\/products\/the-cavalry-case-(\w+)/);
+  // Parse design from URL path: /products/noble-steed-{color}
+  const pathMatch = window.location.pathname.match(/\/products\/noble-steed-(\w+)/);
   if (pathMatch && DESIGNS[pathMatch[1]]) {
     currentDesign = pathMatch[1];
   }

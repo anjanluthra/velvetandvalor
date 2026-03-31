@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Image Generator — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .gen-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: calc(var(--nav-height) + 40px) var(--page-padding) 80px;
+    }
+    .gen-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .gen-subtitle {
+      font-size: 0.9rem;
+      color: var(--cream-muted);
+      margin-bottom: 32px;
+    }
+    .gen-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .gen-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      background: var(--obsidian-mid);
+      border: 1px solid var(--gold-muted);
+      color: var(--cream);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      resize: vertical;
+    }
+    .gen-textarea::placeholder { color: var(--cream-whisper); }
+    .gen-textarea:focus { border-color: var(--gold); outline: none; }
+    .gen-submit {
+      padding: 14px 28px;
+      background: var(--gold);
+      color: var(--obsidian);
+      font-family: var(--font-authority);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      align-self: flex-start;
+    }
+    .gen-submit:hover { background: var(--gold-bright); }
+    .gen-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gen-status {
+      font-size: 0.85rem;
+      color: var(--gold);
+      min-height: 24px;
+    }
+    .gen-results {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .gen-result-img {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid var(--gold-whisper);
+    }
+    .gen-result-text {
+      font-size: 0.9rem;
+      color: var(--cream-muted);
+      line-height: 1.6;
+      padding: 16px;
+      background: var(--obsidian-mid);
+      border: 1px solid var(--gold-whisper);
+    }
+    .gen-download {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 20px;
+      border: 1px solid var(--gold-muted);
+      color: var(--cream-muted);
+      font-size: 0.8rem;
+      font-family: var(--font-authority);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .gen-download:hover { border-color: var(--gold); color: var(--cream); }
+    .gen-history {
+      margin-top: 48px;
+      border-top: 1px solid var(--gold-whisper);
+      padding-top: 24px;
+    }
+    .gen-history-title {
+      font-family: var(--font-authority);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .gen-error {
+      padding: 16px;
+      background: rgba(200, 50, 50, 0.15);
+      border: 1px solid rgba(200, 50, 50, 0.3);
+      color: #ff8888;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav scrolled" role="navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Velvet <span class="amp">&amp;</span> Valor</a>
+      <span style="font-size: 0.75rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">Image Generator</span>
+    </div>
+  </nav>
+
+  <main class="gen-page">
+    <h1 class="gen-title">Gemini Image Generator</h1>
+    <p class="gen-subtitle">Generate images for the website using Gemini AI. Describe what you want and hit generate.</p>
+
+    <form class="gen-form" id="genForm">
+      <textarea
+        class="gen-textarea"
+        id="promptInput"
+        placeholder="Describe the image you want to generate...&#10;&#10;e.g. A luxury equestrian phone case in deep burgundy with gold accents, photographed on a marble surface with soft studio lighting, product photography style"
+      ></textarea>
+      <button type="submit" class="gen-submit" id="genBtn">Generate Image</button>
+    </form>
+
+    <p class="gen-status" id="genStatus"></p>
+
+    <div class="gen-results" id="genResults"></div>
+
+    <div class="gen-history" id="genHistory" style="display: none;">
+      <p class="gen-history-title">Previous Generations</p>
+      <div id="historyGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;"></div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('genForm');
+    const promptInput = document.getElementById('promptInput');
+    const genBtn = document.getElementById('genBtn');
+    const statusEl = document.getElementById('genStatus');
+    const resultsEl = document.getElementById('genResults');
+    const historySection = document.getElementById('genHistory');
+    const historyGrid = document.getElementById('historyGrid');
+
+    let history = [];
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      genBtn.disabled = true;
+      genBtn.textContent = 'Generating...';
+      statusEl.textContent = 'Sending prompt to Gemini...';
+      resultsEl.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/generate-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Generation failed');
+        }
+
+        statusEl.textContent = `Generated ${data.results.length} result(s)`;
+        resultsEl.innerHTML = '';
+
+        for (const result of data.results) {
+          if (result.type === 'image') {
+            const dataUrl = `data:${result.mimeType};base64,${result.data}`;
+
+            const wrapper = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'gen-result-img';
+            wrapper.appendChild(img);
+
+            const dl = document.createElement('a');
+            dl.href = dataUrl;
+            dl.download = `vv-generated-${Date.now()}.png`;
+            dl.className = 'gen-download';
+            dl.textContent = 'Download Image';
+            wrapper.appendChild(dl);
+
+            resultsEl.appendChild(wrapper);
+
+            // Add to history
+            const thumb = document.createElement('img');
+            thumb.src = dataUrl;
+            thumb.style.cssText = 'width:100%; aspect-ratio:1; object-fit:cover; border:1px solid var(--gold-whisper); cursor:pointer;';
+            thumb.title = prompt.substring(0, 80);
+            thumb.addEventListener('click', () => {
+              resultsEl.innerHTML = '';
+              const clone = wrapper.cloneNode(true);
+              resultsEl.appendChild(clone);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            historyGrid.prepend(thumb);
+            historySection.style.display = '';
+
+          } else if (result.type === 'text') {
+            const p = document.createElement('div');
+            p.className = 'gen-result-text';
+            p.textContent = result.content;
+            resultsEl.appendChild(p);
+          }
+        }
+
+      } catch (err) {
+        statusEl.textContent = '';
+        const errEl = document.createElement('div');
+        errEl.className = 'gen-error';
+        errEl.textContent = err.message;
+        resultsEl.appendChild(errEl);
+      } finally {
+        genBtn.disabled = false;
+        genBtn.textContent = 'Generate Image';
+      }
+    });
+  </script>
+
+</body>
+</html>

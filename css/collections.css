@@ -3,7 +3,7 @@
    ============================================================ */
 
 .collection-hero {
-  padding: calc(var(--nav-height) + 48px) 0 48px;
+  padding: calc(var(--header-height) + 48px) 0 48px;
   background: var(--obsidian-deep);
   text-align: center;
   border-bottom: 1px solid var(--gold-subtle);

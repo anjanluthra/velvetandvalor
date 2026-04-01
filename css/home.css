@@ -6,7 +6,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
-  padding-top: var(--nav-height);
+  padding-top: var(--header-height);
   display: grid;
   grid-template-columns: 55% 45%;
   overflow: hidden;

@@ -41,7 +41,9 @@
   --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Layout */
+  --banner-height:    34px;
   --nav-height:       80px;
+  --header-height:    calc(var(--banner-height) + var(--nav-height));
   --max-width:        1320px;
   --page-padding:     48px;
 }
@@ -76,6 +78,46 @@ input, textarea { outline: none; font: inherit; }
 ul, ol { list-style: none; }
 svg    { display: block; }
 
+/* ── Top Banner ──────────────────────────────────────────────── */
+.top-banner {
+  background: var(--cream);
+  color: var(--obsidian);
+  padding: 8px 0;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--banner-height);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+}
+
+.top-banner-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-banner-item {
+  font-family: var(--font-authority);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--obsidian);
+}
+
+@media (max-width: 768px) {
+  .top-banner-inner {
+    justify-content: center;
+  }
+  .top-banner-item:not(:nth-child(2)) {
+    display: none;
+  }
+}
+
 /* ── Custom Cursor (disabled) ────────────────────────────────── */
 .cursor-dot,
 .cursor-ring {
@@ -106,7 +148,7 @@ svg    { display: block; }
 /* ── Navigation ─────────────────────────────────────────────── */
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: var(--banner-height); left: 0; right: 0;
   z-index: 1000;
   height: var(--nav-height);
   display: flex;

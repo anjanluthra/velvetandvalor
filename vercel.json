@@ -2,6 +2,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/products/:slug", "destination": "/product" }
+    { "source": "/products/:slug", "destination": "/product" },
+    { "source": "/blog/category/:slug", "destination": "/blog/category" },
+    { "source": "/blog/author/:slug", "destination": "/blog/author" },
+    { "source": "/blog/:slug", "destination": "/blog/post" }
   ]
 }

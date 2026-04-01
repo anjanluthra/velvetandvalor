@@ -70,6 +70,10 @@ function updateURL() {
     if (nameEl) nameEl.textContent = cfg.name;
     if (mainImg) mainImg.src = cfg.image;
 
+    // Update detail section image
+    const detailImg = document.getElementById('detailSectionImg');
+    if (detailImg) detailImg.src = cfg.image;
+
     // Update gallery first thumb
     const firstThumb = document.querySelector('.gallery-thumb');
     if (firstThumb) {

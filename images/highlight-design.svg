@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0C1E3A"/>
+      <stop offset="100%" stop-color="#091729"/>
+    </linearGradient>
+    <linearGradient id="brushGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A9090"/>
+      <stop offset="100%" stop-color="#126060"/>
+    </linearGradient>
+    <filter id="glow4">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="phoneClip">
+      <rect x="310" y="100" width="180" height="360" rx="24" ry="24"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGrad4)"/>
+
+  <!-- Subtle radial ambience -->
+  <circle cx="400" cy="300" r="250" fill="#1A9090" opacity="0.02"/>
+
+  <!-- Phone outline -->
+  <rect x="310" y="100" width="180" height="360" rx="24" ry="24"
+        fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.2"/>
+  <rect x="320" y="115" width="160" height="330" rx="16" ry="16"
+        fill="#FFFFFF" opacity="0.03"/>
+  <!-- Phone notch -->
+  <rect x="370" y="105" width="60" height="6" rx="3" fill="#FFFFFF" opacity="0.1"/>
+
+  <!-- Artistic flourishes clipped inside phone -->
+  <g clip-path="url(#phoneClip)" opacity="0.6">
+    <!-- Abstract paint strokes inside the phone -->
+    <path d="M310,200 Q350,180 380,220 T440,210 T490,250"
+          fill="none" stroke="#1A9090" stroke-width="8" stroke-linecap="round" opacity="0.4"/>
+    <path d="M310,260 Q360,240 400,280 T490,270"
+          fill="none" stroke="#1A9090" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
+    <path d="M310,320 Q370,290 420,340 T490,310"
+          fill="none" stroke="#1A9090" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <!-- Splatter dots -->
+    <circle cx="360" cy="180" r="4" fill="#1A9090" opacity="0.35"/>
+    <circle cx="420" cy="230" r="3" fill="#1A9090" opacity="0.3"/>
+    <circle cx="380" cy="350" r="5" fill="#1A9090" opacity="0.25"/>
+    <circle cx="450" cy="300" r="2.5" fill="#1A9090" opacity="0.3"/>
+    <circle cx="340" cy="280" r="3.5" fill="#1A9090" opacity="0.2"/>
+  </g>
+
+  <!-- Paintbrush crossing over the phone diagonally -->
+  <g transform="translate(400, 280) rotate(-35)" filter="url(#glow4)">
+    <!-- Brush handle -->
+    <rect x="40" y="-5" width="140" height="10" rx="3" fill="#FFFFFF" opacity="0.15"/>
+    <rect x="40" y="-5" width="140" height="10" rx="3" fill="none" stroke="#FFFFFF"
+          stroke-width="0.5" opacity="0.2"/>
+    <!-- Ferrule (metal part) -->
+    <rect x="25" y="-6.5" width="20" height="13" rx="2" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="25" y="-6.5" width="20" height="13" rx="2" fill="none" stroke="#FFFFFF"
+          stroke-width="0.5" opacity="0.25"/>
+    <!-- Brush tip -->
+    <path d="M25,-6 Q10,-8 -10,0 Q10,8 25,6 Z" fill="url(#brushGrad)" opacity="0.85"/>
+    <!-- Paint drip from brush -->
+    <circle cx="-5" cy="10" r="3" fill="#1A9090" opacity="0.5"/>
+    <ellipse cx="-12" cy="4" rx="2" ry="3" fill="#1A9090" opacity="0.35"/>
+  </g>
+
+  <!-- Artistic flourish curves outside phone -->
+  <g fill="none" stroke="#1A9090" opacity="0.15" stroke-width="1">
+    <path d="M240,160 Q260,120 300,130" stroke-linecap="round"/>
+    <path d="M230,180 Q240,140 270,145" stroke-linecap="round"/>
+    <path d="M520,380 Q540,420 560,400" stroke-linecap="round"/>
+    <path d="M530,360 Q555,410 570,385" stroke-linecap="round"/>
+  </g>
+
+  <!-- Small star/sparkle accents -->
+  <g fill="#1A9090" opacity="0.4">
+    <!-- Sparkle top-left -->
+    <g transform="translate(270, 150)">
+      <line x1="0" y1="-6" x2="0" y2="6" stroke="#1A9090" stroke-width="1.5"/>
+      <line x1="-6" y1="0" x2="6" y2="0" stroke="#1A9090" stroke-width="1.5"/>
+      <line x1="-4" y1="-4" x2="4" y2="4" stroke="#1A9090" stroke-width="0.8"/>
+      <line x1="4" y1="-4" x2="-4" y2="4" stroke="#1A9090" stroke-width="0.8"/>
+    </g>
+    <!-- Sparkle bottom-right -->
+    <g transform="translate(540, 400)">
+      <line x1="0" y1="-5" x2="0" y2="5" stroke="#1A9090" stroke-width="1.5"/>
+      <line x1="-5" y1="0" x2="5" y2="0" stroke="#1A9090" stroke-width="1.5"/>
+      <line x1="-3" y1="-3" x2="3" y2="3" stroke="#1A9090" stroke-width="0.8"/>
+      <line x1="3" y1="-3" x2="-3" y2="3" stroke="#1A9090" stroke-width="0.8"/>
+    </g>
+    <!-- Small sparkle -->
+    <g transform="translate(520, 180)">
+      <line x1="0" y1="-3" x2="0" y2="3" stroke="#1A9090" stroke-width="1"/>
+      <line x1="-3" y1="0" x2="3" y2="0" stroke="#1A9090" stroke-width="1"/>
+    </g>
+  </g>
+
+  <!-- Bottom accent -->
+  <line x1="300" y1="520" x2="500" y2="520" stroke="#1A9090" stroke-width="1" opacity="0.3"/>
+  <circle cx="400" cy="520" r="2" fill="#1A9090" opacity="0.5"/>
+</svg>

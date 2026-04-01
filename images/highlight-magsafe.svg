@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0C1E3A"/>
+      <stop offset="100%" stop-color="#091729"/>
+    </linearGradient>
+    <radialGradient id="magRing" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" stop-color="transparent"/>
+      <stop offset="75%" stop-color="#1A9090" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGrad2)"/>
+
+  <!-- Subtle radial light behind center -->
+  <circle cx="400" cy="300" r="220" fill="#1A9090" opacity="0.03"/>
+
+  <!-- Charging pad base -->
+  <ellipse cx="400" cy="440" rx="130" ry="30" fill="#FFFFFF" opacity="0.04"/>
+  <ellipse cx="400" cy="438" rx="120" ry="26" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.08"/>
+
+  <!-- Charging pad surface -->
+  <ellipse cx="400" cy="420" rx="100" ry="22" fill="#0E2444" stroke="#FFFFFF" stroke-width="1" opacity="0.15"/>
+
+  <!-- MagSafe magnetic alignment ring - outer -->
+  <circle cx="400" cy="300" r="85" fill="none" stroke="#1A9090" stroke-width="2.5" opacity="0.7" filter="url(#glow2)"/>
+  <!-- MagSafe ring - inner -->
+  <circle cx="400" cy="300" r="70" fill="none" stroke="#1A9090" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Magnetic field lines (animated feel) -->
+  <g opacity="0.2" stroke="#1A9090" stroke-width="1" fill="none">
+    <circle cx="400" cy="300" r="95" stroke-dasharray="8,12"/>
+    <circle cx="400" cy="300" r="110" stroke-dasharray="5,15"/>
+    <circle cx="400" cy="300" r="125" stroke-dasharray="3,18"/>
+  </g>
+
+  <!-- Small alignment dots around ring -->
+  <g fill="#1A9090" opacity="0.6">
+    <circle cx="400" cy="215" r="3"/>
+    <circle cx="400" cy="385" r="3"/>
+    <circle cx="315" cy="300" r="3"/>
+    <circle cx="485" cy="300" r="3"/>
+    <circle cx="340" cy="235" r="2.5"/>
+    <circle cx="460" cy="235" r="2.5"/>
+    <circle cx="340" cy="365" r="2.5"/>
+    <circle cx="460" cy="365" r="2.5"/>
+  </g>
+
+  <!-- Phone outline floating above pad -->
+  <g transform="translate(400, 280)">
+    <rect x="-90" y="-170" width="180" height="340" rx="24" ry="24"
+          fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.2"/>
+    <rect x="-80" y="-155" width="160" height="310" rx="16" ry="16"
+          fill="#FFFFFF" opacity="0.03"/>
+    <!-- Phone notch -->
+    <rect x="-30" y="-165" width="60" height="6" rx="3" fill="#FFFFFF" opacity="0.1"/>
+  </g>
+
+  <!-- Lightning/charging icon in center -->
+  <g transform="translate(400, 300)" filter="url(#glow2)">
+    <polygon points="-8,-20 4,-3 -2,-3 8,20 -4,3 2,3" fill="#1A9090" opacity="0.8"/>
+  </g>
+
+  <!-- Connection line from pad to phone -->
+  <line x1="400" y1="400" x2="400" y2="420" stroke="#1A9090" stroke-width="1"
+        stroke-dasharray="3,4" opacity="0.3"/>
+
+  <!-- Bottom accent -->
+  <line x1="300" y1="540" x2="500" y2="540" stroke="#1A9090" stroke-width="1" opacity="0.3"/>
+  <circle cx="400" cy="540" r="2" fill="#1A9090" opacity="0.5"/>
+</svg>

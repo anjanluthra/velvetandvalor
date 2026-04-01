@@ -210,7 +210,7 @@ function updateURL() {
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     const textEl = btn.querySelector('.btn-atb-text');
-    const originalText = textEl ? textEl.textContent : 'Add to Bag';
+    const originalText = textEl ? textEl.textContent : 'Buy Now';
 
     if (textEl) textEl.textContent = 'Processing...';
     btn.style.pointerEvents = 'none';

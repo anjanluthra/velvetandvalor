@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
         design: designName,
         model: modelName,
         finish: finishName,
-        sku: `VV-${(design || '').toUpperCase()}-${(model || '').toUpperCase()}-${(finish || 'GLO').substring(0, 3).toUpperCase()}`,
+        sku: `VV-${(design || '').toUpperCase().replace(/\s+/g, '-')}-${(model || '').toUpperCase().replace(/\s+/g, '-')}-${(finish || 'GLO').substring(0, 3).toUpperCase()}`,
       },
       custom_text: {
         submit: { message: 'Your case will ship within 5-10 business days.' },

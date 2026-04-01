@@ -75,7 +75,7 @@
   white-space: nowrap;
 }
 
-.hero-title-line span {
+.hero-title-line > span {
   display: block;
   opacity: 0;
   transform: translateY(105%);

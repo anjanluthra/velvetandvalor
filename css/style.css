@@ -176,7 +176,7 @@ svg    { display: block; }
 }
 
 .nav-logo {
-  font-family: var(--font-authority);
+  font-family: var(--font-serif);
   font-size: 1.0625rem;
   letter-spacing: 0.18em;
   color: var(--cream);

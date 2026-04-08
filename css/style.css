@@ -319,11 +319,13 @@ svg    { display: block; }
 .section-label.left::before { display: none; }
 
 .section-heading {
-  font-family: var(--font-authority);
-  font-size: clamp(1.875rem, 3.5vw, 2.875rem);
-  letter-spacing: 0.04em;
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.02em;
   color: var(--cream);
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 /* ── Scroll Reveal ───────────────────────────────────────────── */
@@ -358,7 +360,7 @@ svg    { display: block; }
 }
 
 .footer-brand .footer-logo {
-  font-family: var(--font-authority);
+  font-family: var(--font-serif);
   font-size: 1.0625rem;
   letter-spacing: 0.18em;
   color: var(--cream);

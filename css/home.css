@@ -317,7 +317,7 @@
 
 .product-card-image {
   position: relative;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--obsidian);
   display: flex;
@@ -326,8 +326,8 @@
 }
 
 .product-card-image img {
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 90%;
   object-fit: contain;
   transition: transform 0.5s var(--ease-out);
 }

@@ -107,19 +107,15 @@
           <div class="gallery-thumbs" role="list">
             <button class="gallery-thumb active" aria-label="View: Nude" role="listitem" data-img="/images/nude product image.webp">
               <img src="/images/nude product image.webp" alt="" class="thumb-img" />
-              <span class="thumb-label">Nude</span>
             </button>
             <button class="gallery-thumb" aria-label="View: Pink" role="listitem" data-img="/images/pink product image.webp">
               <img src="/images/pink product image.webp" alt="" class="thumb-img" />
-              <span class="thumb-label">Pink</span>
             </button>
             <button class="gallery-thumb" aria-label="View: Plum" role="listitem" data-img="/images/plum product image.webp">
               <img src="/images/plum product image.webp" alt="" class="thumb-img" />
-              <span class="thumb-label">Plum</span>
             </button>
             <button class="gallery-thumb" aria-label="View: Teal" role="listitem" data-img="/images/teal product image.webp">
               <img src="/images/teal product image.webp" alt="" class="thumb-img" />
-              <span class="thumb-label">Teal</span>
             </button>
           </div>
           <div class="gallery-display" id="galleryDisplay">
@@ -149,6 +145,9 @@
             <div class="option-label">
               <span class="option-label-text">Your device</span>
             </div>
+            <p class="device-helper">
+              <strong>&#9888; Not sure which model you have?</strong> Go to <strong>Settings</strong> &gt; tap <strong>your name</strong> at the top &gt; scroll down &mdash; your iPhone model is shown at the bottom.
+            </p>
             <select class="device-select" id="deviceSelect" aria-label="Select your iPhone model">
               <optgroup label="iPhone 17 Series">
                 <option value="iphone17" selected>iPhone 17</option>
@@ -209,26 +208,68 @@
             <span>&#9830; Fashion-forward design</span>
           </div>
 
+          <!-- Model Confirmation Checkbox -->
+          <div class="model-confirm">
+            <label class="model-confirm-label">
+              <input type="checkbox" id="modelConfirmCheckbox" class="model-confirm-input" />
+              <span class="model-confirm-text">I have checked my iPhone model and confirm it is correct.</span>
+            </label>
+          </div>
+
           <!-- Buy Now -->
           <div class="buy-controls">
-            <a href="#" class="btn-atb" id="buyNow">
+            <a href="#" class="btn-atb btn-atb-disabled" id="buyNow">
               <span class="btn-atb-text">Buy Now</span>
               <span class="btn-atb-price" id="atbPrice">&mdash; $55.00</span>
             </a>
           </div>
 
-          <!-- Accordion (Mous-style product details) -->
-          <div class="accordion" aria-label="Product details">
-            <div class="accordion-item">
-              <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-desc">
-                Description <span class="accordion-icon" aria-hidden="true"></span>
-              </button>
-              <div class="accordion-panel" id="panel-desc" role="region">
-                <div class="accordion-content">
-                  <p>Artist-designed equestrian phone case by Velvet &amp; Valor. Each design is inspired by the elegance and power of the horse, created for riders and horse lovers who are proud of their sport; celebrating the relationship between horse and rider.</p>
+          <!-- Journal Waitlist -->
+          <div class="journal-checkout-waitlist">
+            <label class="journal-waitlist-label">
+              <input type="checkbox" id="journalWaitlistCheckbox" class="model-confirm-input" />
+              <span class="journal-waitlist-text">
+                <strong>Be the first to know:</strong> Our limited-edition Equestrian Journal is launching soon &mdash; a performance and mindset tool designed for riders who want to grow.
+              </span>
+            </label>
+            <div class="journal-waitlist-fields" id="journalWaitlistFields" style="display:none;">
+              <input type="text" class="journal-wl-input" placeholder="Your name" id="journalWlName" />
+              <input type="email" class="journal-wl-input" placeholder="Your email" id="journalWlEmail" />
+              <button type="button" class="journal-wl-btn" id="journalWlSubmit">Join the Waiting List</button>
+            </div>
+            <!-- Journal preview + discount (shown after signup) -->
+            <div class="journal-wl-success" id="journalWlSuccess" style="display:none;">
+              <div class="journal-wl-preview">
+                <div class="journal-wl-preview-img">
+                  <span class="journal-wl-logo">VELVET <span style="color: var(--gold);">&amp;</span> VALOR</span>
+                  <span class="journal-wl-divider"></span>
+                  <span class="journal-wl-title">The Equestrian Journal</span>
                 </div>
               </div>
+              <p class="journal-wl-discount">
+                &#127881; You&rsquo;re on the list! As one of our first 50 sign-ups, use code <strong>JOURNAL15</strong> at launch for <strong>15% off</strong>.
+              </p>
             </div>
+          </div>
+
+          <!-- Product Suggestion -->
+          <div class="product-suggestion-box">
+            <p class="suggestion-heading">Help Us Create What You Love</p>
+            <p class="suggestion-desc">What equestrian lifestyle product would you love to see next? Drop a hint below &mdash; your ideas shape what we create.</p>
+            <textarea class="suggestion-textarea" id="productSuggestion" placeholder="e.g. Leather riding gloves, equestrian tote bag, personalised horse portrait case..." rows="3"></textarea>
+            <button type="button" class="suggestion-btn" id="suggestionSubmit">Share Your Idea</button>
+            <p class="suggestion-thanks" id="suggestionThanks" style="display:none;">&#10024; Thank you! Your suggestion has been saved and will be reviewed by our design team.</p>
+          </div>
+
+          <!-- Always-visible description -->
+          <div class="product-description-visible">
+            <p class="product-description-text">
+              Artist-designed equestrian phone case by Velvet &amp; Valor. Each design is inspired by the elegance and power of the horse, created for riders and horse lovers who are proud of their sport &mdash; celebrating the relationship between horse and rider.
+            </p>
+          </div>
+
+          <!-- Accordion (Mous-style product details) -->
+          <div class="accordion" aria-label="Product details">
             <div class="accordion-item">
               <button class="accordion-trigger" aria-expanded="false" aria-controls="panel-features">
                 Features <span class="accordion-icon" aria-hidden="true"></span>
@@ -236,7 +277,7 @@
               <div class="accordion-panel" id="panel-features" role="region">
                 <div class="accordion-content">
                   <ul>
-                    <li>Premium polycarbonate shell with precise fit</li>
+                    <li><strong>Strong, impact-resistant &amp; non-flex polycarbonate shell</strong> &mdash; built for durability</li>
                     <li>Raised edges protect screen and camera</li>
                     <li>All ports, buttons, and cameras fully accessible</li>
                     <li>Wireless and MagSafe charging compatible</li>
@@ -253,7 +294,7 @@
                   <ul>
                     <li><strong>Glossy:</strong> Vibrant colours with a smooth, reflective finish</li>
                     <li><strong>Matte:</strong> Soft-touch texture, fingerprint-resistant and grippy</li>
-                    <li>Impact-resistant polycarbonate construction</li>
+                    <li>Strong, impact-resistant &amp; non-flex polycarbonate construction</li>
                   </ul>
                 </div>
               </div>
@@ -302,10 +343,18 @@
 
           <div class="highlight-card">
             <div class="highlight-img">
-              <img src="/images/highlight-protection.svg" alt="Drop protection with raised edges" loading="lazy" />
+              <img src="/images/highlight-design.svg" alt="Artist-designed equestrian artwork" loading="lazy" />
             </div>
-            <h3 class="highlight-title">Raised Edge Protection</h3>
-            <p class="highlight-desc">Precision-moulded edges sit above the screen and camera lens, absorbing impact and preventing scratches from flat surfaces.</p>
+            <h3 class="highlight-title">Artist-Designed</h3>
+            <p class="highlight-desc">Every edition is inspired by the elegance and power of the horse.</p>
+          </div>
+
+          <div class="highlight-card">
+            <div class="highlight-img">
+              <img src="/images/highlight-protection.svg" alt="Impact-resistant non-flex shell" loading="lazy" />
+            </div>
+            <h3 class="highlight-title">Impact-Resistant &amp; Non-Flex</h3>
+            <p class="highlight-desc">Strong, durable polycarbonate shell that won&rsquo;t bend or flex. Raised edges protect screen and camera from impact and scratches.</p>
           </div>
 
           <div class="highlight-card">
@@ -313,7 +362,7 @@
               <img src="/images/highlight-magsafe.svg" alt="MagSafe wireless charging compatible" loading="lazy" />
             </div>
             <h3 class="highlight-title">MagSafe Compatible</h3>
-            <p class="highlight-desc">Designed for seamless wireless and MagSafe charging. No need to remove the case — optimised for full magnetic alignment.</p>
+            <p class="highlight-desc">Designed for seamless wireless and MagSafe charging. No need to remove the case &mdash; optimised for full magnetic alignment.</p>
           </div>
 
           <div class="highlight-card">
@@ -322,14 +371,6 @@
             </div>
             <h3 class="highlight-title">Premium Finish</h3>
             <p class="highlight-desc">Choose Glossy for vivid colour impact or Matte for a soft-touch, fingerprint-resistant feel. Both built to last.</p>
-          </div>
-
-          <div class="highlight-card">
-            <div class="highlight-img">
-              <img src="/images/highlight-design.svg" alt="Artist-designed equestrian artwork" loading="lazy" />
-            </div>
-            <h3 class="highlight-title">Artist-Designed</h3>
-            <p class="highlight-desc">Every edition is inspired by the elegance and power of the horse.</p>
           </div>
 
         </div>
@@ -356,7 +397,7 @@
               <div class="detail-block">
                 <h3 class="detail-block-title">Features</h3>
                 <ul class="detail-block-list">
-                  <li>Impact-resistant polycarbonate shell</li>
+                  <li><strong>Strong, impact-resistant &amp; non-flex polycarbonate shell</strong></li>
                   <li>Raised bezels protect screen &amp; camera</li>
                   <li>Precise cutouts for all ports and buttons</li>
                   <li>Slim profile — adds minimal bulk</li>
@@ -380,7 +421,7 @@
                 <ul class="detail-block-list">
                   <li><strong>Glossy finish:</strong> High-shine UV-cured coating for vivid colour depth</li>
                   <li><strong>Matte finish:</strong> Soft-touch anti-fingerprint coating</li>
-                  <li>Polycarbonate shell — lightweight yet impact resistant</li>
+                  <li>Strong, non-flex polycarbonate shell &mdash; lightweight yet highly impact resistant</li>
                   <li>Microfibre-lined interior prevents micro-scratches</li>
                 </ul>
               </div>

@@ -121,3 +121,51 @@
     bar.style.width = pct + '%';
   }, { passive: true });
 })();
+
+
+/* ── Journal Waitlist Popup ────────────────────────────────────── */
+(function initJournalPopup() {
+  const overlay = document.getElementById('journalPopup');
+  const closeBtn = document.getElementById('journalPopupClose');
+  const form = document.getElementById('journalPopupForm');
+  if (!overlay) return;
+
+  const dismissed = localStorage.getItem('vv_journal_popup_dismissed');
+  if (dismissed) return;
+
+  function showPopup() { overlay.classList.add('active'); overlay.setAttribute('aria-hidden', 'false'); }
+  function closePopup() {
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+    localStorage.setItem('vv_journal_popup_dismissed', '1');
+  }
+
+  // Show after 12 seconds (after discount popup has closed)
+  setTimeout(showPopup, 12000);
+
+  if (closeBtn) closeBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closePopup();
+  });
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1rem; padding: 16px 0;">You\u2019re on the waiting list!<br><span style="font-weight: 400; font-size: 0.85rem; color: var(--cream-muted); margin-top: 8px; display: block;">We\u2019ll let you know as soon as it launches.</span></p>';
+      setTimeout(closePopup, 3000);
+    });
+  }
+})();
+
+
+/* ── Journal Homepage Form ─────────────────────────────────────── */
+(function initJournalForm() {
+  const form = document.getElementById('journalWaitlistForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1.125rem; padding: 12px 0;">You\u2019re on the waiting list! \u2728<br><span style="font-weight: 400; font-size: 0.9rem; color: var(--cream-muted); margin-top: 8px; display: block;">We\u2019ll be in touch when The Equestrian Journal launches.</span></p>';
+  });
+})();

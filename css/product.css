@@ -39,7 +39,7 @@
   width: 68px;
   height: 68px;
   border: 1px solid var(--gold-whisper);
-  background: var(--obsidian);
+  background: #fff;
   overflow: hidden;
   position: relative;
   transition: border-color 0.3s, transform 0.3s;
@@ -86,7 +86,7 @@
   justify-content: center;
   position: relative;
   border: 1px solid var(--gold-whisper);
-  background: var(--obsidian);
+  background: #fff;
   overflow: hidden;
   transition: border-color 0.3s;
 }
@@ -112,11 +112,11 @@
 
 .gallery-main-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  inset: 3%;
+  width: 94%;
+  height: 94%;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   z-index: 1;
   transition: transform 0.6s var(--ease-out);
@@ -130,8 +130,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   z-index: 0;
 }
@@ -1440,7 +1440,7 @@
 
 .also-like-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -1458,16 +1458,17 @@
 }
 
 .also-like-img {
-  aspect-ratio: 1;
+  height: 320px;
   overflow: hidden;
-  background: var(--obsidian);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .also-like-img img {
-  width: 80%;
-  height: 80%;
+  height: 92%;
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -1636,4 +1637,253 @@
 @media (max-width: 480px) {
   body { cursor: auto; }
   .cursor-dot, .cursor-ring { display: none; }
+}
+
+
+/* ── Device Helper Text ──────────────────────────────────────── */
+.device-helper {
+  background: rgba(26, 144, 144, 0.1);
+  border: 1px solid rgba(26, 144, 144, 0.25);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--cream-mid);
+  margin-bottom: 16px;
+}
+.device-helper strong {
+  color: var(--gold-bright);
+}
+
+
+/* ── Model Confirmation Checkbox ─────────────────────────────── */
+.model-confirm {
+  margin: 16px 0 8px;
+}
+.model-confirm-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--cream-mid);
+  line-height: 1.5;
+}
+.model-confirm-input {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  accent-color: var(--gold);
+  margin-top: 2px;
+  cursor: pointer;
+}
+.model-confirm-text {
+  color: var(--cream-mid);
+}
+
+/* Disabled Buy Now state */
+.btn-atb.btn-atb-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+
+/* ── Always-visible Product Description ──────────────────────── */
+.product-description-visible {
+  border-top: 1px solid var(--gold-subtle);
+  padding: 24px 0;
+  margin-bottom: 0;
+}
+.product-description-text {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--cream-mid);
+  letter-spacing: 0.01em;
+}
+
+
+/* ── Journal Checkout Waitlist ───────────────────────────────── */
+.journal-checkout-waitlist {
+  background: rgba(26, 144, 144, 0.06);
+  border: 1px solid rgba(26, 144, 144, 0.15);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.journal-waitlist-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.journal-waitlist-text {
+  color: var(--cream-mid);
+}
+.journal-waitlist-text strong {
+  color: var(--gold-bright);
+}
+
+.journal-waitlist-fields {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-wl-input {
+  padding: 10px 14px;
+  background: var(--obsidian);
+  border: 1px solid var(--gold-subtle);
+  color: var(--cream);
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.journal-wl-input:focus { border-color: var(--gold); }
+
+.journal-wl-btn {
+  padding: 12px 20px;
+  background: var(--gold);
+  border: none;
+  color: var(--obsidian);
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.journal-wl-btn:hover { background: var(--gold-bright); }
+
+
+/* ── Journal Waitlist Success (preview + discount) ───────────── */
+.journal-wl-success {
+  margin-top: 16px;
+}
+
+.journal-wl-preview {
+  margin-bottom: 14px;
+}
+
+.journal-wl-preview-img {
+  aspect-ratio: 4 / 3;
+  max-height: 160px;
+  background: linear-gradient(160deg, #0a0a0a 0%, #1a1a2e 40%, #0f0f1a 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.journal-wl-logo {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.7);
+}
+
+.journal-wl-divider {
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.journal-wl-title {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.6);
+}
+
+.journal-wl-discount {
+  font-size: 0.8125rem;
+  color: var(--gold-bright);
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: rgba(26, 144, 144, 0.08);
+  border: 1px solid rgba(26, 144, 144, 0.2);
+  border-radius: 4px;
+}
+.journal-wl-discount strong {
+  color: var(--cream);
+}
+
+
+/* ── Product Suggestion Box ──────────────────────────────────── */
+.product-suggestion-box {
+  background: var(--obsidian-mid);
+  border: 1px solid var(--gold-whisper);
+  border-radius: 6px;
+  padding: 20px;
+  margin: 16px 0;
+}
+
+.suggestion-heading {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+
+.suggestion-desc {
+  font-size: 0.8125rem;
+  color: var(--cream-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.suggestion-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--obsidian);
+  border: 1px solid var(--gold-subtle);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+.suggestion-textarea:focus { border-color: var(--gold); }
+.suggestion-textarea::placeholder { color: var(--cream-whisper); }
+
+.suggestion-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.suggestion-btn:hover {
+  background: var(--gold);
+  color: var(--obsidian);
+}
+
+.suggestion-thanks {
+  font-size: 0.8125rem;
+  color: var(--gold-bright);
+  margin-top: 10px;
+  line-height: 1.5;
 }

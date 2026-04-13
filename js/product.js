@@ -74,13 +74,15 @@ function updateURL() {
     const detailImg = document.getElementById('detailSectionImg');
     if (detailImg) detailImg.src = cfg.image;
 
-    // Update gallery first thumb
-    const firstThumb = document.querySelector('.gallery-thumb');
-    if (firstThumb) {
-      firstThumb.dataset.img = cfg.image;
-      const thumbImg = firstThumb.querySelector('.thumb-img');
-      if (thumbImg) thumbImg.src = cfg.image;
-    }
+    // Update gallery thumbs — highlight the active colour
+    const allThumbs = document.querySelectorAll('.gallery-thumb');
+    allThumbs.forEach(thumb => {
+      const label = (thumb.getAttribute('aria-label') || '').replace('View: ', '').toLowerCase();
+      thumb.classList.toggle('active', label === currentDesign);
+      if (label === currentDesign) {
+        mainImg.src = thumb.dataset.img;
+      }
+    });
 
     // Update active swatch
     swatches.forEach(s => {
@@ -221,6 +223,10 @@ function updateURL() {
     const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
     const finishLabel = currentSurface === 'glossy' ? 'Glossy' : 'Matte';
 
+    // Collect customer insights from sessionStorage
+    const productSuggestion = sessionStorage.getItem('vv_product_suggestion') || '';
+    const journalWaitlist = sessionStorage.getItem('vv_journal_waitlist') || 'no';
+
     try {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
@@ -229,6 +235,8 @@ function updateURL() {
           design: designLabel,
           model: modelLabel,
           finish: finishLabel,
+          product_suggestion: productSuggestion,
+          journal_waitlist: journalWaitlist,
         }),
       });
 
@@ -281,4 +289,85 @@ function updateURL() {
     const pct = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.width = (pct > 0 ? (window.scrollY / pct) * 100 : 0) + '%';
   }, { passive: true });
+})();
+
+
+/* ── Model Confirmation Checkbox ───────────────────────────────── */
+(function initModelConfirm() {
+  const checkbox = document.getElementById('modelConfirmCheckbox');
+  const buyBtn = document.getElementById('buyNow');
+  if (!checkbox || !buyBtn) return;
+
+  function updateBtn() {
+    if (checkbox.checked) {
+      buyBtn.classList.remove('btn-atb-disabled');
+    } else {
+      buyBtn.classList.add('btn-atb-disabled');
+    }
+  }
+
+  checkbox.addEventListener('change', updateBtn);
+  updateBtn();
+})();
+
+
+/* ── Journal Waitlist (Checkout) ───────────────────────────────── */
+(function initJournalWaitlist() {
+  const checkbox = document.getElementById('journalWaitlistCheckbox');
+  const fields = document.getElementById('journalWaitlistFields');
+  const submitBtn = document.getElementById('journalWlSubmit');
+  const successDiv = document.getElementById('journalWlSuccess');
+  if (!checkbox || !fields) return;
+
+  checkbox.addEventListener('change', () => {
+    fields.style.display = checkbox.checked ? 'flex' : 'none';
+    if (!checkbox.checked && successDiv) successDiv.style.display = 'none';
+  });
+
+  if (submitBtn) {
+    submitBtn.addEventListener('click', async () => {
+      const name = document.getElementById('journalWlName');
+      const email = document.getElementById('journalWlEmail');
+      if (!name || !email || !name.value || !email.value) return;
+
+      // Log to API
+      try {
+        await fetch('/api/log-waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name.value, email: email.value, source: 'checkout-journal-waitlist' }),
+        });
+      } catch (e) { /* silent fail */ }
+
+      // Store in sessionStorage for Stripe metadata
+      sessionStorage.setItem('vv_journal_waitlist', 'yes');
+
+      // Show success with journal image + 15% code
+      fields.style.display = 'none';
+      if (successDiv) successDiv.style.display = 'block';
+    });
+  }
+})();
+
+
+/* ── Product Suggestion Box ────────────────────────────────────── */
+(function initSuggestionBox() {
+  const submitBtn = document.getElementById('suggestionSubmit');
+  const textarea = document.getElementById('productSuggestion');
+  const thanks = document.getElementById('suggestionThanks');
+  if (!submitBtn || !textarea) return;
+
+  submitBtn.addEventListener('click', () => {
+    const value = textarea.value.trim();
+    if (!value) return;
+
+    // Save to sessionStorage so it gets passed to Stripe metadata on checkout
+    sessionStorage.setItem('vv_product_suggestion', value);
+
+    // Show thanks
+    submitBtn.style.display = 'none';
+    textarea.disabled = true;
+    textarea.style.opacity = '0.5';
+    if (thanks) thanks.style.display = 'block';
+  });
 })();

@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { design, model, finish } = req.body;
+  const { design, model, finish, product_suggestion, journal_waitlist } = req.body;
 
   // Build a readable description for the order
   const designName = design || 'Noble Steed Case';
@@ -58,6 +58,8 @@ module.exports = async (req, res) => {
         model: modelName,
         finish: finishName,
         sku: `VV-${(design || '').toUpperCase().replace(/\s+/g, '-')}-${(model || '').toUpperCase().replace(/\s+/g, '-')}-${(finish || 'GLO').substring(0, 3).toUpperCase()}`,
+        product_suggestion: (product_suggestion || '').substring(0, 500),
+        journal_waitlist: journal_waitlist || 'no',
       },
       custom_text: {
         submit: { message: 'Your case will ship within 5-10 business days.' },

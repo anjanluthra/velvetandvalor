@@ -1701,6 +1701,20 @@
   letter-spacing: 0.01em;
 }
 
+.product-manifesto {
+  padding: 20px 0 24px;
+  border-bottom: 1px solid var(--gold-subtle);
+  margin-bottom: 0;
+}
+
+.product-manifesto-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--cream-muted);
+  font-style: normal;
+}
+
 
 /* ── Journal Checkout Waitlist ───────────────────────────────── */
 .journal-checkout-waitlist {

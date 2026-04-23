@@ -339,8 +339,6 @@
 
 .product-card:hover {
   border-color: var(--gold-muted);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
 }
 
 .product-card-link {
@@ -364,10 +362,6 @@
   height: 88%;
   width: auto;
   max-width: none;
-}
-
-.product-card:hover .product-card-image img {
-  transform: scale(1.05);
 }
 
 .product-card-badge {

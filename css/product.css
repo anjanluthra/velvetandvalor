@@ -1623,17 +1623,38 @@
   .nav-links { display: none; }
   .nav-actions { display: none; }
   .nav-mobile-toggle { display: flex; }
-  .gallery-thumbs { flex-direction: row; }
+  .gallery-thumbs { flex-direction: row; overflow-x: auto; }
+  .gallery-thumb { width: 56px; height: 56px; }
   .gallery-display { min-height: 50vw; }
+  .product-info { padding: 28px 20px 48px; }
+  .product-name { font-size: 1.75rem; }
   .product-story-inner { grid-template-columns: 1fr; }
   .related-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
   .device-model-grid { grid-template-columns: 1fr; }
+  .highlights-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .highlight-card { padding: 24px 16px; }
+  .details-layout { grid-template-columns: 1fr; gap: 32px; }
+  .details-image { position: static; order: -1; max-width: 300px; margin: 0 auto; }
+  .also-like-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .also-like-img { height: 220px; }
+
+  .device-helper { font-size: 0.75rem; padding: 10px 14px; }
+  .journal-checkout-waitlist { padding: 14px; }
+  .product-suggestion-box { padding: 16px; }
+  .suggestion-textarea { font-size: 0.8125rem; }
+  .product-manifesto-text { font-size: 0.8125rem; }
 }
 
 @media (max-width: 480px) {
   body { cursor: auto; }
   .cursor-dot, .cursor-ring { display: none; }
+  .product-gallery { padding: 20px; min-height: 45vh; }
+  .gallery-main-img { inset: 2%; width: 96%; height: 96%; }
+  .gallery-thumb { width: 48px; height: 48px; }
+  .product-name { font-size: 1.5rem; }
+  .also-like-img { height: 180px; }
+  .option-label-text { font-size: 0.6875rem; }
 }
 
 

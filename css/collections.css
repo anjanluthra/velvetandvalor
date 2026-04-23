@@ -134,12 +134,17 @@
   .nav-links { display: none; }
   .nav-actions { display: none; }
   .nav-mobile-toggle { display: flex; }
+  .collection-title { font-size: 2rem; }
+  .collection-desc { font-size: 0.9375rem; }
+  .collection-filters { gap: 6px; }
 }
 
 @media (max-width: 480px) {
-  .collection-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .collection-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .collection-models-grid { grid-template-columns: 1fr; }
-  .filter-btn { padding: 6px 14px; font-size: 0.75rem; }
+  .filter-btn { padding: 6px 12px; font-size: 0.6875rem; }
+  .collection-hero { padding: calc(var(--header-height) + 24px) 0 32px; }
+  .collection-title { font-size: 1.75rem; }
   body { cursor: auto; }
   .cursor-dot, .cursor-ring { display: none; }
 }

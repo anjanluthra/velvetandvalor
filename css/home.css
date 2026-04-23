@@ -1143,11 +1143,15 @@
   .hero { grid-template-columns: 1fr 1fr; }
   .hero-left { padding: 40px 48px 60px 32px; }
   .featured-grid { grid-template-columns: repeat(3, 1fr); }
+  .highlights-grid { grid-template-columns: repeat(3, 1fr); }
   .trust-strip-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
   .models-grid { grid-template-columns: repeat(2, 1fr); }
   .testimonials-grid { grid-template-columns: 1fr; }
   .story-layout { grid-template-columns: 280px 1fr; gap: 48px; }
   .story-layout .story-frame { padding: 40px 44px; }
+  .mid-cta-inner { flex-direction: column; text-align: center; }
+  .mid-cta-form { width: 100%; }
+  .journal-cs-layout { grid-template-columns: 1fr 1fr; gap: 40px; }
 }
 
 @media (max-width: 860px) {
@@ -1181,6 +1185,8 @@
 
   .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 
+  .highlights-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
   .trust-strip-grid { grid-template-columns: 1fr 1fr; }
 
   .models-grid { grid-template-columns: 1fr 1fr; }
@@ -1189,10 +1195,25 @@
 
   .story-frame { padding: 36px 24px; }
 
-  .popup-box { padding: 36px 24px; }
+  .popup-box { padding: 36px 24px; max-width: 90vw; }
 
   .newsletter-form { flex-direction: column; }
   .newsletter-btn { width: 100%; }
+
+  .mid-cta { padding: 48px 0; }
+  .mid-cta-inner { flex-direction: column; text-align: center; gap: 24px; }
+  .mid-cta-form { width: 100%; flex-direction: column; }
+  .mid-cta-input { width: 100%; }
+  .mid-cta-btn { width: 100%; }
+
+  .brand-manifesto { padding: 64px 0; }
+  .manifesto-mark { font-size: 3.5rem; }
+
+  .journal-cs-layout { grid-template-columns: 1fr; gap: 40px; }
+  .journal-cs-image { max-width: 280px; margin: 0 auto; }
+  .journal-cs-form { max-width: 100%; }
+
+  .also-like-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 @media (max-width: 480px) {
@@ -1216,13 +1237,24 @@
   .proof-number { font-size: 1.25rem; }
   .proof-label { font-size: 0.625rem; }
 
+  .featured-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+
   .popup-form { flex-direction: column; }
   .popup-submit { width: 100%; }
-  .mid-cta-inner { flex-direction: column; text-align: center; }
-  .mid-cta-form { width: 100%; flex-direction: column; }
-  .mid-cta-btn { width: 100%; }
-  .journal-cs-layout { grid-template-columns: 1fr; }
-  .journal-cs-image { max-width: 320px; margin: 0 auto; }
+
+  .highlights-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .highlight-card { padding: 20px 12px; }
+  .highlight-title { font-size: 0.75rem; }
+  .highlight-desc { font-size: 0.8125rem; }
+
+  .brand-manifesto { padding: 48px 0; }
+  .manifesto-mark { font-size: 3rem; }
+  .manifesto-text { font-size: 0.9375rem; }
+
+  .journal-cs-heading { font-size: 1.5rem; }
+  .journal-cs-body { font-size: 0.9375rem; }
+
+  .newsletter-heading { font-size: 1.5rem; }
 }
 
 
@@ -1272,17 +1304,12 @@
   color: var(--cream-muted);
 }
 
-@media (max-width: 768px) {
-  .highlights-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-}
-@media (max-width: 480px) {
-  .highlights-grid { grid-template-columns: 1fr; }
-}
+/* highlights responsive handled in main breakpoints above */
 
 
 /* ── Mid-Page CTA ────────────────────────────────────────────── */
 .mid-cta {
-  padding: 64px 0;
+  padding: 56px 0;
   background: linear-gradient(135deg, var(--obsidian-mid) 0%, var(--obsidian) 100%);
   border-top: 1px solid var(--gold-subtle);
   border-bottom: 1px solid var(--gold-subtle);

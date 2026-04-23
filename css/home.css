@@ -364,11 +364,6 @@
   height: 88%;
   width: auto;
   max-width: none;
-  transition: transform 0.5s var(--ease-out);
-}
-
-.product-card:hover .product-card-image img {
-  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .product-card:hover .product-card-image img {

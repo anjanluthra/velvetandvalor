@@ -62,14 +62,10 @@ module.exports = async (req, res) => {
       },
       custom_fields: [
         {
-          key: 'product_suggestion',
-          label: { type: 'custom', custom: 'Help us create what you love' },
+          key: 'productsuggestion',
+          label: { type: 'custom', custom: 'What equestrian product would you love to see next?' },
           type: 'text',
           optional: false,
-          text: {
-            minimum_length: 3,
-            maximum_length: 500,
-          },
         },
       ],
       custom_text: {

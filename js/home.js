@@ -123,25 +123,26 @@
 })();
 
 
-/* ── Journal Waitlist Popup ────────────────────────────────────── */
+/* ── Journal Waitlist Popup (triggered after newsletter signup) ── */
 (function initJournalPopup() {
   const overlay = document.getElementById('journalPopup');
   const closeBtn = document.getElementById('journalPopupClose');
   const form = document.getElementById('journalPopupForm');
   if (!overlay) return;
 
-  const dismissed = localStorage.getItem('vv_journal_popup_dismissed');
-  if (dismissed) return;
-
-  function showPopup() { overlay.classList.add('active'); overlay.setAttribute('aria-hidden', 'false'); }
+  function showPopup() {
+    if (localStorage.getItem('vv_journal_popup_dismissed')) return;
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
   function closePopup() {
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
     localStorage.setItem('vv_journal_popup_dismissed', '1');
   }
 
-  // Show after 12 seconds (after discount popup has closed)
-  setTimeout(showPopup, 12000);
+  // Expose globally so other forms can trigger it
+  window.showJournalPopup = showPopup;
 
   if (closeBtn) closeBtn.addEventListener('click', closePopup);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
@@ -156,6 +157,17 @@
       setTimeout(closePopup, 3000);
     });
   }
+
+  // Trigger after newsletter form submission
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (form.classList && form.classList.contains('newsletter-form')) {
+      setTimeout(showPopup, 1500);
+    }
+    if (form.id === 'popupForm' || form.classList.contains('mid-cta-form')) {
+      setTimeout(showPopup, 2500);
+    }
+  });
 })();
 
 

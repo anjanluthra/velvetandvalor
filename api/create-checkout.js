@@ -58,9 +58,20 @@ module.exports = async (req, res) => {
         model: modelName,
         finish: finishName,
         sku: `VV-${(design || '').toUpperCase().replace(/\s+/g, '-')}-${(model || '').toUpperCase().replace(/\s+/g, '-')}-${(finish || 'GLO').substring(0, 3).toUpperCase()}`,
-        product_suggestion: (product_suggestion || '').substring(0, 500),
         journal_waitlist: journal_waitlist || 'no',
       },
+      custom_fields: [
+        {
+          key: 'product_suggestion',
+          label: { type: 'custom', custom: 'Help us create what you love' },
+          type: 'text',
+          optional: false,
+          text: {
+            minimum_length: 3,
+            maximum_length: 500,
+          },
+        },
+      ],
       custom_text: {
         submit: { message: 'Your case will ship within 5-10 business days.' },
       },

@@ -1060,7 +1060,7 @@
   border: none;
   color: var(--cream);
   font-family: var(--font-sans, var(--font-authority));
-  font-size: 0.9375rem;
+  font-size: 16px;
 }
 .popup-input::placeholder { color: var(--cream-whisper); }
 
@@ -1350,7 +1350,7 @@
   background: var(--obsidian);
   border: 1px solid var(--gold-subtle);
   color: var(--cream);
-  font-size: 0.875rem;
+  font-size: 16px;
   width: 240px;
   outline: none;
   transition: border-color 0.3s;
@@ -1530,7 +1530,7 @@
   background: var(--obsidian);
   border: 1px solid var(--gold-subtle);
   color: var(--cream);
-  font-size: 0.875rem;
+  font-size: 16px;
   outline: none;
   transition: border-color 0.3s;
 }

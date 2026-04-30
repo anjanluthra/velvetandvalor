@@ -1239,7 +1239,7 @@
   border: 1px solid var(--gold-whisper);
   color: var(--cream);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 400;
   cursor: pointer;
   appearance: none;
@@ -1625,6 +1625,7 @@
   .nav-mobile-toggle { display: flex; }
   .gallery-thumbs { flex-direction: row; overflow-x: auto; }
   .gallery-thumb { width: 56px; height: 56px; }
+  .color-swatch { width: 44px; height: 44px; }
   .gallery-display { min-height: 50vw; }
   .product-info { padding: 28px 20px 48px; }
   .product-name { font-size: 1.75rem; }
@@ -1651,7 +1652,7 @@
   .cursor-dot, .cursor-ring { display: none; }
   .product-gallery { padding: 20px; min-height: 45vh; }
   .gallery-main-img { inset: 2%; width: 96%; height: 96%; }
-  .gallery-thumb { width: 48px; height: 48px; }
+  .gallery-thumb { width: 52px; height: 52px; }
   .product-name { font-size: 1.5rem; }
   .also-like-img { height: 180px; }
   .option-label-text { font-size: 0.6875rem; }

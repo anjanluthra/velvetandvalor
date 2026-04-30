@@ -1565,3 +1565,71 @@
 .journal-popup-box .popup-form {
   flex-direction: column;
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE OVERRIDES — placed at end of file to override base styles
+   that were defined after earlier @media queries
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .highlights-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .journal-cs-layout { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .mid-cta-inner { flex-direction: column; text-align: center; }
+  .mid-cta-form { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .highlights-grid { grid-template-columns: 1fr; gap: 12px; }
+  .highlight-card { padding: 20px 16px; text-align: center; }
+  .highlight-title {
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  .highlight-desc { font-size: 0.875rem; }
+  .highlight-img { width: 48px; height: 48px; margin-bottom: 14px; }
+
+  .journal-coming-soon { padding: 64px 0; }
+  .journal-cs-layout { grid-template-columns: 1fr; gap: 32px; }
+  .journal-cs-image {
+    max-width: 280px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .journal-cs-content { text-align: center; }
+  .journal-cs-content .section-label { justify-content: center; }
+  .journal-cs-form { max-width: 100%; margin-left: auto; margin-right: auto; }
+  .journal-cs-placeholder { padding: 24px 16px; }
+  .journal-cs-logo {
+    font-size: 0.875rem;
+    letter-spacing: 0.16em;
+  }
+  .journal-cs-title-text { font-size: 1.125rem; }
+  .journal-cs-subtitle-text {
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+  }
+
+  .mid-cta { padding: 48px 0; }
+  .mid-cta-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+  .mid-cta-form { width: 100%; flex-direction: column; }
+  .mid-cta-input { width: 100%; }
+  .mid-cta-btn { width: 100%; }
+
+  .brand-manifesto { padding: 64px 0; }
+  .manifesto-mark { font-size: 3.5rem; }
+}
+
+@media (max-width: 480px) {
+  .journal-cs-image { max-width: 240px; }
+  .manifesto-text { font-size: 0.9375rem; line-height: 1.8; }
+  .journal-cs-heading { font-size: 1.5rem; }
+  .journal-cs-body { font-size: 0.9375rem; }
+  .newsletter-heading { font-size: 1.5rem; }
+}

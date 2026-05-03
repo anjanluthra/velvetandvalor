@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Velvet & Valor — The Bond Carousel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #1A9090;
+    --brand-light:   #22AAAA;
+    --brand-dark:    #116868;
+    --light-bg:      #F4EFE6;
+    --light-border:  #E5DDD0;
+    --dark-bg:       #071428;
+    --dark-bg-warm:  #0C1E3A;
+    --gradient-bg:   linear-gradient(165deg, #116868 0%, #1A9090 50%, #22AAAA 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #f0f0f0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .serif { font-family: 'Playfair Display', serif; }
+  .sans  { font-family: 'Inter', sans-serif; }
+
+  /* ─────────── IG FRAME ─────────── */
+  .ig-frame {
+    width: 420px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .ig-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .ig-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--dark-bg);
+    color: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .ig-handle-wrap { display: flex; flex-direction: column; }
+  .ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+  .ig-sub { font-size: 11px; color: #8e8e8e; margin-top: 1px; }
+  .ig-more { margin-left: auto; font-size: 18px; color: #262626; cursor: pointer; }
+
+  /* Carousel viewport */
+  .carousel-viewport {
+    width: 420px;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+  }
+  .carousel-viewport:active { cursor: grabbing; }
+
+  .carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    width: 420px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Background variants */
+  .slide-light    { background: var(--light-bg); color: #1a1a1a; }
+  .slide-dark     { background: var(--dark-bg); color: #fff; }
+  .slide-gradient { background: var(--gradient-bg); color: #fff; }
+
+  /* ─────────── ACTIONS / DOTS / CAPTION ─────────── */
+  .ig-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+  }
+  .ig-actions svg { cursor: pointer; }
+  .ig-bookmark { margin-left: auto; }
+
+  .ig-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 16px 8px;
+  }
+  .ig-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d8d8d8;
+    transition: background 0.3s;
+  }
+  .ig-dot.active { background: var(--brand-primary); }
+
+  .ig-caption {
+    padding: 0 16px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #262626;
+  }
+  .ig-caption strong { font-weight: 600; }
+  .ig-time {
+    font-size: 11px;
+    color: #8e8e8e;
+    margin-top: 6px;
+    letter-spacing: 0.4px;
+  }
+
+  /* ─────────── SLIDE CONTENT STYLES ─────────── */
+  .slide-padding { padding: 36px 36px 64px; }
+
+  /* Tag / category label */
+  .tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .tag-light { color: var(--brand-primary); }
+  .tag-dark  { color: var(--brand-light); }
+  .tag-gradient { color: rgba(255,255,255,0.7); }
+
+  /* Heading */
+  h1.slide-heading,
+  h2.slide-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.4px;
+  }
+
+  /* Body */
+  .slide-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+  .body-light { color: rgba(0,0,0,0.6); }
+  .body-dark  { color: rgba(255,255,255,0.7); }
+
+  /* Logo lockup */
+  .logo-lockup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: auto;
+  }
+  .logo-mark {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+  }
+
+  /* Numbered list */
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--light-border);
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--brand-primary);
+    flex-shrink: 0;
+    min-width: 28px;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .step-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(0,0,0,0.55);
+    line-height: 1.45;
+  }
+
+  /* Feeling list (dark slide) */
+  .feeling-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .feeling-row:last-child { border-bottom: none; }
+  .feeling-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--brand-light);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .feeling-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 400;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.01em;
+  }
+
+  /* Quote box */
+  .pull-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-style: italic;
+    line-height: 1.25;
+    color: #fff;
+    letter-spacing: -0.1px;
+  }
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    line-height: 0.8;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* Product grid */
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .case-card {
+    aspect-ratio: 3/4;
+    background: #fff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .case-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8%;
+  }
+  .case-name {
+    position: absolute;
+    bottom: 6px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+
+  /* Journal preview */
+  .journal-card {
+    aspect-ratio: 3/4;
+    background: linear-gradient(160deg, #0a0a0a 0%, #1a1a2e 40%, #0f0f1a 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin: 16px auto 0;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    position: relative;
+  }
+  .journal-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+  .journal-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    color: rgba(255,255,255,0.7);
+  }
+  .journal-divider {
+    width: 24px;
+    height: 1px;
+    background: var(--brand-primary);
+    margin: 12px 0;
+  }
+  .journal-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  /* CTA button */
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: var(--light-bg);
+    color: var(--brand-dark);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 32px;
+    margin-top: 24px;
+  }
+
+  /* Hero V&V monogram */
+  .vv-monogram {
+    font-family: 'Playfair Display', serif;
+    font-size: 96px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--brand-primary);
+    letter-spacing: -0.04em;
+  }
+  .vv-amp {
+    font-style: italic;
+    font-size: 0.55em;
+    vertical-align: middle;
+    margin: 0 0.05em;
+    color: var(--brand-dark);
+  }
+
+  /* Decorative elements */
+  .horizontal-rule {
+    width: 32px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.4;
+    margin: 14px 0;
+  }
+
+  /* PROGRESS BAR (per-slide) */
+  .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 28px 22px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-track.light { background: rgba(0,0,0,0.08); }
+  .progress-track.dark  { background: rgba(255,255,255,0.15); }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .progress-fill.light { background: var(--brand-primary); }
+  .progress-fill.dark  { background: #fff; }
+  .progress-counter {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .progress-counter.light { color: rgba(0,0,0,0.4); }
+  .progress-counter.dark  { color: rgba(255,255,255,0.5); }
+
+  /* SWIPE ARROW */
+  .swipe-arrow {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .swipe-arrow.light {
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.04));
+  }
+  .swipe-arrow.dark {
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.05));
+  }
+  .swipe-arrow svg { animation: nudge 1.6s ease-in-out infinite; }
+  @keyframes nudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+  }
+
+  /* Watermark V&V mark */
+  .watermark {
+    position: absolute;
+    right: -30px;
+    bottom: -40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 280px;
+    line-height: 0.8;
+    color: rgba(0,0,0,0.04);
+    pointer-events: none;
+    user-select: none;
+    font-weight: 400;
+  }
+  .watermark-dark { color: rgba(255,255,255,0.04); }
+
+</style>
+</head>
+<body>
+
+<div class="ig-frame">
+
+  <!-- IG header -->
+  <div class="ig-header">
+    <div class="ig-avatar">V&amp;V</div>
+    <div class="ig-handle-wrap">
+      <div class="ig-handle">velvetvalorstore</div>
+      <div class="ig-sub">Velvet &amp; Valor · Equestrian Lifestyle</div>
+    </div>
+    <div class="ig-more">⋯</div>
+  </div>
+
+  <!-- Carousel viewport -->
+  <div class="carousel-viewport" id="viewport">
+    <div class="carousel-track" id="track">
+
+      <!-- ═══════════════ SLIDE 1 — HERO ═══════════════ -->
+      <div class="slide slide-light">
+        <span class="watermark">V</span>
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%; justify-content:space-between;">
+          <div class="logo-lockup" style="color: var(--brand-dark);">
+            <div class="logo-mark">V&amp;V</div>
+            <div class="logo-name">VELVET &amp; VALOR</div>
+          </div>
+
+          <div>
+            <div class="tag tag-light">The Bond</div>
+            <h1 class="slide-heading serif">When you ride,<br/>you become<br/><em style="color: var(--brand-primary);">someone new.</em></h1>
+            <div class="horizontal-rule" style="color: var(--brand-primary);"></div>
+            <p class="slide-body body-light" style="max-width: 280px;">A quiet conversation between horse and rider — and what it teaches you about yourself.</p>
+          </div>
+
+          <div></div>
+        </div>
+
+        <div class="swipe-arrow light"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track light"><div class="progress-fill light" style="width: 14.28%;"></div></div>
+          <span class="progress-counter light">1/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 2 — FEELINGS (NAVY) ═══════════════ -->
+      <div class="slide slide-dark">
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%;">
+          <div class="tag tag-dark">What They Give Us</div>
+          <h2 class="slide-heading serif" style="color:#fff; margin-bottom: 24px;">What does your horse <em style="color: var(--brand-light);">give you?</em></h2>
+
+          <div style="margin-top: 8px;">
+            <div class="feeling-row"><div class="feeling-dot"></div><div class="feeling-text">Stillness in motion.</div></div>
+            <div class="feeling-row"><div class="feeling-dot"></div><div class="feeling-text">Courage when it matters.</div></div>
+            <div class="feeling-row"><div class="feeling-dot"></div><div class="feeling-text">Presence, fully.</div></div>
+            <div class="feeling-row"><div class="feeling-dot"></div><div class="feeling-text">Trust — earned, not given.</div></div>
+            <div class="feeling-row"><div class="feeling-dot"></div><div class="feeling-text">A version of yourself you didn&rsquo;t know.</div></div>
+          </div>
+        </div>
+
+        <div class="swipe-arrow dark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track dark"><div class="progress-fill dark" style="width: 28.57%;"></div></div>
+          <span class="progress-counter dark">2/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 3 — THE BOND (TEAL GRADIENT) ═══════════════ -->
+      <div class="slide slide-gradient">
+        <span class="watermark watermark-dark">V</span>
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%; justify-content:center;">
+          <span class="quote-mark">&ldquo;</span>
+          <p class="pull-quote">The bond between horse and rider is unlike anything else.</p>
+          <p class="pull-quote" style="font-size:18px; color:rgba(255,255,255,0.85); margin-top:16px;">It&rsquo;s built on presence, patience, and the willingness to listen — long before you ever ask.</p>
+          <div class="horizontal-rule" style="color:#fff; margin-top:24px;"></div>
+          <p class="tag" style="color:rgba(255,255,255,0.7);">— The Velvet &amp; Valor Philosophy</p>
+        </div>
+
+        <div class="swipe-arrow dark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track dark"><div class="progress-fill dark" style="width: 42.85%;"></div></div>
+          <span class="progress-counter dark">3/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 4 — BUILD THE BOND (CREAM) ═══════════════ -->
+      <div class="slide slide-light">
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%;">
+          <div class="tag tag-light">Building Connection</div>
+          <h2 class="slide-heading serif" style="margin-bottom: 18px;">How to deepen the bond.</h2>
+
+          <div>
+            <div class="step-row">
+              <span class="step-num">01</span>
+              <div class="step-content">
+                <div class="step-title">Be Present, First.</div>
+                <div class="step-desc">Before you ask, breathe. They feel everything you bring.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">02</span>
+              <div class="step-content">
+                <div class="step-title">Listen Before You Lead.</div>
+                <div class="step-desc">Trust is built in the pauses, not in the pressure.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">03</span>
+              <div class="step-content">
+                <div class="step-title">Show Up Consistently.</div>
+                <div class="step-desc">Connection is built one quiet day at a time.</div>
+              </div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">04</span>
+              <div class="step-content">
+                <div class="step-title">Let Them Teach You.</div>
+                <div class="step-desc">The lessons go both ways. Always.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="swipe-arrow light"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track light"><div class="progress-fill light" style="width: 57.14%;"></div></div>
+          <span class="progress-counter light">4/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 5 — CARRY IT (NAVY) ═══════════════ -->
+      <div class="slide slide-dark">
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%;">
+          <div class="tag tag-dark">Wear The Bond</div>
+          <h2 class="slide-heading serif" style="color:#fff; margin-bottom: 12px;">Designed to carry the bond <em style="color: var(--brand-light);">with you.</em></h2>
+          <p class="slide-body body-dark" style="margin-bottom: 4px;">Each artist-designed phone case is a quiet reminder of the softness and strength you carry as an equestrian.</p>
+
+          <div class="case-grid" style="margin-top: 16px;">
+            <div class="case-card"><img src="https://www.velvet-valor.com/images/nude%20product%20image.webp" alt="Nude" /><span class="case-name">Nude</span></div>
+            <div class="case-card"><img src="https://www.velvet-valor.com/images/pink%20product%20image.webp" alt="Pink" /><span class="case-name">Pink</span></div>
+            <div class="case-card"><img src="https://www.velvet-valor.com/images/plum%20product%20image.webp" alt="Plum" /><span class="case-name">Plum</span></div>
+            <div class="case-card"><img src="https://www.velvet-valor.com/images/teal%20product%20image.webp" alt="Teal" /><span class="case-name">Teal</span></div>
+          </div>
+        </div>
+
+        <div class="swipe-arrow dark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track dark"><div class="progress-fill dark" style="width: 71.42%;"></div></div>
+          <span class="progress-counter dark">5/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 6 — JOURNAL TEASER (CREAM) ═══════════════ -->
+      <div class="slide slide-light">
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%;">
+          <div class="tag tag-light">Coming Soon</div>
+          <h2 class="slide-heading serif" style="margin-bottom: 12px;">The Equestrian <em style="color: var(--brand-primary);">Journal.</em></h2>
+          <p class="slide-body body-light">A self-development tool for the rider. Track sessions, reflect on growth, and deepen your connection — in and out of the saddle.</p>
+
+          <div class="journal-card">
+            <span class="journal-badge">Coming Soon</span>
+            <span class="journal-logo">VELVET <span style="color: var(--brand-primary);">&amp;</span> VALOR</span>
+            <span class="journal-divider"></span>
+            <span class="journal-name">The Equestrian<br/>Journal</span>
+          </div>
+
+          <p class="slide-body body-light" style="text-align:center; font-style:italic; margin-top:14px; font-size:12px;">Mind. Trust. Partnership.</p>
+        </div>
+
+        <div class="swipe-arrow light"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="progress-bar">
+          <div class="progress-track light"><div class="progress-fill light" style="width: 85.71%;"></div></div>
+          <span class="progress-counter light">6/7</span>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SLIDE 7 — CTA (TEAL GRADIENT) ═══════════════ -->
+      <div class="slide slide-gradient">
+        <span class="watermark watermark-dark">V</span>
+        <div class="slide-padding" style="display:flex; flex-direction:column; height:100%; justify-content:center; align-items:center; text-align:center;">
+          <div class="logo-lockup" style="color:#fff; flex-direction:column; gap: 16px; margin-bottom: 24px;">
+            <div class="vv-monogram" style="color:#fff; font-size:64px;">V<span class="vv-amp">&amp;</span>V</div>
+            <div class="logo-name" style="font-size:13px;">VELVET &amp; VALOR</div>
+          </div>
+
+          <div class="horizontal-rule" style="color:#fff; margin: 8px auto 20px;"></div>
+
+          <h2 class="slide-heading serif" style="font-size:28px; line-height:1.2; max-width: 280px;">Softness <em>&amp;</em> Strength.<br/>Wear them with pride.</h2>
+
+          <p class="slide-body" style="color:rgba(255,255,255,0.85); margin-top:16px; max-width:280px;">Discover the collection &mdash; and join the equestrian community.</p>
+
+          <a class="cta-button" href="https://www.velvet-valor.com" target="_blank" style="margin-top:24px;">
+            Shop The Collection &nbsp;→
+          </a>
+
+          <p class="tag" style="color:rgba(255,255,255,0.7); margin-top:36px;">velvet-valor.com</p>
+        </div>
+
+        <!-- NO swipe arrow on last slide -->
+        <div class="progress-bar">
+          <div class="progress-track dark"><div class="progress-fill dark" style="width: 100%;"></div></div>
+          <span class="progress-counter dark">7/7</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- IG actions row -->
+  <div class="ig-actions">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="ig-bookmark" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+  </div>
+
+  <!-- Dots -->
+  <div class="ig-dots" id="dots">
+    <div class="ig-dot active"></div>
+    <div class="ig-dot"></div>
+    <div class="ig-dot"></div>
+    <div class="ig-dot"></div>
+    <div class="ig-dot"></div>
+    <div class="ig-dot"></div>
+    <div class="ig-dot"></div>
+  </div>
+
+  <!-- Caption -->
+  <div class="ig-caption">
+    <strong>velvetvalorstore</strong> When you ride, you become someone new. ✦ The bond between horse and rider — and how to build it.<br/>
+    <span style="color:#1A9090;">#equestrianlife</span> <span style="color:#1A9090;">#riderlife</span> <span style="color:#1A9090;">#horsebond</span> <span style="color:#1A9090;">#velvetandvalor</span>
+    <div class="ig-time">2 HOURS AGO</div>
+  </div>
+
+</div>
+
+<script>
+  // Swipe / drag interaction
+  const viewport = document.getElementById('viewport');
+  const track = document.getElementById('track');
+  const dots = document.querySelectorAll('.ig-dot');
+  const totalSlides = 7;
+  let currentIndex = 0;
+  let startX = 0;
+  let isDragging = false;
+  let dragOffset = 0;
+
+  function goToSlide(idx) {
+    currentIndex = Math.max(0, Math.min(totalSlides - 1, idx));
+    track.style.transform = `translateX(${-currentIndex * 420}px)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+  }
+
+  // Pointer events for drag
+  viewport.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    track.style.transition = 'none';
+    viewport.setPointerCapture(e.pointerId);
+  });
+
+  viewport.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    dragOffset = e.clientX - startX;
+    track.style.transform = `translateX(${-currentIndex * 420 + dragOffset}px)`;
+  });
+
+  viewport.addEventListener('pointerup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+    if (dragOffset < -60 && currentIndex < totalSlides - 1) {
+      goToSlide(currentIndex + 1);
+    } else if (dragOffset > 60 && currentIndex > 0) {
+      goToSlide(currentIndex - 1);
+    } else {
+      goToSlide(currentIndex);
+    }
+    dragOffset = 0;
+  });
+
+  // Click on dots
+  dots.forEach((d, i) => d.addEventListener('click', () => goToSlide(i)));
+
+  // Keyboard arrows
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
+    if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
+  });
+</script>
+
+</body>
+</html>

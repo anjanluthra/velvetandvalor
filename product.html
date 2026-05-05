@@ -58,22 +58,8 @@
     }
   }
   </script>
-  <!-- Microsoft Clarity -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "wlcdwpd1dv");
-  </script>
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEE1L1XD1K"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-HEE1L1XD1K');
-  </script>
+  <!-- Cookie consent + conditional analytics -->
+  <script src="/js/consent.js"></script>
 </head>
 <body>
 
@@ -602,6 +588,7 @@
         <p class="footer-copy">&copy; 2025 Velvet &amp; Valor Ltd. All rights reserved.</p>
         <nav class="footer-legal" aria-label="Legal links">
           <a href="/privacy" class="footer-link">Privacy Policy</a><a href="/cookies" class="footer-link">Cookie Policy</a>
+          <a href="#" class="footer-link" onclick="event.preventDefault(); window.vvOpenCookieSettings && window.vvOpenCookieSettings();">Cookie Preferences</a>
         </nav>
       </div>
     </div>

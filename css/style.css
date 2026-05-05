@@ -497,3 +497,105 @@ svg    { display: block; }
   .nav-links { display: none; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+
+/* ── Cookie Consent Banner ───────────────────────────────────── */
+#vv-cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 540px;
+  z-index: 99999;
+  background: var(--obsidian-mid);
+  border: 1px solid var(--gold-muted);
+  padding: 20px 24px;
+  font-family: var(--font-sans);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  animation: vv-cookie-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s, transform 0.25s;
+}
+#vv-cookie-banner.vv-cookie-leaving {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+@keyframes vv-cookie-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vv-cookie-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--cream-mid);
+  line-height: 1.55;
+  margin: 0 0 14px 0;
+}
+.vv-cookie-text a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--gold-muted);
+}
+.vv-cookie-text a:hover {
+  color: var(--gold-bright);
+}
+
+.vv-cookie-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.vv-cookie-btn {
+  padding: 11px 22px;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+  border-radius: 0;
+  white-space: nowrap;
+}
+.vv-cookie-reject {
+  background: transparent;
+  border: 1px solid var(--gold-muted);
+  color: var(--cream-muted);
+}
+.vv-cookie-reject:hover {
+  border-color: var(--gold);
+  color: var(--cream);
+}
+.vv-cookie-accept {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: var(--obsidian);
+}
+.vv-cookie-accept:hover {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+
+@media (max-width: 540px) {
+  #vv-cookie-banner {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 16px 18px;
+    max-width: none;
+  }
+  .vv-cookie-text { font-size: 0.8125rem; }
+  .vv-cookie-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .vv-cookie-btn {
+    width: 100%;
+    padding: 13px 18px;
+    font-size: 0.6875rem;
+  }
+}

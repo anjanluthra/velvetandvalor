@@ -13,7 +13,7 @@ const VV_PRODUCTS = {
       id: 'champagne-nude',
       name: 'Champagne Nude',
       slug: 'champagne-nude',
-      image: 'images/nude product image.webp',
+      image: 'images/nude product image.jpg',
       color: '#D4B896',
       description: 'Understated elegance in warm champagne tones with subtle equestrian detailing.'
     },

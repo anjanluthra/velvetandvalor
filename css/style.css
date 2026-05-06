@@ -221,6 +221,60 @@ svg    { display: block; }
   gap: 20px;
 }
 
+/* ── Mobile Navigation ────────────────────────────────────────── */
+.nav-mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 2px;
+  background: var(--cream);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.nav-mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(7, 20, 40, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 24px var(--page-padding);
+  border-bottom: 1px solid var(--gold-subtle);
+  flex-direction: column;
+  gap: 16px;
+  z-index: 1000;
+}
+
+.nav-mobile-menu.open {
+  display: flex;
+}
+
+.nav-mobile-link {
+  font-family: var(--font-authority);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-mid);
+  padding: 8px 0;
+  transition: color 0.3s;
+}
+.nav-mobile-link:hover { color: var(--gold); }
+
+@media (max-width: 768px) {
+  .nav-mobile-toggle { display: flex; }
+}
+
 .nav-icon {
   display: flex;
   align-items: center;

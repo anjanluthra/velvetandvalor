@@ -77,6 +77,30 @@
 })();
 
 
+/* ── Mobile Menu Toggle ─────────────────────────────────────── */
+(function initMobileMenu() {
+  const toggle = document.querySelector('.nav-mobile-toggle');
+  const menu = document.querySelector('.nav-mobile-menu');
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', !isOpen);
+    menu.classList.toggle('open');
+    menu.setAttribute('aria-hidden', isOpen);
+  });
+
+  // Close menu when clicking a link
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+    });
+  });
+})();
+
+
 /* ── Scroll Reveal (Intersection Observer) ───────────────────── */
 (function initReveal() {
   const elements = document.querySelectorAll('.reveal');

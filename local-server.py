@@ -31,7 +31,7 @@ class VercelHandler(http.server.SimpleHTTPRequestHandler):
 
         req = urllib.request.Request(url, data=body, method=method)
         # Forward relevant headers
-        for header in ("Content-Type", "Accept"):
+        for header in ("Content-Type", "Accept", "x-filename"):
             val = self.headers.get(header)
             if val:
                 req.add_header(header, val)

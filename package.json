@@ -2,6 +2,7 @@
   "name": "velvet-and-valor",
   "private": true,
   "dependencies": {
-    "stripe": "^17.5.0"
+    "stripe": "^17.5.0",
+    "@vercel/blob": "^0.27.0"
   }
 }

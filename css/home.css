@@ -330,6 +330,54 @@
   line-height: 1.4;
 }
 
+/* Custom portrait card placeholder in featured grid */
+.custom-card-image {
+  background: linear-gradient(150deg, var(--obsidian-mid) 0%, var(--obsidian-light) 50%, var(--obsidian-deep) 100%) !important;
+  position: relative;
+}
+.custom-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid var(--gold-muted);
+  pointer-events: none;
+}
+.custom-card-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 100%;
+  padding: 28px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.custom-card-mark {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--gold);
+  opacity: 0.85;
+  line-height: 1;
+}
+.custom-card-name-inner {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1.25;
+}
+.custom-card-subtitle {
+  font-family: var(--font-authority);
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
 .product-card {
   background: var(--obsidian-mid);
   border: 1px solid var(--gold-whisper);

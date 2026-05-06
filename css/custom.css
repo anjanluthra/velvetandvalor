@@ -445,12 +445,33 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 .colour-swatch-img img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   padding: 6%;
+}
+
+/* "Example Custom Portrait" tag */
+.colour-swatch-example-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--obsidian);
+  color: var(--gold);
+  font-family: var(--font-authority);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  z-index: 1;
+  border: 1px solid var(--gold-muted);
+  line-height: 1.2;
+  max-width: calc(100% - 16px);
+  text-align: left;
 }
 
 .colour-swatch-label {

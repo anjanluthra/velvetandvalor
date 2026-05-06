@@ -12,8 +12,8 @@
   const errorEl = document.getElementById('customFormError');
   const confirmBox = document.getElementById('cf-confirm');
 
-  // Track uploaded photo URLs
-  const photos = { 1: '', 2: '' };
+  // Track uploaded photo URL
+  const photos = { 1: '' };
 
   /* ── Photo Upload ──────────────────────────────────────── */
   function setupSlot(slotNumber) {
@@ -137,7 +137,6 @@
   }
 
   setupSlot(1);
-  setupSlot(2);
 
   /* ── Form validation / enable submit ───────────────────── */
   function isFormValid() {
@@ -185,7 +184,6 @@
       finish: form.finish.value,
       notes: form.notes.value.trim(),
       photo_url_1: photos[1],
-      photo_url_2: photos[2],
     };
 
     try {

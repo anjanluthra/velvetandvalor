@@ -28,8 +28,15 @@ module.exports = async (req, res) => {
       pathname: blob.pathname,
     });
   } catch (err) {
-    console.error('Photo upload error:', err.message);
-    return res.status(500).json({ error: 'Upload failed' });
+    console.error('Photo upload error:', err && err.message);
+    const msg = (err && err.message) || 'Upload failed';
+    // Surface a clearer hint if the Vercel Blob token isn't configured yet
+    const isTokenIssue = /BLOB_READ_WRITE_TOKEN|access token|missing token/i.test(msg);
+    return res.status(500).json({
+      error: isTokenIssue
+        ? 'Photo storage is not configured. Please email info@velvet-valor.com to place your order.'
+        : 'Photo upload failed. Please try a smaller image, or email info@velvet-valor.com.',
+    });
   }
 };
 

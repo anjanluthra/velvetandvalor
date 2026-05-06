@@ -278,6 +278,11 @@ select.form-input {
   gap: 12px;
   margin-top: 4px;
 }
+.photo-uploads.photo-uploads-single {
+  grid-template-columns: 1fr;
+  max-width: 360px;
+  margin: 4px auto 0;
+}
 .photo-slot {
   position: relative;
   aspect-ratio: 3 / 4;

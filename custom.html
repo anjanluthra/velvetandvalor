@@ -125,7 +125,7 @@
               <li><strong>One horse per case</strong> &mdash; each portrait features one horse.</li>
             </ul>
             <p class="photo-guide-note">
-              If your photo isn&rsquo;t quite right, we&rsquo;ll reach out before any work begins. You can submit up to two photos.
+              If your photo isn&rsquo;t quite right, we&rsquo;ll reach out before any work begins.
             </p>
           </aside>
 
@@ -151,38 +151,21 @@
 
             <!-- Photo upload -->
             <div class="form-group">
-              <label class="form-label">Photos of Your Horse <span class="req">*</span></label>
-              <p class="form-help">Upload 1&ndash;2 high-quality photos. Drag &amp; drop or click to browse. Max 10MB per photo.</p>
+              <label class="form-label">Photo of Your Horse <span class="req">*</span></label>
+              <p class="form-help">Upload one high-quality photo. Drag &amp; drop or click to browse. Max 10MB.</p>
 
-              <div class="photo-uploads">
+              <div class="photo-uploads photo-uploads-single">
                 <div class="photo-slot" id="photoSlot1" data-slot="1">
                   <input type="file" id="photoInput1" accept="image/*" hidden />
                   <div class="photo-slot-empty" id="photoSlot1Empty">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                    <span class="photo-slot-label">Photo 1 &mdash; required</span>
-                    <span class="photo-slot-sub">Click or drag to upload</span>
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span class="photo-slot-label">Click or drag to upload</span>
+                    <span class="photo-slot-sub">JPG, PNG, HEIC &mdash; up to 10MB</span>
                   </div>
                   <div class="photo-slot-preview" id="photoSlot1Preview" hidden>
-                    <img id="photoSlot1Img" alt="Photo 1 preview" />
-                    <button type="button" class="photo-remove" data-slot="1" aria-label="Remove photo 1">&times;</button>
+                    <img id="photoSlot1Img" alt="Photo preview" />
+                    <button type="button" class="photo-remove" data-slot="1" aria-label="Remove photo">&times;</button>
                     <div class="photo-progress" id="photoSlot1Progress" hidden>
-                      <div class="photo-progress-bar"></div>
-                      <span class="photo-progress-text">Uploading…</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="photo-slot" id="photoSlot2" data-slot="2">
-                  <input type="file" id="photoInput2" accept="image/*" hidden />
-                  <div class="photo-slot-empty" id="photoSlot2Empty">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                    <span class="photo-slot-label">Photo 2 &mdash; optional</span>
-                    <span class="photo-slot-sub">A second angle helps</span>
-                  </div>
-                  <div class="photo-slot-preview" id="photoSlot2Preview" hidden>
-                    <img id="photoSlot2Img" alt="Photo 2 preview" />
-                    <button type="button" class="photo-remove" data-slot="2" aria-label="Remove photo 2">&times;</button>
-                    <div class="photo-progress" id="photoSlot2Progress" hidden>
                       <div class="photo-progress-bar"></div>
                       <span class="photo-progress-text">Uploading…</span>
                     </div>

@@ -138,6 +138,19 @@
 
   setupSlot(1);
 
+  /* ── Colour swatch picker ──────────────────────────────── */
+  const colourCards = document.querySelectorAll('.colour-swatch-card');
+  const colourInput = document.getElementById('cf-colour');
+  colourCards.forEach(card => {
+    card.addEventListener('click', () => {
+      colourCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      colourInput.value = card.dataset.colour;
+      // Trigger validation / submit-state refresh
+      colourInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+
   /* ── Form validation / enable submit ───────────────────── */
   function isFormValid() {
     if (!photos[1]) return false; // photo 1 required

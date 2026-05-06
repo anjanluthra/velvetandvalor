@@ -176,17 +176,40 @@
 
             <!-- Case colour -->
             <div class="form-group">
-              <label class="form-label" for="cf-colour">Preferred Case Colour <span class="req">*</span></label>
-              <select class="form-input" id="cf-colour" name="case_colour" required>
-                <option value="">Choose a colour…</option>
-                <option value="Nude">Nude</option>
-                <option value="Pink">Pink</option>
-                <option value="Plum">Plum</option>
-                <option value="Teal">Teal</option>
-                <option value="Racing Green">Racing Green</option>
-                <option value="Charcoal Grey">Charcoal Grey</option>
-                <option value="Navy Blue">Navy Blue</option>
-              </select>
+              <label class="form-label">Preferred Case Colour <span class="req">*</span></label>
+              <p class="form-help">Pick the case colour your custom portrait will be designed onto.</p>
+              <input type="hidden" id="cf-colour" name="case_colour" value="" required />
+
+              <div class="colour-swatch-grid" role="radiogroup" aria-label="Choose case colour">
+                <button type="button" class="colour-swatch-card" data-colour="Nude">
+                  <div class="colour-swatch-img"><img src="/images/nude product image.jpg" alt="Nude case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Nude</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Pink">
+                  <div class="colour-swatch-img"><img src="/images/pink product image.jpg" alt="Pink case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Pink</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Plum">
+                  <div class="colour-swatch-img"><img src="/images/plum product image.webp" alt="Plum case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Plum</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Teal">
+                  <div class="colour-swatch-img"><img src="/images/teal product image.webp" alt="Teal case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Teal</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Racing Green">
+                  <div class="colour-swatch-img"><img src="/images/racing-green product image.png" alt="Racing Green case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Racing Green</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Charcoal Grey">
+                  <div class="colour-swatch-img"><img src="/images/charcoal-grey product image.png" alt="Charcoal Grey case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Charcoal Grey</span>
+                </button>
+                <button type="button" class="colour-swatch-card" data-colour="Navy Blue">
+                  <div class="colour-swatch-img"><img src="/images/navy-blue product image.png" alt="Navy Blue case" loading="lazy" /></div>
+                  <span class="colour-swatch-label">Navy Blue</span>
+                </button>
+              </div>
             </div>
 
             <!-- iPhone model -->

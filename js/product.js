@@ -13,6 +13,7 @@ const DESIGNS = {
   teal:          { name: 'Teal',          image: '/images/teal product image.webp' },
   'racing-green':  { name: 'Racing Green',  image: '/images/racing-green product image.png' },
   'charcoal-grey': { name: 'Charcoal Grey', image: '/images/charcoal-grey product image.png' },
+  'navy-blue':     { name: 'Navy Blue',     image: '/images/navy-blue product image.png' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */

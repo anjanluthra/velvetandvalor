@@ -21,7 +21,7 @@ const VV_PRODUCTS = {
       id: 'blush-rose',
       name: 'Blush Rose',
       slug: 'blush-rose',
-      image: 'images/pink product image.webp',
+      image: 'images/pink product image.jpg',
       color: '#D4A0A0',
       description: 'Soft rose hues meet bold equestrian lines — feminine strength, redefined.'
     },

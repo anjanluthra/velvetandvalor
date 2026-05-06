@@ -7,10 +7,12 @@
 
 /* ── Design Data ─────────────────────────────────────────────── */
 const DESIGNS = {
-  nude: { name: 'Nude', image: '/images/nude product image.webp' },
-  pink: { name: 'Pink', image: '/images/pink product image.webp' },
-  plum: { name: 'Plum', image: '/images/plum product image.webp' },
-  teal: { name: 'Teal', image: '/images/teal product image.webp' },
+  nude:          { name: 'Nude',          image: '/images/nude product image.webp' },
+  pink:          { name: 'Pink',          image: '/images/pink product image.webp' },
+  plum:          { name: 'Plum',          image: '/images/plum product image.webp' },
+  teal:          { name: 'Teal',          image: '/images/teal product image.webp' },
+  'racing-green':  { name: 'Racing Green',  image: '/images/racing-green product image.png' },
+  'charcoal-grey': { name: 'Charcoal Grey', image: '/images/charcoal-grey product image.png' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */
@@ -22,7 +24,7 @@ let currentDevice = 'iphone17';
 /* ── URL Parsing ─────────────────────────────────────────────── */
 (function initFromURL() {
   // Parse design from URL path: /products/noble-steed-{color}
-  const pathMatch = window.location.pathname.match(/\/products\/noble-steed-(\w+)/);
+  const pathMatch = window.location.pathname.match(/\/products\/noble-steed-([\w-]+)/);
   if (pathMatch && DESIGNS[pathMatch[1]]) {
     currentDesign = pathMatch[1];
   }
@@ -77,7 +79,10 @@ function updateURL() {
     // Update gallery thumbs — highlight the active colour
     const allThumbs = document.querySelectorAll('.gallery-thumb');
     allThumbs.forEach(thumb => {
-      const label = (thumb.getAttribute('aria-label') || '').replace('View: ', '').toLowerCase();
+      const label = (thumb.dataset.design || thumb.getAttribute('aria-label') || '')
+        .replace('View: ', '')
+        .toLowerCase()
+        .replace(/\s+/g, '-');
       thumb.classList.toggle('active', label === currentDesign);
       if (label === currentDesign) {
         mainImg.src = thumb.dataset.img;

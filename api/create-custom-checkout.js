@@ -34,10 +34,26 @@ module.exports = async (req, res) => {
 
   const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}`;
 
+  const orderMetadata = {
+    order_type: 'custom_portrait',
+    customer_name: (name || '').slice(0, 100),
+    horse_name: (horse_name || '').slice(0, 100),
+    case_colour: (case_colour || '').slice(0, 60),
+    iphone_model: (iphone_model || '').slice(0, 60),
+    finish: (finish || '').slice(0, 20),
+    photo_url_1: photo_url_1.slice(0, 500),
+    photo_url_2: (photo_url_2 || '').slice(0, 500),
+    notes: (notes || '').slice(0, 400),
+  };
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email,
+      payment_intent_data: {
+        metadata: orderMetadata,
+        description: description,
+      },
       line_items: [
         {
           price_data: {
@@ -74,17 +90,7 @@ module.exports = async (req, res) => {
           'CO', 'IN', 'MY', 'TH', 'PH', 'ID', 'VN', 'TW',
         ],
       },
-      metadata: {
-        order_type: 'custom_portrait',
-        customer_name: (name || '').slice(0, 100),
-        horse_name: (horse_name || '').slice(0, 100),
-        case_colour: (case_colour || '').slice(0, 60),
-        iphone_model: (iphone_model || '').slice(0, 60),
-        finish: (finish || '').slice(0, 20),
-        photo_url_1: photo_url_1.slice(0, 500),
-        photo_url_2: (photo_url_2 || '').slice(0, 500),
-        notes: (notes || '').slice(0, 400),
-      },
+      metadata: orderMetadata,
       custom_text: {
         submit: { message: 'Your bespoke portrait will begin design within 1–2 business days. Total turnaround: 4–9 business days including shipping.' },
       },

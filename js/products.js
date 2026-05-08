@@ -65,7 +65,7 @@ const VV_PRODUCTS = {
     { id: 'iphone-13-pro-max',  name: 'iPhone 13 Pro Max',  generation: '13' },
   ],
 
-  surfaces: ['Glossy', 'Matte'],
+  surfaces: ['Glossy'],
 
   /**
    * Generate a SKU string

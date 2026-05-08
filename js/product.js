@@ -38,18 +38,20 @@ let currentDevice = 'iphone17';
   }
 
   // Parse variant: ?variant=iphone17pro-glossy
+  // Glossy is the only finish available — strip any trailing finish from URL
   const variant = params.get('variant');
   if (variant) {
     const parts = variant.split('-');
-    const surface = parts.pop();
-    if (surface === 'glossy' || surface === 'matte') {
-      currentSurface = surface;
+    const last = parts[parts.length - 1];
+    if (last === 'glossy' || last === 'matte') {
+      parts.pop();
     }
     const device = parts.join('');
     if (device) {
       currentDevice = device;
     }
   }
+  currentSurface = 'glossy';
 })();
 
 
@@ -153,7 +155,7 @@ function updateURL() {
       active.classList.add('active');
       active.setAttribute('aria-checked', 'true');
     }
-    if (nameEl) nameEl.textContent = key === 'glossy' ? 'Glossy' : 'Matte';
+    if (nameEl) nameEl.textContent = 'Glossy';
     updateURL();
   }
 
@@ -227,7 +229,7 @@ function updateURL() {
     const designLabel = DESIGNS[currentDesign]?.name || 'Nude';
     const select = document.getElementById('deviceSelect');
     const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
-    const finishLabel = currentSurface === 'glossy' ? 'Glossy' : 'Matte';
+    const finishLabel = 'Glossy';
 
     // Collect customer insights from sessionStorage
     const productSuggestion = sessionStorage.getItem('vv_product_suggestion') || '';

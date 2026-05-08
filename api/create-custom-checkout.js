@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
               name: 'Noble Steed — Custom Horse Portrait',
               description: 'Bespoke phone case featuring your horse’s portrait. Artfully created within 1–2 business days. Worldwide shipping.',
             },
-            unit_amount: 8500, // $85.00
+            unit_amount: 6500, // $65.00
           },
           quantity: 1,
         },

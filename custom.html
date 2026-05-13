@@ -76,7 +76,7 @@
           A one-of-a-kind phone case featuring an artistic, design-led portrait of your horse &mdash;
           created from the photograph you share with us.
         </p>
-        <p class="custom-price">$65.00 &nbsp;<span class="custom-price-note">+ shipping</span></p>
+        <p class="custom-price"><span data-price-usd="65.00">$65.00</span> &nbsp;<span class="custom-price-note">+ shipping</span></p>
       </div>
     </section>
 
@@ -270,7 +270,7 @@
             <!-- Submit -->
             <button type="submit" class="custom-submit" id="customSubmit" disabled>
               <span class="custom-submit-text">Continue to Payment</span>
-              <span class="custom-submit-price">— $65.00</span>
+              <span class="custom-submit-price" data-price-usd="65.00" data-price-prefix="— ">— $65.00</span>
             </button>
 
             <p class="form-error" id="customFormError" hidden></p>
@@ -358,6 +358,7 @@
   </footer>
 
   <script src="/js/main.js"></script>
+  <script src="/js/currency.js"></script>
   <script src="/js/custom.js"></script>
 
 </body>

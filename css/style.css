@@ -114,8 +114,65 @@ svg    { display: block; }
   .top-banner-inner {
     justify-content: center;
   }
-  .top-banner-item:not(:nth-child(2)) {
+  .top-banner-item:not(:nth-child(2)):not(.top-banner-currency) {
     display: none;
+  }
+}
+
+/* ── Currency Toggle ─────────────────────────────────────────── */
+.top-banner-currency {
+  margin-left: auto;
+  padding-left: 16px;
+}
+.currency-toggle {
+  display: inline-flex;
+  align-items: center;
+}
+.currency-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+.currency-toggle-label:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.32);
+}
+.currency-toggle-flag {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.currency-toggle-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  font-family: var(--font-authority);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--obsidian);
+  cursor: pointer;
+  padding: 0;
+  padding-right: 2px;
+  outline: none;
+}
+.currency-toggle-chevron {
+  font-size: 0.65rem;
+  color: var(--obsidian);
+  opacity: 0.6;
+}
+@media (max-width: 768px) {
+  .top-banner-currency {
+    margin-left: 12px;
+    padding-left: 0;
   }
 }
 

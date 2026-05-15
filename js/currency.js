@@ -166,15 +166,16 @@
   }
 
   function init() {
-    let initial = null;
-    try { initial = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    // Always default to USD on first visit. Remember user's choice across pages.
+    let initial = 'USD';
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) initial = saved;
+    } catch (e) { /* ignore */ }
 
-    Promise.all([
-      loadRates(),
-      initial ? Promise.resolve(initial) : detectCountry().then(cc => COUNTRY_TO_CURRENCY[cc] || 'USD'),
-    ]).then(([rates, code]) => {
-      mountToggle(code, (newCode) => applyPrices(rates, newCode));
-      applyPrices(rates, code);
+    loadRates().then((rates) => {
+      mountToggle(initial, (newCode) => applyPrices(rates, newCode));
+      applyPrices(rates, initial);
     });
   }
 

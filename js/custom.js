@@ -210,7 +210,8 @@
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error(data.error || 'Could not start checkout');
+        const msg = data.detail ? `${data.error || 'Checkout error'}: ${data.detail}` : (data.error || 'Could not start checkout');
+        throw new Error(msg);
       }
     } catch (err) {
       console.error('Custom checkout error:', err);

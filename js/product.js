@@ -7,7 +7,7 @@
 
 /* ── Design Data ─────────────────────────────────────────────── */
 const DESIGNS = {
-  nude:          { name: 'Nude',          image: '/images/nude product image v2.jpg' },
+  nude:          { name: 'Nude',          image: '/images/nude product image.jpg' },
   pink:          { name: 'Pink',          image: '/images/pink product image.jpg' },
   plum:          { name: 'Plum',          image: '/images/plum product image.webp' },
   teal:          { name: 'Teal',          image: '/images/teal product image.webp' },

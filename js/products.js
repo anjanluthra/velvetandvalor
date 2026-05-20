@@ -48,6 +48,14 @@ const VV_PRODUCTS = {
       image: 'images/burgundy product image.jpg',
       color: '#6B1A2C',
       description: 'A deep, regal burgundy — heritage tones reimagined for the modern equestrian.'
+    },
+    {
+      id: 'blue',
+      name: 'Blue',
+      slug: 'blue',
+      image: 'images/blue product image.jpg',
+      color: '#2A4A8B',
+      description: 'A vivid, statement blue — bold movement meets quiet sophistication.'
     }
   ],
 

@@ -40,6 +40,14 @@ const VV_PRODUCTS = {
       image: 'images/teal product image.webp',
       color: '#1A7070',
       description: 'Rich teal with gold accents — where heritage meets modern confidence.'
+    },
+    {
+      id: 'burgundy',
+      name: 'Burgundy',
+      slug: 'burgundy',
+      image: 'images/burgundy product image.jpg',
+      color: '#6B1A2C',
+      description: 'A deep, regal burgundy — heritage tones reimagined for the modern equestrian.'
     }
   ],
 

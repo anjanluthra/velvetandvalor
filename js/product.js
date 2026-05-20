@@ -14,6 +14,7 @@ const DESIGNS = {
   'racing-green':  { name: 'Racing Green',  image: '/images/racing-green product image.png' },
   'charcoal-grey': { name: 'Charcoal Grey', image: '/images/charcoal-grey product image.png' },
   'navy-blue':     { name: 'Navy Blue',     image: '/images/navy-blue product image.png' },
+  burgundy:        { name: 'Burgundy',       image: '/images/burgundy product image.jpg' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */

@@ -77,8 +77,13 @@ const VV_PRODUCTS = {
     { id: 'iphone-14-pro-max',  name: 'iPhone 14 Pro Max',  generation: '14' },
     { id: 'iphone-14-plus',     name: 'iPhone 14 Plus',     generation: '14' },
     { id: 'iphone-13',          name: 'iPhone 13',          generation: '13' },
+    { id: 'iphone-13-mini',     name: 'iPhone 13 mini',     generation: '13' },
     { id: 'iphone-13-pro',      name: 'iPhone 13 Pro',      generation: '13' },
     { id: 'iphone-13-pro-max',  name: 'iPhone 13 Pro Max',  generation: '13' },
+    { id: 'iphone-12',          name: 'iPhone 12',          generation: '12' },
+    { id: 'iphone-12-mini',     name: 'iPhone 12 mini',     generation: '12' },
+    { id: 'iphone-12-pro',      name: 'iPhone 12 Pro',      generation: '12' },
+    { id: 'iphone-12-pro-max',  name: 'iPhone 12 Pro Max',  generation: '12' },
   ],
 
   surfaces: ['Glossy'],

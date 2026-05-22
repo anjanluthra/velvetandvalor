@@ -5,7 +5,7 @@
   <meta name="google-site-verification" content="x7mVJoxLwBmsE4siMV3RvWYQhm2_hkhxpUsnyDUf874" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Horse Portrait Case — Velvet &amp; Valor</title>
-  <meta name="description" content="A bespoke phone case featuring your horse&rsquo;s portrait. Artfully created by Velvet &amp; Valor. From $65, worldwide shipping." />
+  <meta name="description" content="A bespoke phone case featuring your horse&rsquo;s portrait. Artfully created by Velvet &amp; Valor. From $85, worldwide shipping." />
   <link rel="canonical" href="https://www.velvet-valor.com/custom" />
 
   <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -76,7 +76,7 @@
           A one-of-a-kind phone case featuring an artistic, design-led portrait of your horse &mdash;
           created from the photograph you share with us.
         </p>
-        <p class="custom-price"><span data-price-usd="65.00">$65.00</span> &nbsp;<span class="custom-price-note">+ shipping</span></p>
+        <p class="custom-price"><span data-price-usd="85.00">$85.00</span> &nbsp;<span class="custom-price-note">+ shipping</span></p>
       </div>
     </section>
 
@@ -272,6 +272,22 @@
             <!-- Finish (Glossy only) -->
             <input type="hidden" name="finish" value="Glossy" />
 
+            <!-- Custom Initials Add-on -->
+            <div class="form-group form-initials">
+              <label class="initials-toggle">
+                <input type="checkbox" id="cf-add-initials" name="add_initials" />
+                <span class="initials-toggle-text">
+                  <span class="initials-toggle-title">Add Custom Initials <span class="initials-price-tag">+$10</span></span>
+                  <span class="initials-toggle-desc">Monogram your case with up to 4 initials &mdash; subtly placed in elegant gold lettering.</span>
+                </span>
+              </label>
+              <div class="initials-input-wrap" id="initialsInputWrap" hidden>
+                <label class="form-label" for="cf-initials">Your initials</label>
+                <input class="form-input initials-input" id="cf-initials" name="initials" type="text" maxlength="4" placeholder="e.g. KAL" autocomplete="off" />
+                <p class="form-help">Letters only, up to 4 characters. We&rsquo;ll preview placement during design.</p>
+              </div>
+            </div>
+
             <!-- Notes -->
             <div class="form-group">
               <label class="form-label" for="cf-notes">Anything else? <span class="opt">(optional)</span></label>
@@ -290,7 +306,7 @@
             <!-- Submit -->
             <button type="submit" class="custom-submit" id="customSubmit" disabled>
               <span class="custom-submit-text">Continue to Payment</span>
-              <span class="custom-submit-price" data-price-usd="65.00" data-price-prefix="— ">— $65.00</span>
+              <span class="custom-submit-price" id="customSubmitPrice" data-price-usd="85.00" data-price-prefix="— ">— $85.00</span>
             </button>
 
             <p class="form-error" id="customFormError" hidden></p>

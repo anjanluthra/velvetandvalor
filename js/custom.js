@@ -151,6 +151,36 @@
     });
   });
 
+  /* ── Initials add-on ───────────────────────────────────── */
+  const initialsToggle = document.getElementById('cf-add-initials');
+  const initialsWrap = document.getElementById('initialsInputWrap');
+  const initialsInput = document.getElementById('cf-initials');
+  const submitPriceEl = document.getElementById('customSubmitPrice');
+
+  function updatePriceDisplay() {
+    if (!submitPriceEl) return;
+    const base = 85;
+    const total = base + (initialsToggle && initialsToggle.checked ? 10 : 0);
+    // Re-set data attribute so currency toggle re-reads it
+    submitPriceEl.setAttribute('data-price-usd', total.toFixed(2));
+    submitPriceEl.textContent = `— $${total.toFixed(2)}`;
+    // If currency toggle has selected a non-USD currency, re-trigger via change event
+    const sel = document.getElementById('vvCurrencySelect');
+    if (sel) sel.dispatchEvent(new Event('change'));
+  }
+
+  if (initialsToggle && initialsWrap && initialsInput) {
+    initialsToggle.addEventListener('change', () => {
+      initialsWrap.hidden = !initialsToggle.checked;
+      if (!initialsToggle.checked) initialsInput.value = '';
+      updatePriceDisplay();
+    });
+    initialsInput.addEventListener('input', () => {
+      // Force uppercase A-Z, max 4 chars
+      initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+    });
+  }
+
   /* ── Form validation / enable submit ───────────────────── */
   function isFormValid() {
     if (!photos[1]) return false; // photo 1 required
@@ -197,6 +227,8 @@
       finish: form.finish.value,
       notes: form.notes.value.trim(),
       photo_url_1: photos[1],
+      add_initials: !!(initialsToggle && initialsToggle.checked && initialsInput && initialsInput.value.trim()),
+      initials: initialsInput ? initialsInput.value.trim() : '',
     };
 
     try {

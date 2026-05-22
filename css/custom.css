@@ -559,6 +559,72 @@ select.form-input {
   cursor: pointer;
 }
 
+/* ── Initials Add-on ───────────────────────────────────── */
+.form-initials {
+  background: rgba(212, 175, 102, 0.05);
+  border: 1px solid rgba(212, 175, 102, 0.22);
+  padding: 18px 20px;
+  border-radius: 4px;
+}
+.initials-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+.initials-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+.initials-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.initials-toggle-title {
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.initials-price-tag {
+  font-family: var(--font-authority);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(212, 175, 102, 0.14);
+  border: 1px solid rgba(212, 175, 102, 0.4);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.initials-toggle-desc {
+  font-size: 0.8125rem;
+  color: var(--cream-muted);
+  line-height: 1.55;
+}
+.initials-input-wrap {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 102, 0.18);
+}
+.initials-input {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  font-size: 1.1rem;
+  max-width: 200px;
+}
+
 /* Submit button */
 .custom-submit {
   width: 100%;

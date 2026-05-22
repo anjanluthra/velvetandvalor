@@ -23,6 +23,8 @@ module.exports = async (req, res) => {
     photo_url_1 = '',
     photo_url_2 = '',
     notes = '',
+    add_initials = false,
+    initials = '',
   } = req.body || {};
 
   if (!photo_url_1) {
@@ -32,7 +34,11 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Email is required.' });
   }
 
-  const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}`;
+  // Normalise initials
+  const cleanInitials = (initials || '').toString().toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+  const wantsInitials = !!add_initials && cleanInitials.length > 0;
+
+  const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}${wantsInitials ? ` + Initials "${cleanInitials}"` : ''}`;
 
   const orderMetadata = {
     order_type: 'custom_portrait',
@@ -44,6 +50,7 @@ module.exports = async (req, res) => {
     photo_url_1: photo_url_1.slice(0, 500),
     photo_url_2: (photo_url_2 || '').slice(0, 500),
     notes: (notes || '').slice(0, 400),
+    initials: wantsInitials ? cleanInitials : '',
   };
 
   try {
@@ -62,10 +69,21 @@ module.exports = async (req, res) => {
               name: 'Noble Steed — Custom Horse Portrait',
               description: 'Bespoke phone case featuring your horse’s portrait. Artfully created within 1–2 business days. Worldwide shipping.',
             },
-            unit_amount: 6500, // $65.00
+            unit_amount: 8500, // $85.00
           },
           quantity: 1,
         },
+        ...(wantsInitials ? [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Custom Initials — "${cleanInitials}"`,
+              description: 'Monogrammed initials added to your bespoke phone case.',
+            },
+            unit_amount: 1000, // $10.00
+          },
+          quantity: 1,
+        }] : []),
       ],
       shipping_options: [
         {

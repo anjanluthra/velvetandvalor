@@ -56,6 +56,47 @@
   letter-spacing: 0;
 }
 
+.custom-tagline {
+  font-family: var(--font-authority);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 24px;
+}
+
+.custom-club {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 620px;
+  margin: 32px auto 0;
+  padding: 14px 24px;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--cream-mid);
+  background: rgba(212, 175, 110, 0.06);
+}
+.custom-club strong { color: var(--gold); font-weight: 600; }
+.custom-club-mark {
+  display: inline-block;
+  color: var(--gold);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .custom-club {
+    display: flex;
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+}
+
 /* ── How It Works ─────────────────────────────────────────── */
 .custom-process {
   padding: 80px 0;

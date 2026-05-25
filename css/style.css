@@ -119,6 +119,46 @@ svg    { display: block; }
   }
 }
 
+/* ── Shipping Alert (UAE delay banner) ──────────────────────── */
+.shipping-alert {
+  background: linear-gradient(90deg, #4a1a14 0%, #6b2418 50%, #4a1a14 100%);
+  border-top: 1px solid rgba(255, 200, 160, 0.18);
+  border-bottom: 1px solid rgba(255, 200, 160, 0.18);
+  color: #fff5e8;
+  padding: 14px 0;
+}
+.shipping-alert-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+.shipping-alert-mark {
+  font-size: 1.25rem;
+  color: #ffb874;
+  flex-shrink: 0;
+}
+.shipping-alert-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #fff5e8;
+}
+.shipping-alert-text strong {
+  color: #ffd9a8;
+  font-weight: 600;
+}
+@media (max-width: 768px) {
+  .shipping-alert-inner {
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 var(--page-padding);
+  }
+  .shipping-alert-text { font-size: 0.8125rem; }
+}
+
 /* ── Currency Toggle ─────────────────────────────────────────── */
 .top-banner-currency {
   margin-left: auto;

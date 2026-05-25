@@ -111,6 +111,9 @@ module.exports = async (req, res) => {
       metadata: orderMetadata,
       custom_text: {
         submit: { message: 'Your bespoke portrait will begin design within 1–2 business days. Total turnaround: 4–9 business days including shipping.' },
+        shipping_address: {
+          message: '⚠ UAE shipments delayed due to current Strait of Hormuz closure — please allow up to 4 weeks for delivery. All other worldwide routes (Europe, UK & USA) shipping as normal.',
+        },
       },
       success_url: `${req.headers.origin || 'https://www.velvet-valor.com'}/order-success?session_id={CHECKOUT_SESSION_ID}&type=custom`,
       cancel_url: `${req.headers.origin || 'https://www.velvet-valor.com'}/custom`,

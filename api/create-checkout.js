@@ -73,6 +73,9 @@ module.exports = async (req, res) => {
       ],
       custom_text: {
         submit: { message: 'Your case will ship within 5-10 business days.' },
+        shipping_address: {
+          message: '⚠ UAE shipments delayed due to current Strait of Hormuz closure — please allow up to 4 weeks for delivery. All other worldwide routes (Europe, UK & USA) shipping as normal.',
+        },
       },
       success_url: `${req.headers.origin || 'https://velvetandvalor.com'}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || 'https://velvetandvalor.com'}/collections/iphone-cases`,

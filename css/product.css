@@ -1975,3 +1975,105 @@
   margin-top: 10px;
   line-height: 1.5;
 }
+
+
+/* ============================================================
+   MOBILE OPTIMISATION OVERRIDES
+   Stops horizontal scroll / zoomed-in feel on phones
+   ============================================================ */
+@media (max-width: 768px) {
+  html, body { max-width: 100vw; overflow-x: hidden; }
+  body * { max-width: 100%; }
+  img, video, picture { max-width: 100%; height: auto; }
+
+  /* Gallery — shrink padding and make image fit */
+  .product-gallery {
+    padding: 16px !important;
+    gap: 8px !important;
+    min-height: auto !important;
+    height: auto !important;
+    position: static !important;
+    border-right: none !important;
+  }
+  .gallery-display {
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    min-height: auto !important;
+    max-height: 70vh;
+  }
+  .gallery-main-img {
+    inset: 4% !important;
+    width: 92% !important;
+    height: 92% !important;
+    object-fit: contain !important;
+  }
+  .gallery-thumbs {
+    flex-direction: row !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 8px !important;
+    padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start !important;
+  }
+  .gallery-thumb {
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px;
+  }
+
+  /* Info panel — pad properly so content doesn't touch screen edges */
+  .product-info {
+    padding: 24px 16px 48px !important;
+  }
+
+  /* Kill any decorative giant fonts that cause overflow */
+  .story-visual-knight { font-size: 4rem !important; }
+  .rating-score { font-size: 2.75rem !important; }
+
+  /* Stack story/details on small screens */
+  .product-story-inner,
+  .details-layout { grid-template-columns: 1fr !important; gap: 24px !important; }
+
+  /* Reviews and related grids */
+  .reviews-header,
+  .reviews-grid,
+  .related-grid,
+  .features-grid,
+  .device-model-grid { grid-template-columns: 1fr !important; }
+
+  .highlights-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Selects and inputs full width */
+  .device-select,
+  .product-info select,
+  .product-info input,
+  .product-info textarea { width: 100% !important; max-width: 100%; box-sizing: border-box; }
+
+  /* Color swatches wrap on small screens */
+  .color-swatches { flex-wrap: wrap; gap: 10px !important; }
+  .color-swatch { width: 40px !important; height: 40px !important; }
+
+  /* Sticky-ish positioned items become normal */
+  .details-image { position: static !important; }
+
+  /* Section paddings tighter */
+  .product-section { padding-top: 0 !important; }
+  .product-layout {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+
+  /* Prevent table-like overflow */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+@media (max-width: 480px) {
+  .product-gallery { padding: 12px !important; }
+  .gallery-thumb { width: 48px !important; height: 48px !important; min-width: 48px; }
+  .product-info { padding: 20px 14px 40px !important; }
+  .product-name { font-size: 1.5rem !important; line-height: 1.15; }
+  .product-price { font-size: 1.375rem !important; }
+  .also-like-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  .highlight-card { padding: 16px 12px !important; }
+}

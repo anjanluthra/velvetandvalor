@@ -108,27 +108,115 @@
   animation: heroFadeUp 0.9s var(--ease-out) 0.72s forwards;
 }
 
-/* ── Hero Rating Row ──────────────────────────────────────────── */
+/* ── Hero Pillars (Penhaligon-style three-pillar storytelling) ── */
+.hero-pillars {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.72s forwards;
+}
+.hero-pillar {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.hero-pillar-mark {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+.hero-pillar-label {
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cream-mid);
+}
+.hero-pillar-sep {
+  color: var(--gold-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+/* ── Hero Tagline (single elegant line) ─────────────────────── */
+.hero-tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--cream-mid);
+  margin: 0 0 28px;
+  max-width: 480px;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.78s forwards;
+}
+
+/* ── Hero Rating Row (stars only, no count) ─────────────────── */
 .hero-rating {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   font-family: var(--font-sans);
   font-size: 0.875rem;
   color: var(--cream-mid);
   opacity: 0;
-  animation: heroFadeUp 0.9s var(--ease-out) 0.78s forwards;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.84s forwards;
 }
-.hero-rating-stars { display: inline-flex; gap: 2px; }
+.hero-rating-stars { display: inline-flex; gap: 3px; }
 .hero-star {
   color: var(--gold);
-  font-size: 0.95rem;
-  text-shadow: 0 0 8px rgba(212, 175, 110, 0.4);
+  font-size: 1.05rem;
+  text-shadow: 0 0 10px rgba(26, 144, 144, 0.45);
 }
-.hero-rating-score strong { color: var(--cream); font-weight: 600; }
-.hero-rating-sep { color: var(--gold-muted); }
-.hero-rating-count { color: var(--cream-muted); }
+
+/* ── Hero Story Link (Penhaligon's-style 'Discover') ────────── */
+.hero-story-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--cream-mid);
+  text-decoration: none;
+  transition: color 0.3s var(--ease-out), gap 0.3s var(--ease-out);
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 1s forwards;
+}
+.hero-story-link:hover {
+  color: var(--gold);
+  gap: 20px;
+}
+.hero-story-rule {
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: var(--gold-muted);
+  transition: background 0.3s, width 0.3s var(--ease-out);
+}
+.hero-story-link:hover .hero-story-rule {
+  background: var(--gold);
+  width: 44px;
+}
+.hero-story-arrow {
+  font-size: 0.9rem;
+  transition: transform 0.3s var(--ease-out);
+}
+.hero-story-link:hover .hero-story-arrow {
+  transform: translateX(4px);
+}
 
 /* ── Hero Authority Badge (Designed by Kate Luthra) ───────────── */
 .hero-authority {
@@ -226,6 +314,21 @@
   .hero-authority-title { font-size: 0.8125rem; letter-spacing: 0.06em; }
   .hero-authority-line { font-size: 0.75rem; }
   .hero-trust-pill { font-size: 0.6875rem; padding: 6px 12px; }
+
+  .hero-pillars { gap: 12px; margin-bottom: 18px; }
+  .hero-pillar { gap: 6px; }
+  .hero-pillar-mark { font-size: 0.8125rem; }
+  .hero-pillar-label { font-size: 0.625rem; letter-spacing: 0.18em; }
+  .hero-pillar-sep { font-size: 0.625rem; }
+
+  .hero-tagline { font-size: 1rem; margin-bottom: 22px; }
+  .hero-story-link {
+    margin-top: 22px;
+    font-size: 0.625rem;
+    letter-spacing: 0.24em;
+    gap: 10px;
+  }
+  .hero-story-rule { width: 24px; }
 }
 
 .hero-actions {

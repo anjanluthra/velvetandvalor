@@ -1801,3 +1801,70 @@
   .journal-cs-body { font-size: 0.9375rem; }
   .newsletter-heading { font-size: 1.5rem; }
 }
+
+
+/* ============================================================
+   PRODUCT IN MOTION — video showcase
+   ============================================================ */
+.motion-showcase {
+  padding: 100px 0;
+  background: var(--obsidian-deep);
+  position: relative;
+}
+.motion-showcase::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 35%, rgba(26, 144, 144, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.motion-showcase-header {
+  text-align: center;
+  margin-bottom: 56px;
+  position: relative;
+}
+.motion-showcase-sub {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: var(--cream-muted);
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+.motion-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+.motion-video-card {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--gold-whisper);
+  background: var(--obsidian-mid);
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  transition: border-color 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.motion-video-card:hover {
+  border-color: var(--gold-subtle);
+  transform: translateY(-4px);
+}
+.motion-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 768px) {
+  .motion-showcase { padding: 60px 0; }
+  .motion-showcase-header { margin-bottom: 32px; }
+  .motion-showcase-sub { font-size: 0.875rem; }
+  .motion-showcase-grid { grid-template-columns: 1fr; gap: 16px; max-width: 460px; padding: 0 16px; }
+  .motion-video-card { aspect-ratio: 9 / 16; }
+  .motion-video-card:hover { transform: none; }
+}

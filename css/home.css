@@ -564,9 +564,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.7s var(--ease-out);
 }
-.product-card-custom:hover .custom-card-image img { transform: scale(1.04); }
 
 /* Caption ribbon at the bottom of the case image */
 .custom-card-caption {

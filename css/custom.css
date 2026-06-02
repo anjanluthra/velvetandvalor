@@ -788,3 +788,59 @@ select.form-input {
   .photo-slot { aspect-ratio: 4 / 3; }
   .finish-options { flex-direction: column; }
 }
+
+
+/* ── Featured Bespoke Case Showcase (between hero + how-it-works) ── */
+.custom-showcase {
+  padding: 32px 0 64px;
+  background: var(--obsidian-deep);
+  text-align: center;
+}
+.custom-showcase-figure {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 380px;
+  margin: 0 auto;
+}
+.custom-showcase-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 4px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
+}
+.custom-showcase-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 24px;
+}
+.custom-showcase-mark {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 2px;
+}
+.custom-showcase-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.125rem;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+}
+.custom-showcase-sub {
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 4px;
+}
+@media (max-width: 768px) {
+  .custom-showcase { padding: 24px 0 48px; }
+  .custom-showcase-figure { max-width: 280px; }
+  .custom-showcase-title { font-size: 1rem; }
+}

@@ -1127,3 +1127,132 @@ svg    { display: block; }
   .ig-cta-sub { font-size: 0.9375rem; }
   .ig-cta-button { font-size: 0.8125rem; padding: 11px 18px; }
 }
+
+
+/* ============================================================
+   MOBILE SAFETY LAYER (site-wide overrides — keep at end of file)
+   Prevents zoom-out, overflow, oversized images on small viewports
+   ============================================================ */
+
+/* Lock horizontal axis on every page */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+* { max-width: 100%; box-sizing: border-box; }
+img, video, picture, iframe, svg { max-width: 100%; height: auto; }
+
+@media (max-width: 768px) {
+  /* Generic container padding floor */
+  .container { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* Custom case showcase image: never exceed viewport on small screens */
+  .custom-showcase-figure {
+    display: block !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+  }
+  .custom-showcase { padding: 24px 16px 48px !important; }
+
+  /* Hero image safety on home */
+  .hero-right { width: 100% !important; height: 38vh !important; min-height: 240px; max-height: 360px; }
+  .hero-photo-area { width: 100%; height: 100%; }
+  .hero-photo-img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Custom hero padding tight */
+  .custom-hero { padding: calc(var(--header-height) + 40px) 16px 48px !important; }
+  .custom-hero-inner { padding: 0 !important; }
+
+  /* Form layout single column with safe inputs */
+  .custom-form-layout { padding: 0 !important; }
+  .custom-form { padding: 24px 18px !important; }
+  .form-input, select.form-input, textarea.form-input {
+    width: 100% !important;
+    font-size: 16px !important; /* iOS Safari: prevents auto-zoom on focus */
+    padding: 12px 14px !important;
+  }
+  .form-row { grid-template-columns: 1fr !important; }
+
+  /* Process steps stack */
+  .process-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .process-step { padding: 22px 18px !important; }
+
+  /* Photo guide doesn't need to be sticky on mobile */
+  .photo-guide {
+    position: static !important;
+    padding: 20px 18px !important;
+  }
+
+  /* Testimonials single col, smaller padding */
+  .testimonials { padding: 56px 0 !important; }
+  .testimonials-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .testimonial-card { padding: 22px 18px !important; }
+
+  /* Motion showcase single col */
+  .motion-showcase { padding: 48px 16px !important; }
+  .motion-showcase-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 360px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  /* Manifesto/centered text sections */
+  .brand-manifesto { padding: 56px 16px !important; }
+  .manifesto-inner { max-width: 100%; }
+  .manifesto-text { font-size: 0.9375rem !important; line-height: 1.65; }
+
+  /* Trust strip and mid CTA stack cleanly */
+  .trust-strip { padding: 32px 16px !important; }
+  .trust-strip-grid { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+  .mid-cta { padding: 48px 16px !important; }
+  .mid-cta-inner { flex-direction: column; align-items: stretch; gap: 18px; }
+  .mid-cta-form { width: 100%; flex-direction: column; }
+  .mid-cta-input, .mid-cta-form button { width: 100% !important; font-size: 16px !important; }
+
+  /* Story teaser fully safe */
+  .story-teaser { padding: 48px 16px !important; }
+  .story-teaser-inner { padding: 0 !important; }
+
+  /* Footer */
+  .footer { padding: 48px 0 32px !important; }
+  .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; padding: 0 16px; }
+  .footer-bottom { padding: 18px 16px 0 !important; flex-direction: column; gap: 12px; text-align: center; }
+
+  /* Featured cases grid 2-col on small */
+  .featured-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .featured-cases { padding: 56px 0 !important; }
+
+  /* Highlights compact */
+  .highlights { padding: 48px 0 !important; }
+  .highlights-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Page hero (legal/contact/shipping) — tight */
+  .page-hero { padding: 80px 16px 32px !important; }
+  .page-content { padding: 0 16px !important; }
+
+  /* Instagram CTA safe */
+  .instagram-cta { padding: 48px 16px !important; }
+
+  /* Big serif headlines never overflow */
+  h1, .hero-title, .custom-title, .story-heading, .section-heading,
+  .ig-cta-heading, .collection-title {
+    word-break: break-word;
+  }
+
+  /* Top banner tighter */
+  .top-banner-inner { gap: 12px !important; padding: 0 12px !important; }
+
+  /* Cookie banner already compact — ensure margin floor */
+  #vv-cookie-banner { left: 8px !important; right: 8px !important; }
+}
+
+/* Smallest phones */
+@media (max-width: 380px) {
+  .container { padding-left: 12px !important; padding-right: 12px !important; }
+  .featured-grid, .highlights-grid, .footer-grid, .trust-strip-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .product-card-name { font-size: 1rem !important; }
+}

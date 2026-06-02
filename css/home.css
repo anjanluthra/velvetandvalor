@@ -102,10 +102,118 @@
   color: var(--cream-muted);
   font-weight: 400;
   line-height: 1.7;
-  margin-bottom: 52px;
+  margin-bottom: 24px;
   max-width: 440px;
   opacity: 0;
   animation: heroFadeUp 0.9s var(--ease-out) 0.72s forwards;
+}
+
+/* ── Hero Rating Row ──────────────────────────────────────────── */
+.hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--cream-mid);
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.78s forwards;
+}
+.hero-rating-stars { display: inline-flex; gap: 2px; }
+.hero-star {
+  color: var(--gold);
+  font-size: 0.95rem;
+  text-shadow: 0 0 8px rgba(212, 175, 110, 0.4);
+}
+.hero-rating-score strong { color: var(--cream); font-weight: 600; }
+.hero-rating-sep { color: var(--gold-muted); }
+.hero-rating-count { color: var(--cream-muted); }
+
+/* ── Hero Authority Badge (Designed by Kate Luthra) ───────────── */
+.hero-authority {
+  margin-bottom: 28px;
+  padding: 16px 20px;
+  border: 1px solid var(--gold-subtle);
+  background: linear-gradient(135deg, rgba(212, 175, 110, 0.06) 0%, rgba(212, 175, 110, 0.02) 100%);
+  border-radius: 10px;
+  max-width: 460px;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.84s forwards;
+}
+.hero-authority-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-authority);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.hero-authority-ornament {
+  color: var(--gold-muted);
+  font-size: 0.7rem;
+  transform: translateY(-1px);
+}
+.hero-authority-line {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--cream-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+.hero-authority-line strong {
+  color: var(--cream-mid);
+  font-weight: 600;
+}
+
+/* ── Hero Secondary CTA ───────────────────────────────────────── */
+.hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Hero Trust Pills ────────────────────────────────────────── */
+.hero-trust-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.96s forwards;
+}
+.hero-trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--cream-mid);
+  background: rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+.hero-trust-check {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .hero-rating { font-size: 0.8125rem; }
+  .hero-authority { padding: 14px 16px; }
+  .hero-authority-title { font-size: 0.8125rem; letter-spacing: 0.06em; }
+  .hero-authority-line { font-size: 0.75rem; }
+  .hero-trust-pill { font-size: 0.6875rem; padding: 6px 12px; }
 }
 
 .hero-actions {

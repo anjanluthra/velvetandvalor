@@ -2077,3 +2077,24 @@
   .also-like-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
   .highlight-card { padding: 16px 12px !important; }
 }
+
+
+/* ============================================================
+   Hide gallery thumbnails — colour swatches drive selection
+   ============================================================ */
+.gallery-thumbs {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .gallery-thumbs {
+    display: none !important;
+  }
+}
+.product-gallery {
+  /* Without thumbs the main display can stretch fully */
+  gap: 0 !important;
+}
+.gallery-display {
+  width: 100%;
+  max-width: 100%;
+}

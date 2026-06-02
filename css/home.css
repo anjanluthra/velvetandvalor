@@ -1868,3 +1868,88 @@
   .motion-video-card { aspect-ratio: 9 / 16; }
   .motion-video-card:hover { transform: none; }
 }
+
+
+/* ============================================================
+   STORY TEASER (compact homepage block linking to /our-story)
+   ============================================================ */
+.story-teaser {
+  padding: 80px 0;
+  background: var(--obsidian);
+}
+.story-teaser-inner {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.story-teaser-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--gold-subtle);
+  overflow: hidden;
+  background: var(--obsidian-mid);
+}
+.story-teaser-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.story-teaser-text .section-label { display: inline-block; margin-bottom: 14px; }
+.story-teaser-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  margin: 0 0 18px;
+}
+.story-teaser-body {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--cream-mid);
+  margin: 0 0 24px;
+  max-width: 480px;
+}
+.story-teaser-body strong { color: var(--gold); font-weight: 600; }
+.story-teaser-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 768px) {
+  .story-teaser { padding: 56px 0; }
+  .story-teaser-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    text-align: center;
+    padding: 0 4px;
+  }
+  .story-teaser-photo {
+    max-width: 220px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 5;
+  }
+  .story-teaser-body { margin-left: auto; margin-right: auto; }
+  .story-teaser-cta { margin: 0 auto; }
+}
+
+/* ============================================================
+   OUR STORY page — full block + ctas
+   ============================================================ */
+.brand-story-page { padding-top: 60px; padding-bottom: 100px; }
+.brand-story-page .story-heading { font-size: clamp(2rem, 4vw, 3rem); }
+.story-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 36px;
+  justify-content: center;
+}
+@media (max-width: 768px) {
+  .brand-story-page { padding-top: 32px; padding-bottom: 64px; }
+  .story-cta { gap: 10px; }
+}

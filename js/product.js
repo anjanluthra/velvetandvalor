@@ -140,6 +140,23 @@ function updateURL() {
 })();
 
 
+/* ── Device Help Toggle ('Not sure?') ─────────────────────────── */
+(function initDeviceHelp() {
+  const btn = document.getElementById('deviceHelpToggle');
+  const panel = document.getElementById('deviceHelpPanel');
+  if (!btn || !panel) return;
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    if (open) {
+      panel.setAttribute('hidden', '');
+    } else {
+      panel.removeAttribute('hidden');
+    }
+  });
+})();
+
+
 /* ── Surface Selector ────────────────────────────────────────── */
 (function initSurfaceSelector() {
   const options = document.querySelectorAll('[data-surface]');

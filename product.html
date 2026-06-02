@@ -161,14 +161,17 @@
             </div>
           </div>
 
-          <!-- Your device (dropdown like Mous) -->
-          <div class="option-group">
+          <!-- Your device -->
+          <div class="option-group device-group">
             <div class="option-label">
               <span class="option-label-text">Your device</span>
+              <button type="button" class="device-help-toggle" id="deviceHelpToggle" aria-expanded="false" aria-controls="deviceHelpPanel">
+                Not sure?
+              </button>
             </div>
-            <p class="device-helper">
-              <strong>&#9888; Not sure which model you have?</strong> Go to <strong>Settings</strong> &gt; tap <strong>your name</strong> at the top &gt; scroll down &mdash; your iPhone model is shown at the bottom.
-            </p>
+            <div class="device-help-panel" id="deviceHelpPanel" hidden>
+              On your iPhone: <strong>Settings</strong> &rsaquo; tap <strong>your name</strong> at the top &rsaquo; scroll down &mdash; your iPhone model is shown at the bottom of that screen.
+            </div>
             <select class="device-select" id="deviceSelect" aria-label="Select your iPhone model">
               <optgroup label="iPhone 17 Series">
                 <option value="iphone17" selected>iPhone 17</option>
@@ -244,13 +247,15 @@
             <span>&#9830; Fashion-forward design</span>
           </div>
 
-          <!-- Model Confirmation Checkbox -->
-          <div class="model-confirm">
-            <label class="model-confirm-label">
-              <input type="checkbox" id="modelConfirmCheckbox" class="model-confirm-input" />
-              <span class="model-confirm-text">I have checked my iPhone model and confirm it is correct.</span>
-            </label>
-          </div>
+          <!-- Model Confirmation -->
+          <label class="model-confirm-card" for="modelConfirmCheckbox">
+            <input type="checkbox" id="modelConfirmCheckbox" class="model-confirm-input" />
+            <span class="model-confirm-check" aria-hidden="true"></span>
+            <span class="model-confirm-content">
+              <span class="model-confirm-title">I&rsquo;ve confirmed my iPhone model</span>
+              <span class="model-confirm-sub">Cases are made-to-order &mdash; please ensure the model selected matches your phone.</span>
+            </span>
+          </label>
 
           <!-- Buy Now -->
           <div class="buy-controls">

@@ -1134,10 +1134,19 @@ svg    { display: block; }
    Prevents zoom-out, overflow, oversized images on small viewports
    ============================================================ */
 
-/* Only body locks the horizontal axis (html scroll lock breaks position:sticky).
-   Removed universal '*' selector — was causing layout thrashing / flicker
-   when colliding with reveal animations and sticky elements. */
-body { overflow-x: hidden; }
+/* overflow-x: clip is the modern equivalent of hidden — it stops horizontal
+   scroll WITHOUT creating a scroll container, so position: sticky still works
+   inside descendants. Fallback to hidden for very old browsers. */
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+body > main,
+body > footer,
+body > nav,
+body > .top-banner { max-width: 100vw; }
 img, video, picture, iframe { max-width: 100%; height: auto; }
 
 @media (max-width: 768px) {

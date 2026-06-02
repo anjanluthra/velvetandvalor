@@ -1062,3 +1062,68 @@ svg    { display: block; }
 @media (max-width: 480px) {
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+
+/* ============================================================
+   INSTAGRAM CTA — compact link section (no grid)
+   ============================================================ */
+.instagram-cta {
+  padding: 90px 0;
+  background: var(--obsidian-deep);
+  text-align: center;
+}
+.ig-cta-inner {
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ig-cta-rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold-muted);
+  margin: 0 auto 24px;
+}
+.ig-cta-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 14px 0 16px;
+}
+.ig-cta-sub {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--cream-muted);
+  margin: 0 auto 28px;
+  max-width: 460px;
+}
+.ig-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border: 1px solid var(--gold-muted);
+  border-radius: 999px;
+  font-family: var(--font-authority);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-decoration: none;
+  transition: all 0.3s var(--ease-out);
+}
+.ig-cta-button:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--obsidian);
+  transform: translateY(-1px);
+}
+.ig-cta-icon { flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .instagram-cta { padding: 60px 0; }
+  .ig-cta-sub { font-size: 0.9375rem; }
+  .ig-cta-button { font-size: 0.8125rem; padding: 11px 18px; }
+}

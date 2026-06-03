@@ -546,9 +546,10 @@ svg    { display: block; }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1fr;
+  gap: 64px;
   margin-bottom: 64px;
+  max-width: 880px;
 }
 
 .footer-brand .footer-logo {

@@ -576,25 +576,32 @@ svg    { display: block; }
 
 .footer-social {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  margin-top: 8px;
 }
 
 .footer-social-link {
-  width: 34px; height: 34px;
-  border: 1px solid var(--gold-subtle);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--cream-muted);
-  font-family: var(--font-authority);
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 999px;
+  color: var(--cream-mid);
+  font-family: var(--font-sans);
   font-size: 0.8125rem;
-  letter-spacing: 0.05em;
-  transition: border-color 0.3s, color 0.3s;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+  white-space: nowrap;
 }
 .footer-social-link:hover {
   border-color: var(--gold-muted);
+  background: rgba(26, 144, 144, 0.06);
   color: var(--gold);
 }
+.footer-social-link svg { flex-shrink: 0; }
 
 .footer-col-title {
   font-family: var(--font-authority);

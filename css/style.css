@@ -69,7 +69,10 @@ body {
   font-weight: 400;
   line-height: 1.75;
   overflow-x: hidden;
+  /* Stop pull-to-refresh — accidental swipe was wiping checkout context */
+  overscroll-behavior-y: contain;
 }
+html { overscroll-behavior-y: contain; }
 
 img    { max-width: 100%; display: block; }
 a      { color: inherit; text-decoration: none; }
@@ -1361,3 +1364,91 @@ html, body {
   max-width: 100%;
   overflow-x: clip;
 }
+
+
+/* ============================================================
+   In-app browser warning banner (Instagram/Facebook/TikTok WebView)
+   ============================================================ */
+#vv-iab-banner {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 100000;
+  padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(7,20,40,0.92) 0%, rgba(4,13,28,0.98) 100%);
+  border-top: 1px solid var(--gold-muted);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: vvIabIn 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s, transform 0.25s;
+}
+#vv-iab-banner.vv-iab-leaving { opacity: 0; transform: translateY(16px); }
+@keyframes vvIabIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+.vv-iab-inner {
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  padding: 4px 32px 4px 0;
+}
+.vv-iab-close {
+  position: absolute;
+  top: 0; right: 0;
+  width: 28px; height: 28px;
+  border: none; background: transparent;
+  color: var(--cream-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.vv-iab-close:hover { color: var(--cream); }
+
+.vv-iab-title {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 6px;
+}
+.vv-iab-title svg { flex-shrink: 0; }
+
+.vv-iab-body {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--cream-mid);
+  margin: 0 0 12px;
+}
+.vv-iab-body strong { color: var(--cream); font-weight: 600; }
+
+.vv-iab-actions {
+  display: flex;
+  gap: 8px;
+}
+.vv-iab-actions button {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.vv-iab-copy {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: var(--obsidian);
+}
+.vv-iab-copy:hover { background: var(--gold-bright); border-color: var(--gold-bright); }
+.vv-iab-dismiss {
+  background: transparent;
+  border: 1px solid var(--gold-muted);
+  color: var(--cream-mid);
+}
+.vv-iab-dismiss:hover { border-color: var(--gold); color: var(--cream); }

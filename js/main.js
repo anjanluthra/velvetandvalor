@@ -63,53 +63,18 @@
 })();
 
 
-/* ── Navigation (smart-sticky: hide on scroll-down, show on scroll-up) ─ */
+/* ── Navigation (nav scrolls naturally — no fixed/smart-sticky) ──── */
 (function initNav() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
-
-  let lastY = window.scrollY;
-  let ticking = false;
-
+  // Keep .scrolled class so backwards-compatible style hooks still apply
   function onScroll() {
-    const y = window.scrollY;
-    nav.classList.toggle('scrolled', y > 50);
-
-    // Smart-sticky: only on mobile (≤768px) — hide nav when user scrolls down,
-    // show it again when user scrolls up even a few pixels.
-    if (window.innerWidth <= 768) {
-      const goingDown = y > lastY;
-      // Pad against tiny jitter
-      if (Math.abs(y - lastY) > 4) {
-        if (goingDown && y > 120) {
-          nav.classList.add('nav-hidden');
-          // Also close the mobile menu when nav hides
-          const menu = document.querySelector('.nav-mobile-menu');
-          const toggle = document.querySelector('.nav-mobile-toggle');
-          if (menu && menu.classList.contains('open')) {
-            menu.classList.remove('open');
-            if (toggle) toggle.setAttribute('aria-expanded', 'false');
-          }
-        } else {
-          nav.classList.remove('nav-hidden');
-        }
-        lastY = y;
-      }
-    } else {
-      nav.classList.remove('nav-hidden');
-    }
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+    // Ensure smart-sticky hidden state can never be set anymore
+    nav.classList.remove('nav-hidden');
   }
-
-  function tick() {
-    if (!ticking) {
-      window.requestAnimationFrame(() => { onScroll(); ticking = false; });
-      ticking = true;
-    }
-  }
-
-  window.addEventListener('scroll', tick, { passive: true });
-  window.addEventListener('resize', tick, { passive: true });
-  onScroll(); // run on init
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 })();
 
 

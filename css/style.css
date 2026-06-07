@@ -126,6 +126,30 @@ svg    { display: block; }
 }
 
 @media (max-width: 768px) {
+  /* Top banner scrolls away naturally on mobile — was sticky/fixed and
+     stacking with the nav + shipping alert to eat ~150px of viewport. */
+  .top-banner {
+    position: relative !important;
+    top: auto !important;
+  }
+  /* Nav sits at the very top of the viewport on mobile (no banner above) */
+  .nav {
+    top: 0 !important;
+  }
+  /* Shipping alert no longer needs to clear the (now-scrolling) banner */
+  .shipping-alert {
+    margin-top: var(--nav-height) !important;
+  }
+  /* Heroes that compensate for fixed header — they only need the nav now */
+  .hero,
+  .custom-hero,
+  .product-section,
+  .page-hero,
+  .collection-hero,
+  .brand-story-page {
+    padding-top: var(--nav-height) !important;
+  }
+
   .top-banner-inner {
     justify-content: center;
   }

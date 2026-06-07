@@ -135,6 +135,12 @@ svg    { display: block; }
   /* Nav sits at the very top of the viewport on mobile (no banner above) */
   .nav {
     top: 0 !important;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: transform;
+  }
+  /* Smart-sticky: nav slides up out of view when scrolling down */
+  .nav.nav-hidden {
+    transform: translateY(-100%) !important;
   }
   /* Shipping alert no longer needs to clear the (now-scrolling) banner */
   .shipping-alert {

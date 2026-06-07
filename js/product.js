@@ -284,26 +284,10 @@ function updateURL() {
 })();
 
 
-/* ── Mobile Menu ─────────────────────────────────────────────── */
+/* Mobile menu handled by main.js — removed duplicate handler that was
+   double-toggling the menu open then immediately closed. */
 (function initMobileMenu() {
-  const toggle = document.querySelector('.nav-mobile-toggle');
-  const menu = document.querySelector('.nav-mobile-menu');
-  if (!toggle || !menu) return;
-
-  toggle.addEventListener('click', () => {
-    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', !isOpen);
-    menu.classList.toggle('open');
-    menu.setAttribute('aria-hidden', isOpen);
-  });
-
-  menu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      toggle.setAttribute('aria-expanded', 'false');
-      menu.classList.remove('open');
-      menu.setAttribute('aria-hidden', 'true');
-    });
-  });
+  return;
 })();
 
 

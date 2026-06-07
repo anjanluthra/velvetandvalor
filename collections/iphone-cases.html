@@ -427,16 +427,8 @@
       });
     });
 
-    // Mobile menu
-    const toggle = document.querySelector('.nav-mobile-toggle');
-    const menu = document.querySelector('.nav-mobile-menu');
-    if (toggle && menu) {
-      toggle.addEventListener('click', () => {
-        const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', !isOpen);
-        menu.classList.toggle('open');
-      });
-    }
+    // Mobile menu — handled by main.js; duplicate handler here was
+    // double-toggling the menu open then immediately closed.
   </script>
 </body>
 </html>

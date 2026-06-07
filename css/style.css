@@ -86,10 +86,9 @@ svg    { display: block; }
   background: var(--cream);
   color: var(--obsidian);
   padding: 8px 0;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--banner-height);
+  position: relative;
   z-index: 1001;
+  height: var(--banner-height);
   display: flex;
   align-items: center;
 }

@@ -33,13 +33,25 @@
   ];
 
   const COUNTRY_TO_CURRENCY = {
-    US: 'USD', GB: 'GBP', IE: 'EUR', DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR',
-    NL: 'EUR', BE: 'EUR', AT: 'EUR', PT: 'EUR', GR: 'EUR', FI: 'EUR', LU: 'EUR',
-    MT: 'EUR', CY: 'EUR', EE: 'EUR', LV: 'EUR', LT: 'EUR', SK: 'EUR', SI: 'EUR',
-    CA: 'CAD', AU: 'AUD', NZ: 'NZD', AE: 'AED', SA: 'SAR', QA: 'AED', KW: 'AED',
-    BH: 'AED', OM: 'AED', IN: 'INR', SG: 'SGD', HK: 'HKD', JP: 'JPY', CH: 'CHF',
-    SE: 'SEK', NO: 'NOK', DK: 'DKK', ZA: 'ZAR', BR: 'BRL', MX: 'MXN',
+    // English-speaking
+    US: 'USD', GB: 'GBP', CA: 'CAD', AU: 'AUD', NZ: 'NZD', IE: 'EUR',
+    // Eurozone + other EU
+    DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR', BE: 'EUR',
+    AT: 'EUR', PT: 'EUR', GR: 'EUR', FI: 'EUR', LU: 'EUR', MT: 'EUR',
+    CY: 'EUR', EE: 'EUR', LV: 'EUR', LT: 'EUR', SK: 'EUR', SI: 'EUR',
     PL: 'EUR', CZ: 'EUR', HU: 'EUR', RO: 'EUR', BG: 'EUR', HR: 'EUR',
+    // Middle East (Kate's market — UAE base)
+    AE: 'AED', SA: 'SAR', QA: 'AED', KW: 'AED', BH: 'AED', OM: 'AED',
+    JO: 'AED', LB: 'AED', IL: 'USD',
+    // Asia-Pacific
+    IN: 'INR', SG: 'SGD', HK: 'HKD', JP: 'JPY', KR: 'USD', MY: 'USD',
+    TH: 'USD', PH: 'USD', ID: 'USD', VN: 'USD', TW: 'USD', CN: 'USD',
+    // Europe (non-EUR)
+    CH: 'CHF', SE: 'SEK', NO: 'NOK', DK: 'DKK', IS: 'EUR',
+    // Africa
+    ZA: 'ZAR', NG: 'USD', EG: 'USD', MA: 'EUR', KE: 'USD',
+    // Latin America
+    BR: 'BRL', MX: 'MXN', AR: 'USD', CL: 'USD', CO: 'USD', PE: 'USD',
   };
 
   const STORAGE_KEY    = 'vv_currency';
@@ -184,16 +196,20 @@
   }
 
   function init() {
-    // Always default to USD on first visit. Remember user's choice across pages.
-    let initial = 'USD';
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) initial = saved;
-    } catch (e) { /* ignore */ }
+    // 1. If user previously chose a currency on this device, honour it.
+    // 2. Otherwise, detect their country via ipapi.co and map to the local
+    //    currency (e.g. GB → GBP, IE → EUR, AE → AED, US → USD).
+    // 3. Fall back to USD if detection fails.
+    let saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
 
-    loadRates().then((rates) => {
-      mountToggle(initial, (newCode) => applyPrices(rates, newCode));
-      applyPrices(rates, initial);
+    const codePromise = saved
+      ? Promise.resolve(saved)
+      : detectCountry().then(cc => COUNTRY_TO_CURRENCY[cc] || 'USD');
+
+    Promise.all([loadRates(), codePromise]).then(([rates, code]) => {
+      mountToggle(code, (newCode) => applyPrices(rates, newCode));
+      applyPrices(rates, code);
     });
   }
 

@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
               name: `Noble Steed — ${designName}`,
               description: description,
             },
-            unit_amount: 5500, // $55.00 in cents
+            unit_amount: 4800, // $48.00 in cents (~ £38 GBP)
           },
           quantity: 1,
         },

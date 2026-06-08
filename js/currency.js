@@ -4,7 +4,7 @@
  *
  * - Geo-detects user country (ipapi.co), maps to currency.
  * - Fetches USD rates (open.er-api.com), caches 12h in localStorage.
- * - Reads any element with [data-price-usd="55.00"] and rewrites text in selected currency.
+ * - Reads any element with [data-price-usd="48.00"] and rewrites text in selected currency.
  * - Persists user choice in localStorage.
  */
 (function () {

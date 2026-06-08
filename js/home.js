@@ -29,8 +29,12 @@
 
   const POPUP_KEY = 'vv_popup_dismissed';
 
+  // Storage helpers — Safari private mode throws on access
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
   // Don't show if already dismissed
-  if (localStorage.getItem(POPUP_KEY)) return;
+  if (safeGet(POPUP_KEY)) return;
 
   // Show after 4 seconds
   const timer = setTimeout(() => {
@@ -41,7 +45,7 @@
   function closePopup() {
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
-    localStorage.setItem(POPUP_KEY, 'true');
+    safeSet(POPUP_KEY, 'true');
     clearTimeout(timer);
   }
 
@@ -111,14 +115,14 @@
   if (!overlay) return;
 
   function showPopup() {
-    if (localStorage.getItem('vv_journal_popup_dismissed')) return;
+    try { if (localStorage.getItem('vv_journal_popup_dismissed')) return; } catch (e) {}
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
   }
   function closePopup() {
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
-    localStorage.setItem('vv_journal_popup_dismissed', '1');
+    try { localStorage.setItem('vv_journal_popup_dismissed', '1'); } catch (e) {}
   }
 
   // Expose globally so other forms can trigger it

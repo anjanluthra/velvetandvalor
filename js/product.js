@@ -219,7 +219,9 @@ function updateURL() {
         if (t !== trigger) {
           t.classList.remove('open');
           t.setAttribute('aria-expanded', 'false');
-          t.closest('.accordion-item').querySelector('.accordion-panel').classList.remove('open');
+          const item = t.closest('.accordion-item');
+          const otherPanel = item && item.querySelector('.accordion-panel');
+          if (otherPanel) otherPanel.classList.remove('open');
         }
       });
 
@@ -250,9 +252,12 @@ function updateURL() {
     const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
     const finishLabel = 'Glossy';
 
-    // Collect customer insights from sessionStorage
-    const productSuggestion = sessionStorage.getItem('vv_product_suggestion') || '';
-    const journalWaitlist = sessionStorage.getItem('vv_journal_waitlist') || 'no';
+    // Collect customer insights from sessionStorage (Safari private mode safe)
+    let productSuggestion = '', journalWaitlist = 'no';
+    try {
+      productSuggestion = sessionStorage.getItem('vv_product_suggestion') || '';
+      journalWaitlist = sessionStorage.getItem('vv_journal_waitlist') || 'no';
+    } catch (e) { /* private mode */ }
 
     try {
       const res = await fetch('/api/create-checkout', {
@@ -351,7 +356,7 @@ function updateURL() {
       } catch (e) { /* silent fail */ }
 
       // Store in sessionStorage for Stripe metadata
-      sessionStorage.setItem('vv_journal_waitlist', 'yes');
+      try { sessionStorage.setItem('vv_journal_waitlist', 'yes'); } catch (e) {}
 
       // Show success with journal image + 15% code
       fields.style.display = 'none';
@@ -373,7 +378,7 @@ function updateURL() {
     if (!value) return;
 
     // Save to sessionStorage so it gets passed to Stripe metadata on checkout
-    sessionStorage.setItem('vv_product_suggestion', value);
+    try { sessionStorage.setItem('vv_product_suggestion', value); } catch (e) {}
 
     // Show thanks
     submitBtn.style.display = 'none';

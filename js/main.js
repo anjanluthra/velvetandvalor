@@ -5,6 +5,25 @@
 
 'use strict';
 
+/* ── Global Error Containment ──────────────────────────────────
+   Never let an unhandled JS error tear down the page. Errors get
+   logged to console for our debugging but customers see no Red-X.
+   ─────────────────────────────────────────────────────────────── */
+window.addEventListener('error', function (e) {
+  // Don't suppress; just keep the page alive. Browsers won't show a UI
+  // for thrown errors but our handlers continue.
+  if (window.console && console.warn) {
+    console.warn('[V&V] handled JS error:', e.message, e.filename + ':' + e.lineno);
+  }
+}, true);
+window.addEventListener('unhandledrejection', function (e) {
+  if (window.console && console.warn) {
+    console.warn('[V&V] unhandled promise:', e.reason && (e.reason.message || e.reason));
+  }
+  // Stop the default 'Uncaught (in promise)' noise
+  e.preventDefault();
+});
+
 /* ── Custom Cursor ─────────────────────────────────────────── */
 (function initCursor() {
   const dot  = document.querySelector('.cursor-dot');

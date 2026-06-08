@@ -113,6 +113,24 @@
       if (isNaN(usd)) return;
       const prefix = el.getAttribute('data-price-prefix') || '';
       const suffix = el.getAttribute('data-price-suffix') || '';
+      // Currency-specific override: if data-price-<lowercase-code> is set,
+      // display that exact value instead of converting from USD.
+      // (Lets us lock round GBP numbers like £58/£5 regardless of FX rate.)
+      const overrideAttr = 'data-price-' + currencyCode.toLowerCase();
+      if (el.hasAttribute(overrideAttr)) {
+        const overrideVal = parseFloat(el.getAttribute(overrideAttr));
+        if (!isNaN(overrideVal)) {
+          const cur = getCurrency(currencyCode);
+          let display;
+          if (currencyCode === 'JPY') {
+            display = `${cur.symbol}${Math.round(overrideVal).toLocaleString()}`;
+          } else {
+            display = `${cur.symbol}${overrideVal.toFixed(2)}`;
+          }
+          el.textContent = prefix + display + suffix;
+          return;
+        }
+      }
       el.textContent = prefix + formatPrice(usd, rates, currencyCode) + suffix;
     });
     // Notice on checkout buttons: charged in USD

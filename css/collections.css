@@ -283,3 +283,13 @@
 @media (max-width: 400px) {
   .riders-motto-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Noble Steed collection header — reuses Rider's Motto header type */
+.noble-steed-header {
+  text-align: center;
+  margin: 24px 0 48px;
+}
+@media (max-width: 900px) {
+  .noble-steed-header { margin: 16px 0 32px; }
+}

@@ -241,21 +241,63 @@
             </span>
           </a>
 
-          <!-- Surface (Glossy only) -->
+          <!-- Surface kept as hidden input for checkout metadata -->
           <input type="hidden" id="surfaceName" value="Glossy" />
-          <div class="option-group">
-            <div class="option-label">
-              <span class="option-label-text">Finish</span>
-              <span class="option-label-value">Glossy</span>
-            </div>
-            <p style="font-size: 0.75rem; color: var(--cream-muted); line-height: 1.5; margin-top: -2px;">A high-shine, vibrant glossy finish &mdash; the signature look for every Velvet &amp; Valor case.</p>
-          </div>
 
-          <!-- Trust line (like Mous) -->
-          <div class="trust-inline">
-            <span>&#10003; Worldwide shipping</span>
-            <span>&#9830; Fashion-forward design</span>
-          </div>
+          <!-- Quick-glance feature row — 4 icons -->
+          <ul class="quick-features" aria-label="Case highlights">
+            <li class="quick-feature">
+              <span class="qf-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12c4 0 4-4 9-4s5 4 9 4-4 4-9 4-5-4-9-4Z"/>
+                  <path d="M12 8v8"/>
+                </svg>
+              </span>
+              <span class="qf-text">
+                <strong>Premium gloss</strong>
+                <span>Smooth, reflective finish</span>
+              </span>
+            </li>
+            <li class="quick-feature">
+              <span class="qf-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z"/>
+                  <path d="m9 12.5 2.2 2.2L15 11"/>
+                </svg>
+              </span>
+              <span class="qf-text">
+                <strong>Durable &amp; non-flex</strong>
+                <span>Drop-tested polycarbonate</span>
+              </span>
+            </li>
+            <li class="quick-feature">
+              <span class="qf-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/>
+                  <circle cx="12" cy="12" r="4.5"/>
+                  <circle cx="12" cy="12" r="1.3" fill="currentColor"/>
+                </svg>
+              </span>
+              <span class="qf-text">
+                <strong>MagSafe</strong>
+                <span>Wireless charging ready</span>
+              </span>
+            </li>
+            <li class="quick-feature">
+              <span class="qf-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m4 20 8.5-8.5"/>
+                  <path d="M12.5 11.5 18 6c1-1 1.5-1.8 1.5-3-1.2 0-2 .5-3 1.5L11 10"/>
+                  <path d="m13.5 13.5 1 1L17 12l-1.5-1.5"/>
+                  <path d="M3.5 20.5 7 17"/>
+                </svg>
+              </span>
+              <span class="qf-text">
+                <strong>Artist-designed</strong>
+                <span>For self-development</span>
+              </span>
+            </li>
+          </ul>
 
           <!-- Model Confirmation -->
           <label class="model-confirm-card" for="modelConfirmCheckbox">

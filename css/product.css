@@ -2303,3 +2303,71 @@
   }
   .product-rating-inline { gap: 0; }
 }
+
+
+/* ============================================================
+   Quick features row — 4 icons summarising case highlights
+   (sits between bespoke prompt and 'I've confirmed my model')
+   ============================================================ */
+.quick-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 22px 0 18px;
+  padding: 18px 16px;
+  list-style: none;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 12px;
+  background: rgba(26, 144, 144, 0.04);
+}
+.quick-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.qf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(26, 144, 144, 0.10);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.qf-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.25;
+}
+.qf-text strong {
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--cream);
+}
+.qf-text span {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  color: var(--cream-muted);
+  line-height: 1.35;
+}
+
+@media (max-width: 600px) {
+  .quick-features {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px 12px;
+  }
+}
+@media (max-width: 360px) {
+  .quick-features { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .qf-icon { width: 34px; height: 34px; }
+  .qf-text strong { font-size: 0.6875rem; }
+  .qf-text span { font-size: 0.625rem; }
+}

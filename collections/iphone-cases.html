@@ -152,17 +152,10 @@
         <p class="collection-desc">Luxury equestrian-inspired phone cases. Available for 24 iPhone models in a premium glossy finish.</p>
 
         <div class="collection-filters">
-          <span class="filter-label">Filter:</span>
-          <button class="filter-btn active" data-filter="all">All Designs</button>
-          <button class="filter-btn" data-filter="nude">Nude</button>
-          <button class="filter-btn" data-filter="pink">Pink</button>
-          <button class="filter-btn" data-filter="burgundy">Burgundy</button>
-          <button class="filter-btn" data-filter="plum">Plum</button>
-          <button class="filter-btn" data-filter="navy-blue">Navy Blue</button>
-          <button class="filter-btn" data-filter="blue">Blue</button>
-          <button class="filter-btn" data-filter="teal">Teal</button>
-          <button class="filter-btn" data-filter="racing-green">Racing Green</button>
-          <button class="filter-btn" data-filter="charcoal-grey">Charcoal Grey</button>
+          <span class="filter-label">View:</span>
+          <button class="filter-btn active" data-collection="all">All Cases</button>
+          <button class="filter-btn" data-collection="noble-steed">Noble Steed</button>
+          <button class="filter-btn" data-collection="riders-motto">The Rider&rsquo;s Motto</button>
         </div>
       </div>
     </section>
@@ -521,21 +514,25 @@
   <script src="../js/main.js"></script>
   <script src="../js/currency.js"></script>
   <script>
-    // Filter functionality
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        document.querySelectorAll('.product-card').forEach(card => {
-          if (filter === 'all' || card.dataset.design === filter) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
+    // Collection filter — toggles between Noble Steed grid and Rider's Motto section
+    (function initCollectionFilter() {
+      const nobleGrid = document.getElementById('productGrid');
+      const rmSection = document.querySelector('.riders-motto-section');
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const collection = btn.dataset.collection || 'all';
+          if (nobleGrid) {
+            nobleGrid.style.display = (collection === 'all' || collection === 'noble-steed') ? '' : 'none';
+          }
+          if (rmSection) {
+            rmSection.style.display = (collection === 'all' || collection === 'riders-motto') ? '' : 'none';
           }
         });
       });
-    });
+    })();
 
     // Mobile menu — handled by main.js; duplicate handler here was
     // double-toggling the menu open then immediately closed.

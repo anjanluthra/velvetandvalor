@@ -1466,3 +1466,72 @@ html, body {
   color: var(--cream-mid);
 }
 .vv-iab-dismiss:hover { border-color: var(--gold); color: var(--cream); }
+
+
+/* ============================================================
+   Bespoke prompt — links from any case page to /custom
+   ============================================================ */
+.bespoke-prompt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(26, 144, 144, 0.06) 0%, rgba(26, 144, 144, 0.02) 100%);
+  text-decoration: none;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s;
+}
+.bespoke-prompt:hover {
+  border-color: var(--gold-muted);
+  background: linear-gradient(135deg, rgba(26, 144, 144, 0.12) 0%, rgba(26, 144, 144, 0.04) 100%);
+  transform: translateY(-1px);
+}
+.bespoke-prompt-mark {
+  flex-shrink: 0;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.bespoke-prompt-text {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--cream-mid);
+}
+.bespoke-prompt-text strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--cream);
+  font-weight: 600;
+}
+.bespoke-prompt-cta {
+  flex-shrink: 0;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* Wide variant for collections / shop-all top of page */
+.bespoke-prompt-wide {
+  max-width: 880px;
+  margin: 0 auto 32px;
+  padding: 18px 24px;
+}
+
+@media (max-width: 600px) {
+  .bespoke-prompt {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .bespoke-prompt-cta { align-self: flex-end; }
+}

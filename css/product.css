@@ -2371,3 +2371,28 @@
   .qf-text strong { font-size: 0.6875rem; }
   .qf-text span { font-size: 0.625rem; }
 }
+
+
+/* ============================================================
+   Rider's Motto — product page variant swatches + edition eyebrow
+   ============================================================ */
+.rm-pdp-edition {
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+/* Two-tone navy + accent swatches. The accent ring colour varies. */
+.rm-swatch {
+  position: relative;
+  background: linear-gradient(135deg, #0C1E3A 50%, var(--accent, var(--gold)) 50%);
+}
+.rm-swatch-pink         { --accent: #F4B6BE; }
+.rm-swatch-baby-blue    { --accent: #A8C8EB; }
+.rm-swatch-teal         { --accent: #2A9090; }
+.rm-swatch-orange       { --accent: #E26A2C; }
+.rm-swatch-purple-green { background: linear-gradient(135deg, #2D5F4A 50%, #5A2A6B 50%); }

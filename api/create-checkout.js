@@ -9,12 +9,24 @@ module.exports = async (req, res) => {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { design, model, finish, product_suggestion, journal_waitlist } = req.body;
+  const {
+    design,
+    model,
+    finish,
+    product_suggestion,
+    journal_waitlist,
+    collection,         // new: 'Noble Steed' (default) or 'The Rider's Motto'
+    unit_amount_cents,  // new: per-collection price override (cents)
+  } = req.body;
 
   // Build a readable description for the order
   const designName = design || 'Noble Steed Case';
   const modelName = model || 'iPhone';
   const finishName = finish || 'Glossy';
+  const collectionName = collection || 'Noble Steed';
+  const safeUnitAmount = (typeof unit_amount_cents === 'number' && unit_amount_cents >= 100 && unit_amount_cents <= 50000)
+    ? unit_amount_cents
+    : 4800; // $48.00 default
   const description = `${designName} — ${modelName} (${finishName})`;
 
   try {
@@ -26,10 +38,10 @@ module.exports = async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `Noble Steed — ${designName}`,
+              name: `${collectionName} — ${designName}`,
               description: description,
             },
-            unit_amount: 4800, // $48.00 in cents (~ £38 GBP)
+            unit_amount: safeUnitAmount,
           },
           quantity: 1,
         },

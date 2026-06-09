@@ -515,9 +515,96 @@
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
 }
+
+/* ── Collection feature cards (homepage 3-card row) ─────────── */
+.collection-feature-card {
+  display: block;
+  background: var(--obsidian-mid);
+  border: 1px solid var(--gold-whisper);
+  text-decoration: none;
+  transition: border-color 0.35s, transform 0.35s var(--ease-out), box-shadow 0.35s;
+}
+.collection-feature-card:hover {
+  border-color: var(--gold-muted);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+.cf-image {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  background: #fff;
+  overflow: hidden;
+}
+.cf-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cf-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 12px;
+  background: var(--gold);
+  color: var(--obsidian);
+  font-family: var(--font-authority);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.cf-badge-new { background: var(--gold); color: var(--obsidian); }
+.cf-badge-bespoke { background: var(--gold); color: var(--obsidian); }
+
+.cf-info {
+  padding: 24px 22px 26px;
+  text-align: left;
+}
+.cf-eyebrow {
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 12px;
+}
+.cf-name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  color: var(--cream);
+  margin: 0 0 12px;
+}
+.cf-name em { font-style: italic; color: var(--gold); }
+.cf-meta {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--cream-muted);
+  margin: 0 0 16px;
+}
+.cf-meta em { font-style: italic; color: var(--cream-mid); }
+.cf-cta {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  transition: gap 0.25s var(--ease-out);
+  gap: 4px;
+}
+.collection-feature-card:hover .cf-cta { color: var(--gold-bright); }
 
 /* Journal card placeholder in featured grid */
 .journal-card-image {
@@ -2066,4 +2153,18 @@
 @media (max-width: 768px) {
   .brand-story-page { padding-top: 32px; padding-bottom: 64px; }
   .story-cta { gap: 10px; }
+}
+
+
+/* ── Collection feature cards — responsive ─────────────────── */
+@media (max-width: 900px) {
+  .featured-grid { grid-template-columns: 1fr; gap: 20px; max-width: 460px; }
+  .cf-image { aspect-ratio: 3 / 2; max-height: 320px; }
+  .cf-image img { object-position: center 35%; }
+  .cf-info { padding: 18px 16px 22px; }
+}
+@media (max-width: 480px) {
+  .cf-name { font-size: 1.375rem !important; }
+  .cf-eyebrow { font-size: 0.625rem !important; letter-spacing: 0.18em !important; }
+  .cf-meta { font-size: 0.75rem !important; }
 }

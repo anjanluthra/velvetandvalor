@@ -1535,3 +1535,83 @@ html, body {
   }
   .bespoke-prompt-cta { align-self: flex-end; }
 }
+
+
+/* ============================================================
+   MOBILE POLISH — final pass covering recent additions
+   (Rider's Motto pages, collection tabs, new headers, quick-features)
+   ============================================================ */
+
+@media (max-width: 600px) {
+  /* Collection titles: clamp floor was 2.25rem (36px) which could overflow
+     360px viewports — cap them so 'The Rider's Motto.' always fits. */
+  .riders-motto-title {
+    font-size: clamp(1.75rem, 7vw, 2.25rem) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .riders-motto-sub {
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+    padding: 0 4px;
+  }
+  .riders-motto-section { margin: 40px 0 32px !important; padding-top: 32px !important; }
+  .noble-steed-header { margin: 12px 0 24px !important; }
+
+  /* Collection tab buttons (3 tabs) wrap if needed */
+  .collection-filters {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    justify-content: center;
+    padding: 0 8px;
+  }
+  .collection-filters .filter-label { display: none; } /* 'View:' hidden on phones to save space */
+  .collection-filters .filter-btn {
+    font-size: 0.6875rem !important;
+    padding: 8px 14px !important;
+    flex: 0 1 auto;
+  }
+
+  /* Bespoke prompt — keep readable, never push width */
+  .bespoke-prompt,
+  .bespoke-prompt-wide {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left;
+    padding: 14px 14px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto;
+  }
+  .bespoke-prompt-text { font-size: 0.8125rem !important; }
+  .bespoke-prompt-cta { align-self: flex-end; font-size: 0.625rem !important; }
+
+  /* Rider's Motto grid: 4-col → 2-col, larger gap reset */
+  .riders-motto-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .rm-card-info { padding: 14px 12px 18px !important; }
+  .rm-card-name { font-size: 0.9375rem !important; }
+  .rm-card-edition { font-size: 0.5625rem !important; letter-spacing: 0.18em !important; }
+  .rm-card-price { font-size: 0.875rem !important; }
+
+  /* Quick features — keep 2-col on phones but tighten */
+  .quick-features {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 14px 10px !important;
+  }
+  .qf-icon { width: 32px !important; height: 32px !important; }
+  .qf-icon svg { width: 18px !important; height: 18px !important; }
+  .qf-text strong { font-size: 0.6875rem !important; }
+  .qf-text span { font-size: 0.5625rem !important; }
+}
+
+@media (max-width: 400px) {
+  .riders-motto-grid { grid-template-columns: 1fr !important; }
+  .riders-motto-title { font-size: 1.625rem !important; }
+  .riders-motto-sub { font-size: 0.8125rem !important; }
+  .rm-card-name { font-size: 0.875rem !important; }
+}

@@ -2396,3 +2396,5 @@
 .rm-swatch-teal         { --accent: #2A9090; }
 .rm-swatch-orange       { --accent: #E26A2C; }
 .rm-swatch-purple-green { background: linear-gradient(135deg, #2D5F4A 50%, #5A2A6B 50%); }
+.rm-swatch-burgundy      { --accent: #722030; }
+.rm-swatch-emerald-green { --accent: #1E5F3C; }

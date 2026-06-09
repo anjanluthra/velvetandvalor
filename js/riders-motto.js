@@ -5,11 +5,13 @@
 'use strict';
 
 const RM_DESIGNS = {
-  'pink':         { name: 'Navy & Baby Pink',   image: '/images/riders-motto-inside-leg-pink.jpg' },
-  'baby-blue':    { name: 'Navy & Baby Blue',   image: '/images/riders-motto-inside-leg-baby-blue.jpg' },
-  'teal':         { name: 'Navy & Teal',        image: '/images/riders-motto-inside-leg-teal.jpg' },
-  'orange':       { name: 'Navy & Orange',      image: '/images/riders-motto-inside-leg-orange.jpg' },
-  'purple-green': { name: 'Purple & Green',     image: '/images/riders-motto-inside-leg-wimbledon.jpg' },
+  'pink':           { name: 'Navy & Baby Pink',     image: '/images/riders-motto-inside-leg-pink.jpg' },
+  'baby-blue':      { name: 'Navy & Baby Blue',     image: '/images/riders-motto-inside-leg-baby-blue.jpg' },
+  'teal':           { name: 'Navy & Teal',          image: '/images/riders-motto-inside-leg-teal.jpg' },
+  'orange':         { name: 'Navy & Orange',        image: '/images/riders-motto-inside-leg-orange.jpg' },
+  'purple-green':   { name: 'Purple & Green',       image: '/images/riders-motto-inside-leg-wimbledon.jpg' },
+  'burgundy':       { name: 'Navy & Burgundy',      image: '/images/riders-motto-inside-leg-burgundy.jpg' },
+  'emerald-green':  { name: 'Navy & Emerald Green', image: '/images/riders-motto-inside-leg-emerald-green.jpg' },
 };
 
 const RM_COLLECTION = "The Rider's Motto — Inside Leg, Outside Rein";

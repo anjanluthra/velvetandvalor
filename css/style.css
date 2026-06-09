@@ -1616,3 +1616,48 @@ html, body {
   .riders-motto-sub { font-size: 0.8125rem !important; }
   .rm-card-name { font-size: 0.875rem !important; }
 }
+
+
+/* ============================================================
+   FINAL MOBILE SWEEP — covers any remaining elements added recently
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Rider's Motto product page eyebrow */
+  .rm-pdp-edition {
+    font-size: 0.625rem !important;
+    letter-spacing: 0.22em !important;
+    margin-bottom: 8px !important;
+  }
+  /* Rider's Motto colour swatches — same as Noble Steed sizing */
+  .rm-swatch { width: 36px !important; height: 36px !important; }
+
+  /* Featured grid 3-card mobile fit (homepage) — ensure container padding */
+  .featured-cases { padding: 56px 0 !important; }
+  .featured-grid { padding: 0 16px !important; }
+
+  /* All headings: word-break + hyphens for any unusual long copy */
+  h1, h2, h3, h4 {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+  }
+
+  /* Defensive: anything with min-width over 320 collapses */
+  [style*="min-width"] { min-width: 0 !important; }
+
+  /* Iframe / embed protection */
+  iframe { max-width: 100% !important; }
+}
+
+@media (max-width: 380px) {
+  /* Tightest viewport — make sure nothing pushes out */
+  .container { padding-left: 12px !important; padding-right: 12px !important; }
+  .cf-info { padding: 14px 12px 18px !important; }
+  .rm-card-info { padding: 12px 10px 16px !important; }
+  .rm-swatch { width: 32px !important; height: 32px !important; }
+  .quick-features { padding: 12px 8px !important; gap: 8px !important; }
+  .qf-icon { width: 28px !important; height: 28px !important; }
+  .qf-text strong { font-size: 0.625rem !important; }
+  .qf-text span { font-size: 0.5rem !important; }
+}

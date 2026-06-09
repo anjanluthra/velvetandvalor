@@ -149,3 +149,137 @@
   body { cursor: auto; }
   .cursor-dot, .cursor-ring { display: none; }
 }
+
+
+/* ============================================================
+   THE RIDER'S MOTTO — quote-edition section
+   ============================================================ */
+.riders-motto-section {
+  margin: 80px 0 56px;
+  padding: 56px 0 0;
+  border-top: 1px solid var(--gold-subtle);
+}
+.riders-motto-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.riders-motto-label {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+.riders-motto-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+.riders-motto-sub {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cream-mid);
+}
+.riders-motto-sub em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.riders-motto-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.rm-card {
+  display: block;
+  background: var(--obsidian-mid);
+  border: 1px solid var(--gold-whisper);
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.3s var(--ease-out);
+}
+.rm-card:hover {
+  border-color: var(--gold-muted);
+  transform: translateY(-3px);
+}
+.rm-card-image {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #fff;
+}
+.rm-card-image img {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  height: 92%;
+  width: auto;
+  max-width: none;
+}
+.rm-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  background: var(--gold);
+  color: var(--obsidian);
+  font-family: var(--font-authority);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rm-card-info {
+  padding: 18px 16px 22px;
+  text-align: center;
+}
+.rm-card-edition {
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+.rm-card-name {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--cream);
+  margin: 0 0 8px;
+}
+.rm-card-price {
+  font-family: var(--font-authority);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0;
+}
+
+.riders-motto-note {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--cream-muted);
+  font-style: italic;
+}
+.riders-motto-note a {
+  color: var(--gold);
+  border-bottom: 1px solid var(--gold-muted);
+  text-decoration: none;
+}
+.riders-motto-note a:hover { color: var(--gold-bright); border-bottom-color: var(--gold-bright); }
+
+@media (max-width: 900px) {
+  .riders-motto-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .riders-motto-section { margin: 56px 0 40px; padding-top: 40px; }
+  .riders-motto-header { margin-bottom: 32px; }
+}
+@media (max-width: 400px) {
+  .riders-motto-grid { grid-template-columns: 1fr; }
+}

@@ -1611,10 +1611,17 @@ html, body {
 }
 
 @media (max-width: 400px) {
-  .riders-motto-grid { grid-template-columns: 1fr !important; }
+  /* Force 2-col so customers can scan multiple colourways at a time */
+  .riders-motto-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
   .riders-motto-title { font-size: 1.625rem !important; }
   .riders-motto-sub { font-size: 0.8125rem !important; }
-  .rm-card-name { font-size: 0.875rem !important; }
+  .rm-card-name { font-size: 0.8125rem !important; }
+  .rm-card-edition { font-size: 0.5rem !important; letter-spacing: 0.16em !important; }
+  .rm-card-price { font-size: 0.8125rem !important; }
+  .rm-card-info { padding: 10px 8px 14px !important; }
 }
 
 

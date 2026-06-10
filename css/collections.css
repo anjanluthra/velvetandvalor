@@ -297,3 +297,172 @@
 @media (max-width: 900px) {
   .noble-steed-header { margin: 16px 0 32px; }
 }
+
+
+/* ============================================================
+   Collection Bridge — magnetic transition between Noble Steed
+   and The Rider's Motto sections (impossible to miss on mobile)
+   ============================================================ */
+.collection-bridge {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 28px;
+  margin: 56px auto 24px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, var(--obsidian-mid) 0%, var(--obsidian-light) 100%);
+  border: 1px solid var(--gold-subtle);
+  border-radius: 14px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.35s, transform 0.35s var(--ease-out), box-shadow 0.35s;
+}
+.collection-bridge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 50% 60% at 0% 50%, rgba(26, 144, 144, 0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.collection-bridge:hover {
+  border-color: var(--gold-muted);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Stacked case previews on the left */
+.cb-image {
+  position: relative;
+  width: 116px;
+  height: 110px;
+  flex-shrink: 0;
+}
+.cb-image img {
+  position: absolute;
+  width: 64px;
+  height: auto;
+  border: 1px solid var(--gold-whisper);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.cb-image img:nth-child(1) {
+  top: 0; left: 0;
+  transform: rotate(-6deg);
+  z-index: 1;
+}
+.cb-image img:nth-child(2) {
+  top: 8px; left: 28px;
+  transform: rotate(2deg);
+  z-index: 2;
+}
+.cb-image img:nth-child(3) {
+  top: 0; left: 56px;
+  transform: rotate(8deg);
+  z-index: 3;
+}
+
+.cb-content {
+  position: relative;
+  z-index: 1;
+}
+.cb-eyebrow {
+  display: inline-block;
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.cb-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  line-height: 1.2;
+  color: var(--cream);
+  margin: 0 0 8px;
+}
+.cb-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.cb-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--cream-muted);
+  margin: 0;
+}
+.cb-text em {
+  font-style: italic;
+  color: var(--cream-mid);
+}
+
+/* Animated chevron — gently bounces to draw the eye */
+.cb-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--obsidian);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  animation: cbBounce 2.2s ease-in-out infinite;
+}
+@keyframes cbBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+.collection-bridge:hover .cb-arrow { animation-play-state: paused; }
+
+/* ─── Mobile: the most important breakpoint for this banner ─── */
+@media (max-width: 700px) {
+  .collection-bridge {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'images  content'
+      'arrow   arrow';
+    gap: 16px;
+    padding: 18px 18px 16px;
+    margin: 32px auto 16px;
+  }
+  .cb-image { grid-area: images; width: 92px; height: 90px; }
+  .cb-image img { width: 52px; }
+  .cb-image img:nth-child(2) { left: 22px; }
+  .cb-image img:nth-child(3) { left: 44px; }
+  .cb-content { grid-area: content; }
+  .cb-eyebrow { font-size: 0.5625rem; letter-spacing: 0.18em; }
+  .cb-title { font-size: 1.0625rem; }
+  .cb-text { font-size: 0.75rem; line-height: 1.45; }
+  .cb-arrow {
+    grid-area: arrow;
+    width: 100%;
+    height: 38px;
+    border-radius: 999px;
+    margin-top: 4px;
+  }
+  /* Add a label inside the arrow on mobile so it's not just a chevron */
+  .cb-arrow::after {
+    content: 'Discover the new edition';
+    font-family: var(--font-authority);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-left: 8px;
+  }
+}
+@media (max-width: 380px) {
+  .cb-image { width: 80px; height: 78px; }
+  .cb-image img { width: 44px; }
+  .cb-image img:nth-child(2) { left: 18px; }
+  .cb-image img:nth-child(3) { left: 36px; }
+  .cb-title { font-size: 1rem; }
+  .cb-arrow::after { font-size: 0.5625rem; }
+}

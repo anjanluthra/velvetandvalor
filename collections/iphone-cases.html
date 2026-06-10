@@ -321,6 +321,28 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════
+             COLLECTION BRIDGE — invites users into Rider's Motto
+             ═══════════════════════════════════════════════════════ -->
+        <a class="collection-bridge" href="#riders-motto-heading" aria-label="Explore The Rider's Motto edition below">
+          <div class="cb-image" aria-hidden="true">
+            <img src="../images/riders-motto-inside-leg-pink.jpg" alt="" loading="lazy" />
+            <img src="../images/riders-motto-inside-leg-teal.jpg" alt="" loading="lazy" />
+            <img src="../images/riders-motto-inside-leg-orange.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="cb-content">
+            <span class="cb-eyebrow">New Edition &middot; Now Available</span>
+            <h3 class="cb-title">Also discover <em>The Rider&rsquo;s Motto.</em></h3>
+            <p class="cb-text">Quote-edition cases &mdash; <em>&ldquo;inside leg, outside rein&rdquo;</em> in 7 equestrian colourways. From £32.</p>
+          </div>
+          <span class="cb-arrow" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <polyline points="5 12 12 19 19 12"/>
+            </svg>
+          </span>
+        </a>
+
+        <!-- ═══════════════════════════════════════════════════════
              THE RIDER'S MOTTO — quote-edition cases
              ═══════════════════════════════════════════════════════ -->
         <section class="riders-motto-section" aria-labelledby="riders-motto-heading">
@@ -526,19 +548,22 @@
     // Collection filter — toggles between Noble Steed grid and Rider's Motto section
     (function initCollectionFilter() {
       const nobleGrid = document.getElementById('productGrid');
+      const nobleHeader = document.getElementById('noble-steed-collection');
       const rmSection = document.querySelector('.riders-motto-section');
+      const bridge = document.querySelector('.collection-bridge');
 
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const collection = btn.dataset.collection || 'all';
-          if (nobleGrid) {
-            nobleGrid.style.display = (collection === 'all' || collection === 'noble-steed') ? '' : 'none';
-          }
-          if (rmSection) {
-            rmSection.style.display = (collection === 'all' || collection === 'riders-motto') ? '' : 'none';
-          }
+          const showNoble = (collection === 'all' || collection === 'noble-steed');
+          const showRm    = (collection === 'all' || collection === 'riders-motto');
+          if (nobleGrid)   nobleGrid.style.display   = showNoble ? '' : 'none';
+          if (nobleHeader) nobleHeader.style.display = showNoble ? '' : 'none';
+          if (rmSection)   rmSection.style.display   = showRm    ? '' : 'none';
+          // Bridge only shows when BOTH collections are visible
+          if (bridge) bridge.style.display = (showNoble && showRm) ? '' : 'none';
         });
       });
     })();

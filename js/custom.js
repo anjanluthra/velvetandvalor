@@ -15,6 +15,54 @@
   // Track uploaded photo URL
   const photos = { 1: '' };
 
+  /* ── Image compression ─────────────────────────────────────
+     Vercel serverless functions reject bodies > 4.5 MB. iPhone
+     photos are routinely 5–12 MB, so we resize anything large
+     to maxSide on its longest edge and re-encode as JPEG. */
+  function compressImage(file, maxSide, quality) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const w0 = img.naturalWidth || img.width;
+          const h0 = img.naturalHeight || img.height;
+          if (!w0 || !h0) { URL.revokeObjectURL(url); return resolve(null); }
+          const scale = Math.min(1, maxSide / Math.max(w0, h0));
+          const w = Math.round(w0 * scale);
+          const h = Math.round(h0 * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          // Fill white in case original is transparent (avoid black PNG bg)
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob) => {
+            URL.revokeObjectURL(url);
+            if (!blob) return resolve(null);
+            // If the "compressed" version is somehow bigger than the original
+            // AND the original is already under the Vercel limit, keep original.
+            if (blob.size > file.size && file.size < 4 * 1024 * 1024) {
+              return resolve(null);
+            }
+            resolve(blob);
+          }, 'image/jpeg', quality);
+        } catch (e) {
+          URL.revokeObjectURL(url);
+          reject(e);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        // HEIC won't decode in most non-Safari browsers — let original through
+        resolve(null);
+      };
+      img.src = url;
+    });
+  }
+
   /* ── Photo Upload ──────────────────────────────────────── */
   function setupSlot(slotNumber) {
     const slot = document.getElementById('photoSlot' + slotNumber);
@@ -78,8 +126,10 @@
         showError('Please upload an image file (JPG, PNG, HEIC).');
         return;
       }
-      if (file.size > 10 * 1024 * 1024) {
-        showError('That photo is over 10MB. Please choose a smaller version.');
+      // Generous client cap — actual size limit is Vercel's 4.5 MB body limit,
+      // which is handled below by automatic resize/recompress.
+      if (file.size > 25 * 1024 * 1024) {
+        showError('That photo is over 25MB. Please choose a smaller version.');
         return;
       }
 
@@ -94,17 +144,41 @@
 
       // Upload to /api/upload-photo
       progress.hidden = false;
-      progressBar.style.width = '20%';
+      progressBar.style.width = '15%';
+      progressText.textContent = 'Preparing photo…';
+
+      // Compress large photos so we don't hit Vercel's 4.5MB function body limit.
+      // Most iPhone photos are 5-12MB; this brings them to ~1-2MB while keeping
+      // 2400px on the longest side (more than enough for the artist).
+      let uploadBlob = file;
+      let uploadFilename = file.name || `horse-${Date.now()}.jpg`;
+      let uploadContentType = file.type || 'image/jpeg';
+      try {
+        if (file.size > 3.5 * 1024 * 1024 || /\.heic$/i.test(file.name || '')) {
+          const compressed = await compressImage(file, 2400, 0.85);
+          if (compressed) {
+            uploadBlob = compressed;
+            // Always store as JPEG after canvas re-encode
+            uploadFilename = uploadFilename.replace(/\.[^.]+$/, '') + '.jpg';
+            uploadContentType = 'image/jpeg';
+          }
+        }
+      } catch (e) {
+        // If compression fails, try the original (will likely 413, then we show error)
+        if (window.console) console.warn('Compression skipped:', e);
+      }
+
+      progressBar.style.width = '40%';
       progressText.textContent = 'Uploading…';
 
       try {
         const res = await fetch('/api/upload-photo', {
           method: 'POST',
           headers: {
-            'Content-Type': file.type || 'image/jpeg',
-            'x-filename': file.name || `horse-${Date.now()}.jpg`,
+            'Content-Type': uploadContentType,
+            'x-filename': uploadFilename,
           },
-          body: file,
+          body: uploadBlob,
         });
 
         progressBar.style.width = '80%';

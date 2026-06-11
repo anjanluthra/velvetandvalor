@@ -893,7 +893,33 @@ select.form-input {
 .custom-hero-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: var(--obsidian);
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: background 0.3s var(--ease-out), transform 0.3s var(--ease-out), box-shadow 0.3s;
+  box-shadow: 0 10px 24px rgba(26, 144, 144, 0.18);
+}
+.custom-hero-cta:hover {
+  background: var(--gold-bright);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(26, 144, 144, 0.28);
+}
+.custom-hero-cta svg { transition: transform 0.3s var(--ease-out); }
+.custom-hero-cta:hover svg { transform: translateX(3px); }
+@media (max-width: 480px) {
+  .custom-hero-cta {
+    padding: 13px 26px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+  }
 }
 
 @media (max-width: 860px) {

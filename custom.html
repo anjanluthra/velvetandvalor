@@ -79,169 +79,72 @@
       </div>
     </aside>
 
-    <!-- HERO -->
-    <section class="custom-hero">
-      <div class="container custom-hero-inner">
-        <p class="custom-eyebrow">Bespoke &mdash; One of One</p>
-        <h1 class="custom-title">Your Horse. <em>Your Case.</em></h1>
-        <p class="custom-subtitle">
-          A one-of-a-kind phone case featuring an artistic, design-led portrait of your horse &mdash; curated specifically for you.
-        </p>
-        <p class="custom-price">
-          <span data-price-usd="73.00" data-price-gbp="58.00">$73.00</span>
-          <span class="custom-price-note">+ shipping</span>
-        </p>
-      </div>
-    </section>
-
-
-    <!-- FEATURED CASE — sample bespoke design -->
-    <section class="custom-showcase" aria-label="Example bespoke design">
-      <div class="container">
-        <figure class="custom-showcase-figure">
+        <!-- COMBINED HERO — image left, copy right (stacks on mobile) -->
+    <section class="custom-hero custom-hero-split">
+      <div class="container custom-hero-grid">
+        <figure class="custom-hero-image">
           <img
             src="/images/custom-case-prompt.jpg"
             alt="Example custom horse portrait phone case with personalised K · H monogram by Velvet &amp; Valor"
-            loading="lazy"
+            loading="eager"
           />
-          <figcaption class="custom-showcase-caption">
-            <span class="custom-showcase-mark" aria-hidden="true">&#10070;</span>
-            <span class="custom-showcase-title">Your Horse, Your Case.</span>
-            <span class="custom-showcase-sub">Bespoke design &middot; Personalised monogram</span>
+          <figcaption class="custom-hero-image-cap">
+            <span aria-hidden="true">&#10070;</span> Example bespoke design
           </figcaption>
         </figure>
-      </div>
-    </section>
-
-
-    <!-- HOW IT WORKS -->
-    <section class="custom-process">
-      <div class="container">
-        <h2 class="section-heading" style="text-align:center; margin-bottom: 48px;">How It Works</h2>
-        <div class="process-grid">
-          <div class="process-step">
-            <span class="process-num">01</span>
-            <h3 class="process-title">Share Your Horse</h3>
-            <p class="process-desc">Upload a clear, high-quality photo of your horse &mdash; face on, mane and markings visible.</p>
-          </div>
-          <div class="process-step">
-            <span class="process-num">02</span>
-            <h3 class="process-title">We Design</h3>
-            <p class="process-desc">Within 1&ndash;2 business days, your portrait is artfully created onto your chosen case.</p>
-          </div>
-          <div class="process-step">
-            <span class="process-num">03</span>
-            <h3 class="process-title">Delivered to You</h3>
-            <p class="process-desc">Your finished design is shared with you, then shipped worldwide &mdash; total turnaround 4&ndash;9 business days.</p>
-          </div>
+        <div class="custom-hero-copy">
+          <p class="custom-eyebrow">Bespoke &mdash; One of One</p>
+          <h1 class="custom-title">Your Horse. <em>Your Case.</em></h1>
+          <p class="custom-subtitle">
+            A one-of-a-kind phone case featuring an artistic, design-led portrait of your horse &mdash; curated specifically for you.
+          </p>
+          <p class="custom-price">
+            <span data-price-usd="73.00" data-price-gbp="58.00">$73.00</span>
+            <span class="custom-price-note">+ shipping</span>
+          </p>
+          <a href="#customForm" class="btn-primary custom-hero-cta">
+            Start Your Order
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
     </section>
 
 
-    <!-- PRODUCT IN MOTION -->
-    <section class="motion-showcase" aria-labelledby="custom-motion-heading">
+    <!-- HOW IT WORKS — compact horizontal strip -->
+    <section class="custom-process custom-process-compact">
       <div class="container">
-        <header class="motion-showcase-header reveal">
-          <div class="section-label">In Motion</div>
-          <h2 class="section-heading" id="custom-motion-heading">See it. Feel it.</h2>
-          <p class="motion-showcase-sub">A closer look at the craft &mdash; the weight, the finish, the detail.</p>
-        </header>
-
-        <div class="motion-showcase-grid">
-          <figure class="motion-video-card reveal">
-            <video
-              class="motion-video"
-              src="/videos/product-showcase-1.mov"
-              autoplay
-              muted
-              loop
-              playsinline
-              preload="metadata"
-              aria-label="Velvet &amp; Valor case in motion"
-            ></video>
-          </figure>
-          <figure class="motion-video-card reveal reveal-delay-2">
-            <video
-              class="motion-video"
-              src="/videos/product-showcase-2.mp4"
-              autoplay
-              muted
-              loop
-              playsinline
-              preload="metadata"
-              aria-label="Velvet &amp; Valor case detail"
-            ></video>
-          </figure>
-        </div>
+        <h2 class="custom-process-heading">How It Works</h2>
+        <ol class="custom-process-strip">
+          <li class="custom-step-mini">
+            <span class="custom-step-num">01</span>
+            <span class="custom-step-content">
+              <strong>Share your horse</strong>
+              Upload a clear, face-on photo &mdash; mane &amp; markings visible.
+            </span>
+          </li>
+          <li class="custom-step-arrow" aria-hidden="true">&rarr;</li>
+          <li class="custom-step-mini">
+            <span class="custom-step-num">02</span>
+            <span class="custom-step-content">
+              <strong>We design</strong>
+              Within 1&ndash;2 business days, your portrait is created onto your chosen case.
+            </span>
+          </li>
+          <li class="custom-step-arrow" aria-hidden="true">&rarr;</li>
+          <li class="custom-step-mini">
+            <span class="custom-step-num">03</span>
+            <span class="custom-step-content">
+              <strong>Delivered worldwide</strong>
+              Total turnaround 4&ndash;9 business days, shipped to your door.
+            </span>
+          </li>
+        </ol>
       </div>
     </section>
 
 
-    <!-- TESTIMONIALS -->
-    <section class="testimonials" aria-labelledby="custom-testimonials-heading">
-      <div class="container">
-
-        <header class="testimonials-header">
-          <div class="section-label">Loved By Riders</div>
-          <h2 class="section-heading reveal" id="custom-testimonials-heading">
-            Bespoke. Personal. Treasured.
-          </h2>
-        </header>
-
-        <div class="testimonials-grid">
-
-          <article class="testimonial-card reveal">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
-              <span class="star">&#9733;</span><span class="star">&#9733;</span>
-            </div>
-            <p class="testimonial-quote">
-              I had a custom case made of my mare Indigo and honestly &mdash; it brought me to tears. The likeness is unreal. Every time I pick up my phone I see her. It&rsquo;s the most meaningful piece I own.
-            </p>
-            <footer class="testimonial-author">
-              <span class="author-name">Sophia R.</span>
-              <span class="author-title">Owner &amp; Rider</span>
-              <span class="author-location">London, UK</span>
-            </footer>
-          </article>
-
-          <article class="testimonial-card reveal reveal-delay-2">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
-              <span class="star">&#9733;</span><span class="star">&#9733;</span>
-            </div>
-            <p class="testimonial-quote">
-              Gifted a custom portrait case to my mum for her birthday &mdash; she rides her gelding Henry every weekend. She cried. Worth every penny. The detail Kate captures is extraordinary.
-            </p>
-            <footer class="testimonial-author">
-              <span class="author-name">Madison W.</span>
-              <span class="author-title">Show Jumper</span>
-              <span class="author-location">Florida, USA</span>
-            </footer>
-          </article>
-
-          <article class="testimonial-card reveal reveal-delay-4">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
-              <span class="star">&#9733;</span><span class="star">&#9733;</span>
-            </div>
-            <p class="testimonial-quote">
-              Love my Velvet &amp; Valor custom case &mdash; I&rsquo;ve had the girls at the yard compliment it, and I love seeing my horse Joey on it. It makes me happy and reminds me of being at the yard when I&rsquo;m at work. Pretty and practical!
-            </p>
-            <footer class="testimonial-author">
-              <span class="author-name">Kirsten</span>
-              <span class="author-title">Equestrian</span>
-              <span class="author-location">Scotland</span>
-            </footer>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ORDER FORM -->
+        <!-- ORDER FORM -->
     <section class="custom-form-section">
       <div class="container">
 
@@ -483,6 +386,108 @@
             <h3>Who owns the artwork?</h3>
             <p>Each custom portrait is an original artwork, &copy; <strong>Braveheart FZ-LLC</strong>. You own the physical case, and we grant you a personal-use licence to enjoy the artwork on your device. The design, illustration, and underlying artwork remain copyright Velvet &amp; Valor and may not be copied, reproduced, or resold without our written permission.</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- PRODUCT IN MOTION -->
+    <section class="motion-showcase" aria-labelledby="custom-motion-heading">
+      <div class="container">
+        <header class="motion-showcase-header reveal">
+          <div class="section-label">In Motion</div>
+          <h2 class="section-heading" id="custom-motion-heading">See it. Feel it.</h2>
+          <p class="motion-showcase-sub">A closer look at the craft &mdash; the weight, the finish, the detail.</p>
+        </header>
+
+        <div class="motion-showcase-grid">
+          <figure class="motion-video-card reveal">
+            <video
+              class="motion-video"
+              src="/videos/product-showcase-1.mov"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label="Velvet &amp; Valor case in motion"
+            ></video>
+          </figure>
+          <figure class="motion-video-card reveal reveal-delay-2">
+            <video
+              class="motion-video"
+              src="/videos/product-showcase-2.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label="Velvet &amp; Valor case detail"
+            ></video>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" aria-labelledby="custom-testimonials-heading">
+      <div class="container">
+
+        <header class="testimonials-header">
+          <div class="section-label">Loved By Riders</div>
+          <h2 class="section-heading reveal" id="custom-testimonials-heading">
+            Bespoke. Personal. Treasured.
+          </h2>
+        </header>
+
+        <div class="testimonials-grid">
+
+          <article class="testimonial-card reveal">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
+              <span class="star">&#9733;</span><span class="star">&#9733;</span>
+            </div>
+            <p class="testimonial-quote">
+              I had a custom case made of my mare Indigo and honestly &mdash; it brought me to tears. The likeness is unreal. Every time I pick up my phone I see her. It&rsquo;s the most meaningful piece I own.
+            </p>
+            <footer class="testimonial-author">
+              <span class="author-name">Sophia R.</span>
+              <span class="author-title">Owner &amp; Rider</span>
+              <span class="author-location">London, UK</span>
+            </footer>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-2">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
+              <span class="star">&#9733;</span><span class="star">&#9733;</span>
+            </div>
+            <p class="testimonial-quote">
+              Gifted a custom portrait case to my mum for her birthday &mdash; she rides her gelding Henry every weekend. She cried. Worth every penny. The detail Kate captures is extraordinary.
+            </p>
+            <footer class="testimonial-author">
+              <span class="author-name">Madison W.</span>
+              <span class="author-title">Show Jumper</span>
+              <span class="author-location">Florida, USA</span>
+            </footer>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-4">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
+              <span class="star">&#9733;</span><span class="star">&#9733;</span>
+            </div>
+            <p class="testimonial-quote">
+              Love my Velvet &amp; Valor custom case &mdash; I&rsquo;ve had the girls at the yard compliment it, and I love seeing my horse Joey on it. It makes me happy and reminds me of being at the yard when I&rsquo;m at work. Pretty and practical!
+            </p>
+            <footer class="testimonial-author">
+              <span class="author-name">Kirsten</span>
+              <span class="author-title">Equestrian</span>
+              <span class="author-location">Scotland</span>
+            </footer>
+          </article>
+
         </div>
       </div>
     </section>

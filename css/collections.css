@@ -423,48 +423,32 @@
 }
 .collection-bridge:hover .cb-arrow { animation-play-state: paused; }
 
-/* ─── Mobile: the most important breakpoint for this banner ─── */
+/* ─── Mobile: keep same single-row layout as desktop, just scaled down ─── */
 @media (max-width: 700px) {
   .collection-bridge {
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      'images  content'
-      'arrow   arrow';
-    gap: 16px;
-    padding: 18px 18px 16px;
-    margin: 32px auto 16px;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    padding: 16px 14px;
+    margin: 28px auto 16px;
+    border-radius: 12px;
   }
-  .cb-image { grid-area: images; width: 92px; height: 90px; }
-  .cb-image img { width: 52px; }
-  .cb-image img:nth-child(2) { left: 22px; }
-  .cb-image img:nth-child(3) { left: 44px; }
-  .cb-content { grid-area: content; }
-  .cb-eyebrow { font-size: 0.5625rem; letter-spacing: 0.18em; }
-  .cb-title { font-size: 1.0625rem; }
-  .cb-text { font-size: 0.75rem; line-height: 1.45; }
-  .cb-arrow {
-    grid-area: arrow;
-    width: 100%;
-    height: 38px;
-    border-radius: 999px;
-    margin-top: 4px;
-  }
-  /* Add a label inside the arrow on mobile so it's not just a chevron */
-  .cb-arrow::after {
-    content: 'Discover the new edition';
-    font-family: var(--font-authority);
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-left: 8px;
-  }
+  .cb-image { width: 76px; height: 72px; }
+  .cb-image img { width: 40px; }
+  .cb-image img:nth-child(2) { left: 18px; top: 6px; }
+  .cb-image img:nth-child(3) { left: 36px; top: 0; }
+  .cb-eyebrow { font-size: 0.5625rem; letter-spacing: 0.2em; margin-bottom: 4px; }
+  .cb-title { font-size: 0.9375rem; line-height: 1.2; margin-bottom: 4px; }
+  .cb-text { font-size: 0.6875rem; line-height: 1.4; }
+  .cb-arrow { width: 36px; height: 36px; }
+  .cb-arrow svg { width: 16px; height: 16px; }
 }
-@media (max-width: 380px) {
-  .cb-image { width: 80px; height: 78px; }
-  .cb-image img { width: 44px; }
-  .cb-image img:nth-child(2) { left: 18px; }
-  .cb-image img:nth-child(3) { left: 36px; }
-  .cb-title { font-size: 1rem; }
-  .cb-arrow::after { font-size: 0.5625rem; }
+@media (max-width: 400px) {
+  .collection-bridge { gap: 10px; padding: 12px 10px; }
+  .cb-image { width: 64px; height: 64px; }
+  .cb-image img { width: 34px; }
+  .cb-image img:nth-child(2) { left: 15px; }
+  .cb-image img:nth-child(3) { left: 30px; }
+  .cb-title { font-size: 0.875rem; }
+  .cb-text { font-size: 0.625rem; }
+  .cb-arrow { width: 32px; height: 32px; }
 }

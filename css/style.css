@@ -1433,11 +1433,25 @@ html, body {
   margin: 0;
 }
 
-/* Safety-net button — hidden until the silent redirect proves unsuccessful */
-.vv-co-fallback {
-  display: block;
+/* Fallback action set — hidden until silent redirect proves unsuccessful */
+.vv-co-actions {
   margin: 28px auto 0;
-  padding: 14px 24px;
+  max-width: 300px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.vv-co-actions.vv-co-actions-show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.vv-co-open {
+  display: block;
+  width: 100%;
+  padding: 15px 18px;
   background: var(--gold);
   color: var(--obsidian);
   font-family: var(--font-authority);
@@ -1446,19 +1460,43 @@ html, body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
+  text-align: center;
   border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  max-width: 260px;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.28);
+  -webkit-tap-highlight-color: transparent;
 }
-.vv-co-fallback.vv-co-fallback-show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+.vv-co-open:active { transform: translateY(1px); }
+
+.vv-co-copy {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 16px;
+  background: transparent;
+  color: var(--cream-mid);
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold-muted);
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+.vv-co-copy:active {
+  border-color: var(--gold);
+  color: var(--cream);
+}
+
+.vv-co-hint {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--cream-muted);
+  margin: 16px 0 0;
+}
+.vv-co-hint strong { color: var(--cream-mid); font-weight: 600; }
 
 
 /* ============================================================

@@ -2,25 +2,15 @@
  * Velvet & Valor — In-App Browser Checkout Redirect
  *
  * Stripe Checkout doesn't work reliably inside Instagram/Facebook/TikTok
- * in-app browsers (blank pages, broken 3DS, no Apple Pay). Rather than
- * asking the customer to take action, we silently relaunch the Stripe
- * Checkout URL in their real browser (Safari on iOS, Chrome on Android)
- * the moment they tap Buy.
+ * in-app browsers. We try to silently relaunch the Stripe Checkout URL
+ * in the customer's real browser (Safari on iOS, Chrome on Android).
  *
- * How:
- *   - Detect in-app browser via UA on page load → window.vvIsInAppBrowser
- *   - Each Buy/Submit handler in product.js / custom.js / riders-motto.js
- *     calls window.vvGoToCheckout(stripeUrl) instead of setting
- *     window.location.href directly.
- *   - In a real browser, that helper just does location.href = url.
- *   - In an in-app browser, it instead fires x-safari-https:// (iOS) or
- *     intent:// with the Chrome package (Android), so the customer lands
- *     directly inside Stripe Checkout in their real browser, on Safari /
- *     Chrome, where 3DS + Apple Pay work properly.
- *   - A small "Opening secure checkout…" overlay shows during the hop
- *     so it doesn't feel like a frozen tap. A safety-net "Tap to
- *     continue" button surfaces after ~2.5s in case the OS blocked the
- *     scheme jump silently.
+ * Key reliability detail: when the silent attempt fails (Apple has been
+ * locking down x-safari-https:// in newer iOS), the fallback button is
+ * a REAL anchor with the deep-link as its href — user-initiated taps on
+ * anchors get OS-level navigation privileges that a JS-set
+ * window.location.href doesn't have, so they actually open the scheme
+ * handler. As a last-resort guarantee, a Copy-link button always works.
  */
 (function () {
   'use strict';
@@ -42,14 +32,13 @@
   var platform = detectPlatform();
   window.vvIsInAppBrowser = inApp;
 
-  /* Build deep-link URL that opens `url` in the real browser. */
+  /* Build the platform deep-link that opens `url` in the real browser. */
   function externalLink(url) {
     if (platform === 'ios') {
-      // x-safari-https:// pops the user out of Instagram/FB/TikTok into Safari
+      // x-safari-https:// pops the user out of Instagram/FB into Safari
       return url.replace(/^https?:\/\//, 'x-safari-https://');
     }
     if (platform === 'android') {
-      // Chrome intent with fallback to system browser chooser
       var noScheme = url.replace(/^https?:\/\//, '');
       return 'intent://' + noScheme +
         '#Intent;scheme=https;package=com.android.chrome;' +
@@ -58,38 +47,81 @@
     return url;
   }
 
+  /* Copy URL to clipboard. */
+  function copyToClipboard(text, btn, originalLabel) {
+    function done() {
+      btn.textContent = '✓ Copied — paste in Safari';
+      setTimeout(function () { btn.textContent = originalLabel; }, 2400);
+    }
+    function fail() {
+      btn.textContent = 'Hold the address bar to copy';
+      setTimeout(function () { btn.textContent = originalLabel; }, 2400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      } catch (e) { fail(); }
+    }
+  }
+
   function showOverlay(targetUrl) {
     if (document.getElementById('vv-checkout-overlay')) return;
-    var label = platform === 'ios' ? 'Safari' :
-                platform === 'android' ? 'Chrome' :
-                'your browser';
+
+    var browserLabel = platform === 'ios' ? 'Safari' :
+                       platform === 'android' ? 'Chrome' :
+                       'your browser';
+    var deepLink = externalLink(targetUrl);
+    var menuLine = platform === 'ios'
+      ? 'Or tap the <strong>···</strong> at the top right of Instagram → <strong>"Open in Safari"</strong>'
+      : platform === 'android'
+      ? 'Or tap the <strong>⋮</strong> at the top right → <strong>"Open in Chrome"</strong>'
+      : 'Or use your browser\'s menu to open this page in your main browser';
+
+    // Note: the fallback button is a real <a href="deep-link"> with no
+    // preventDefault on click, so the user-initiated tap is processed by
+    // the OS as a true scheme navigation (works where JS-set
+    // location.href silently fails on iOS 17+).
     var html =
       '<div id="vv-checkout-overlay" role="status" aria-live="polite">' +
         '<div class="vv-co-card">' +
           '<div class="vv-co-spinner" aria-hidden="true"></div>' +
           '<p class="vv-co-title">Opening secure checkout…</p>' +
-          '<p class="vv-co-sub">Switching to ' + label + ' for safe payment</p>' +
-          '<a id="vv-co-fallback" class="vv-co-fallback" href="#" role="button">Tap to continue</a>' +
+          '<p class="vv-co-sub">Switching to ' + browserLabel + ' for safe payment</p>' +
+          '<div class="vv-co-actions">' +
+            '<a id="vv-co-open" class="vv-co-open" href="' + deepLink + '">Open in ' + browserLabel + ' →</a>' +
+            '<button id="vv-co-copy" class="vv-co-copy" type="button">Copy link instead</button>' +
+            '<p class="vv-co-hint">' + menuLine + '</p>' +
+          '</div>' +
         '</div>' +
       '</div>';
     document.body.insertAdjacentHTML('beforeend', html);
     document.body.style.overflow = 'hidden';
 
-    var fallback = document.getElementById('vv-co-fallback');
-    fallback.addEventListener('click', function (e) {
-      e.preventDefault();
-      window.location.href = externalLink(targetUrl);
+    var copyBtn = document.getElementById('vv-co-copy');
+    copyBtn.addEventListener('click', function () {
+      copyToClipboard(targetUrl, copyBtn, 'Copy link instead');
     });
 
-    // If the silent redirect didn't pull them out within ~2.5s, surface
-    // a one-tap button. Lots of iOS Instagram updates have inconsistent
-    // x-safari-https:// behaviour; this is the safety net.
+    // Surface the fallback action set after a short delay (the silent
+    // attempt should have succeeded by then if it's going to). 1.2s
+    // feels instant for success cases, and quick recovery for failures.
     setTimeout(function () {
-      fallback.classList.add('vv-co-fallback-show');
-    }, 2500);
+      var actions = document.querySelector('.vv-co-actions');
+      if (actions) actions.classList.add('vv-co-actions-show');
+    }, 1200);
   }
 
-  /* ── Public helper used by Buy/Submit handlers ─────────────── */
+  /* ── Public helper — wired into all Buy/Submit handlers ────── */
   window.vvGoToCheckout = function (stripeUrl) {
     if (!stripeUrl) return;
     if (!inApp) {
@@ -97,11 +129,12 @@
       window.location.href = stripeUrl;
       return;
     }
-    // In-app browser: show overlay, fire deep-link directly to Stripe
+    // In-app browser: show overlay first (so user sees something happen),
+    // then fire silent deep-link. If that fails, the user can tap the
+    // visible "Open in Safari" anchor for a privileged retry.
     showOverlay(stripeUrl);
-    // Use a microtask delay so the overlay paints before navigation
     setTimeout(function () {
-      window.location.href = externalLink(stripeUrl);
-    }, 60);
+      try { window.location.href = externalLink(stripeUrl); } catch (e) {}
+    }, 80);
   };
 })();

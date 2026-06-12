@@ -1382,205 +1382,83 @@ html, body {
 
 
 /* ============================================================
-   In-app browser warning banner (Instagram/Facebook/TikTok WebView)
+   In-app browser → Stripe checkout overlay
+   Shown briefly while the deep-link to Safari/Chrome fires
    ============================================================ */
-#vv-iab-banner {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 100000;
-  padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(7,20,40,0.92) 0%, rgba(4,13,28,0.98) 100%);
-  border-top: 1px solid var(--gold-muted);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  animation: vvIabIn 0.36s cubic-bezier(0.16, 1, 0.3, 1);
-  transition: opacity 0.25s, transform 0.25s;
-}
-#vv-iab-banner.vv-iab-leaving { opacity: 0; transform: translateY(16px); }
-@keyframes vvIabIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-
-.vv-iab-inner {
-  max-width: 520px;
-  margin: 0 auto;
-  position: relative;
-  padding: 4px 32px 4px 0;
-}
-.vv-iab-close {
-  position: absolute;
-  top: 0; right: 0;
-  width: 28px; height: 28px;
-  border: none; background: transparent;
-  color: var(--cream-muted);
-  font-size: 1.25rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-}
-.vv-iab-close:hover { color: var(--cream); }
-
-.vv-iab-title {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-authority);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin: 0 0 6px;
-}
-.vv-iab-title svg { flex-shrink: 0; }
-
-.vv-iab-body {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  color: var(--cream-mid);
-  margin: 0 0 12px;
-}
-.vv-iab-body strong { color: var(--cream); font-weight: 600; }
-
-.vv-iab-actions {
-  display: flex;
-  gap: 8px;
-}
-.vv-iab-actions button {
-  flex: 1;
-  padding: 10px 12px;
-  font-family: var(--font-authority);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.vv-iab-copy {
-  background: var(--gold);
-  border: 1px solid var(--gold);
-  color: var(--obsidian);
-}
-.vv-iab-copy:hover { background: var(--gold-bright); border-color: var(--gold-bright); }
-.vv-iab-dismiss {
-  background: transparent;
-  border: 1px solid var(--gold-muted);
-  color: var(--cream-mid);
-}
-.vv-iab-dismiss:hover { border-color: var(--gold); color: var(--cream); }
-
-/* ============================================================
-   In-app browser HARD BLOCK modal — shown at checkout attempt
-   ============================================================ */
-#vv-iab-modal {
+#vv-checkout-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100001;
+  z-index: 100002;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  background: rgba(4, 13, 28, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  animation: vvIabModalIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 24px;
+  background: rgba(4, 13, 28, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  animation: vvCoIn 0.22s ease-out;
 }
-@keyframes vvIabModalIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vvCoIn { from { opacity: 0; } to { opacity: 1; } }
 
-.vv-iab-modal-card {
+.vv-co-card {
   width: 100%;
-  max-width: 440px;
-  background: linear-gradient(180deg, #0a1c36 0%, #050f23 100%);
-  border: 1px solid var(--gold-muted);
-  border-radius: 14px;
-  padding: 32px 24px 24px;
+  max-width: 360px;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.08);
-  animation: vvIabModalCardIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  color: var(--cream);
 }
-@keyframes vvIabModalCardIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.vv-iab-modal-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.vv-co-spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 18px;
   border-radius: 50%;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid var(--gold-muted);
-  color: var(--gold);
+  border: 2.5px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--gold);
+  animation: vvCoSpin 0.9s linear infinite;
 }
+@keyframes vvCoSpin { to { transform: rotate(360deg); } }
 
-.vv-iab-modal-title {
+.vv-co-title {
   font-family: var(--font-display), Georgia, serif;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: var(--cream);
-  margin: 0 0 10px;
-  line-height: 1.25;
+  margin: 0 0 6px;
 }
-
-.vv-iab-modal-body {
+.vv-co-sub {
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  color: var(--cream-mid);
-  margin: 0 0 22px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--cream-muted);
+  margin: 0;
 }
-.vv-iab-modal-body strong { color: var(--cream); font-weight: 600; }
 
-.vv-iab-modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.vv-iab-modal-actions button {
-  width: 100%;
-  padding: 14px 16px;
+/* Safety-net button — hidden until the silent redirect proves unsuccessful */
+.vv-co-fallback {
+  display: block;
+  margin: 28px auto 0;
+  padding: 14px 24px;
+  background: var(--gold);
+  color: var(--obsidian);
   font-family: var(--font-authority);
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-decoration: none;
   border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-height: 48px;
-}
-.vv-iab-modal-open {
-  background: var(--gold);
-  border: 1px solid var(--gold);
-  color: var(--obsidian);
   box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  max-width: 260px;
 }
-.vv-iab-modal-open:hover, .vv-iab-modal-open:active {
-  background: var(--gold-bright, var(--gold));
-  transform: translateY(-1px);
+.vv-co-fallback.vv-co-fallback-show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
-.vv-iab-modal-copy {
-  background: transparent;
-  border: 1px solid var(--gold-muted);
-  color: var(--cream-mid);
-}
-.vv-iab-modal-copy:hover, .vv-iab-modal-copy:active {
-  border-color: var(--gold);
-  color: var(--cream);
-}
-
-.vv-iab-modal-hint {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--cream-muted);
-  margin: 12px 0 0;
-}
-.vv-iab-modal-hint strong { color: var(--cream-mid); font-weight: 600; }
 
 
 /* ============================================================

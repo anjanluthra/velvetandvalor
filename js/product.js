@@ -274,7 +274,11 @@ function updateURL() {
 
       const data = await res.json();
       if (data.url) {
-        window.location.href = data.url;
+        if (typeof window.vvGoToCheckout === 'function') {
+          window.vvGoToCheckout(data.url);
+        } else {
+          window.location.href = data.url;
+        }
       } else {
         throw new Error(data.error || 'Checkout failed');
       }

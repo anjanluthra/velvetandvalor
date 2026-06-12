@@ -1382,76 +1382,115 @@ html, body {
 
 
 /* ============================================================
-   In-app browser → Stripe checkout overlay
-   Shown briefly while the deep-link to Safari/Chrome fires
+   In-app browser → instant checkout instruction
+   Shown the moment user taps Buy from inside IG/FB/TikTok WebView
    ============================================================ */
 #vv-checkout-overlay {
   position: fixed;
   inset: 0;
   z-index: 100002;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(4, 13, 28, 0.94);
+  padding: calc(20px + env(safe-area-inset-top)) 20px 24px;
+  background: rgba(4, 13, 28, 0.96);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  animation: vvCoIn 0.22s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  animation: vvCoIn 0.18s ease-out;
 }
 @keyframes vvCoIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* Arrow pointing up to where IG/FB/TikTok shows its ··· menu */
+.vv-co-arrow {
+  align-self: flex-end;
+  margin-right: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+  color: var(--gold);
+  animation: vvCoArrowBob 1.4s ease-in-out infinite;
+}
+@keyframes vvCoArrowBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.vv-co-arrow-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.vv-co-arrow-label {
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
 .vv-co-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 420px;
+  margin-top: auto;
+  margin-bottom: auto;
   text-align: center;
   color: var(--cream);
 }
-.vv-co-spinner {
-  width: 44px;
-  height: 44px;
-  margin: 0 auto 18px;
-  border-radius: 50%;
-  border: 2.5px solid rgba(212, 175, 55, 0.2);
-  border-top-color: var(--gold);
-  animation: vvCoSpin 0.9s linear infinite;
-}
-@keyframes vvCoSpin { to { transform: rotate(360deg); } }
 
 .vv-co-title {
   font-family: var(--font-display), Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
   color: var(--cream);
-  margin: 0 0 6px;
+  margin: 0 0 22px;
+  line-height: 1.25;
 }
-.vv-co-sub {
+
+.vv-co-steps {
+  list-style: none;
+  counter-reset: vv-co-step;
+  padding: 0;
+  margin: 0 0 26px;
+  text-align: left;
+}
+.vv-co-steps li {
+  counter-increment: vv-co-step;
+  position: relative;
+  padding: 12px 0 12px 44px;
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
-  color: var(--cream-muted);
-  margin: 0;
+  color: var(--cream-mid);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
 }
+.vv-co-steps li:last-child { border-bottom: none; }
+.vv-co-steps li::before {
+  content: counter(vv-co-step);
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid var(--gold-muted);
+  color: var(--gold);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.vv-co-steps strong { color: var(--cream); font-weight: 600; }
 
-/* Fallback action set — hidden until silent redirect proves unsuccessful */
-.vv-co-actions {
-  margin: 28px auto 0;
-  max-width: 300px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-.vv-co-actions.vv-co-actions-show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.vv-co-open {
+.vv-co-copy {
   display: block;
   width: 100%;
-  padding: 15px 18px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
   background: var(--gold);
   color: var(--obsidian);
   font-family: var(--font-authority);
@@ -1459,44 +1498,26 @@ html, body {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  text-decoration: none;
-  text-align: center;
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.28);
-  -webkit-tap-highlight-color: transparent;
-}
-.vv-co-open:active { transform: translateY(1px); }
-
-.vv-co-copy {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 13px 16px;
-  background: transparent;
-  color: var(--cream-mid);
-  font-family: var(--font-authority);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border: 1px solid var(--gold-muted);
+  border: 1px solid var(--gold);
   border-radius: 999px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+  min-height: 48px;
 }
-.vv-co-copy:active {
-  border-color: var(--gold);
-  color: var(--cream);
-}
+.vv-co-copy:active { transform: translateY(1px); }
 
-.vv-co-hint {
+.vv-co-open-link {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 8px;
   font-family: var(--font-sans);
   font-size: 0.75rem;
-  line-height: 1.55;
   color: var(--cream-muted);
-  margin: 16px 0 0;
+  text-decoration: underline;
+  text-decoration-color: var(--gold-muted);
+  text-underline-offset: 3px;
 }
-.vv-co-hint strong { color: var(--cream-mid); font-weight: 600; }
 
 
 /* ============================================================

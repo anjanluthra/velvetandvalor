@@ -182,25 +182,8 @@
         Thank you for your order. Your Velvet &amp; Valor case is on its way.
       </p>
 
-      <!-- Order details are populated from Stripe by /api/get-order -->
+      <!-- Order total populated from Stripe by /api/get-order -->
       <div class="success-details" id="orderDetails" hidden>
-        <div id="orderItems"></div>
-        <div class="success-detail-row" id="rowSubtotal" hidden>
-          <span class="success-detail-label">Subtotal</span>
-          <span class="success-detail-value" id="orderSubtotal">—</span>
-        </div>
-        <div class="success-detail-row" id="rowShipping" hidden>
-          <span class="success-detail-label">Shipping</span>
-          <span class="success-detail-value" id="orderShipping">—</span>
-        </div>
-        <div class="success-detail-row" id="rowDiscount" hidden>
-          <span class="success-detail-label">Discount</span>
-          <span class="success-detail-value" id="orderDiscount">—</span>
-        </div>
-        <div class="success-detail-row" id="rowTax" hidden>
-          <span class="success-detail-label">Tax</span>
-          <span class="success-detail-value" id="orderTax">—</span>
-        </div>
         <div class="success-detail-row success-total">
           <span class="success-detail-label">Total Paid</span>
           <span class="success-detail-value" id="orderTotal">—</span>
@@ -208,7 +191,7 @@
       </div>
 
       <p class="success-shipping-note" id="successShippingNote">
-        Your case will ship within 5-10 business days. You'll receive a confirmation email from Stripe with your receipt.
+        Please allow 1&ndash;2 days production time before shipping. Look out for a shipping email direct to your inbox.
       </p>
 
       <div class="success-actions">
@@ -228,15 +211,10 @@
     (function () {
       var params = new URLSearchParams(window.location.search);
       var sessionId = params.get('session_id');
-      var orderType = params.get('type'); // 'custom' for portrait orders
 
       function setText(id, text) {
         var el = document.getElementById(id);
         if (el) el.textContent = text;
-      }
-      function showRow(id) {
-        var el = document.getElementById(id);
-        if (el) el.hidden = false;
       }
 
       // Currency formatting — uses native Intl so the customer sees
@@ -263,68 +241,17 @@
       fetch('/api/get-order?session_id=' + encodeURIComponent(sessionId))
         .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
         .then(function (data) {
-          if (!data || !data.items) return;
-
-          // Custom-portrait copy tweak
-          if (data.is_custom || orderType === 'custom') {
-            setText('successSubtitle', 'Thank you for your order. Your custom horse portrait case is now in the artist\'s hands.');
-            setText('successShippingNote', 'Your custom portrait will be hand-illustrated and delivered within 2–3 weeks. You\'ll receive a confirmation email from Stripe with your receipt, and a preview from our artist before final printing.');
-          }
-
-          // Line items
-          var itemsHtml = data.items.map(function (item) {
-            var lineAmount = formatMoney(item.amount, data.currency);
-            var qty = item.quantity > 1 ? ' × ' + item.quantity : '';
-            return '<div class="success-detail-row">' +
-                     '<span class="success-detail-label">' +
-                       escapeHtml(item.description) + qty +
-                     '</span>' +
-                     '<span class="success-detail-value">' +
-                       (lineAmount || '') +
-                     '</span>' +
-                   '</div>';
-          }).join('');
-          document.getElementById('orderItems').innerHTML = itemsHtml;
-
-          // Only show subtotal row if it differs from total (i.e. there's
-          // shipping/tax/discount). Otherwise it's noise.
-          var hasExtras = (data.shipping && data.shipping.value > 0) ||
-                          (data.tax && data.tax.value > 0) ||
-                          (data.discount && data.discount.value > 0);
-
-          if (hasExtras && data.subtotal) {
-            setText('orderSubtotal', formatMoney(data.subtotal, data.currency));
-            showRow('rowSubtotal');
-          }
-          if (data.shipping && data.shipping.value > 0) {
-            setText('orderShipping', formatMoney(data.shipping, data.currency));
-            showRow('rowShipping');
-          }
-          if (data.discount && data.discount.value > 0) {
-            setText('orderDiscount', '−' + formatMoney(data.discount, data.currency));
-            showRow('rowDiscount');
-          }
-          if (data.tax && data.tax.value > 0) {
-            setText('orderTax', formatMoney(data.tax, data.currency));
-            showRow('rowTax');
-          }
-
-          setText('orderTotal', formatMoney(data.total, data.currency));
+          if (!data) return;
+          var totalDisplay = formatMoney(data.total, data.currency);
+          if (!totalDisplay) return;
+          setText('orderTotal', totalDisplay);
           document.getElementById('orderDetails').hidden = false;
         })
         .catch(function (err) {
-          // On error, leave default confirmation visible without prices
-          // (better than showing wrong/hardcoded numbers).
+          // On error, leave default confirmation visible without the
+          // total — better than showing a wrong number.
           if (window.console) console.warn('Order summary unavailable:', err);
         });
-
-      function escapeHtml(s) {
-        return String(s || '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      }
     })();
   </script>
 

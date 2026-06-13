@@ -178,30 +178,36 @@
       <div class="success-check" aria-hidden="true">&#10003;</div>
 
       <h1 class="success-title">Order Confirmed</h1>
-      <p class="success-subtitle">
+      <p class="success-subtitle" id="successSubtitle">
         Thank you for your order. Your Velvet &amp; Valor case is on its way.
       </p>
 
-      <div class="success-details">
-        <div class="success-detail-row">
-          <span class="success-detail-label">Product</span>
-          <span class="success-detail-value">Noble Steed</span>
+      <!-- Order details are populated from Stripe by /api/get-order -->
+      <div class="success-details" id="orderDetails" hidden>
+        <div id="orderItems"></div>
+        <div class="success-detail-row" id="rowSubtotal" hidden>
+          <span class="success-detail-label">Subtotal</span>
+          <span class="success-detail-value" id="orderSubtotal">—</span>
         </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Price</span>
-          <span class="success-detail-value" data-price-usd="48.00" data-price-gbp="38.00">$48.00</span>
-        </div>
-        <div class="success-detail-row">
+        <div class="success-detail-row" id="rowShipping" hidden>
           <span class="success-detail-label">Shipping</span>
-          <span class="success-detail-value">$5.49</span>
+          <span class="success-detail-value" id="orderShipping">—</span>
+        </div>
+        <div class="success-detail-row" id="rowDiscount" hidden>
+          <span class="success-detail-label">Discount</span>
+          <span class="success-detail-value" id="orderDiscount">—</span>
+        </div>
+        <div class="success-detail-row" id="rowTax" hidden>
+          <span class="success-detail-label">Tax</span>
+          <span class="success-detail-value" id="orderTax">—</span>
         </div>
         <div class="success-detail-row success-total">
-          <span class="success-detail-label">Total</span>
-          <span class="success-detail-value">$60.49</span>
+          <span class="success-detail-label">Total Paid</span>
+          <span class="success-detail-value" id="orderTotal">—</span>
         </div>
       </div>
 
-      <p class="success-shipping-note">
+      <p class="success-shipping-note" id="successShippingNote">
         Your case will ship within 5-10 business days. You'll receive a confirmation email from Stripe with your receipt.
       </p>
 
@@ -216,6 +222,111 @@
 
     </div>
   </main>
+
+  <script>
+    /* ── Order summary: pull real values from Stripe via /api/get-order ── */
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var sessionId = params.get('session_id');
+      var orderType = params.get('type'); // 'custom' for portrait orders
+
+      function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+      function showRow(id) {
+        var el = document.getElementById(id);
+        if (el) el.hidden = false;
+      }
+
+      // Currency formatting — uses native Intl so the customer sees
+      // exactly what was charged (e.g. "$53.49" or "£42.15") in the
+      // SAME currency Stripe took payment in. No client-side FX.
+      function formatMoney(amount, currency) {
+        if (!amount || typeof amount.value !== 'number') return null;
+        try {
+          return new Intl.NumberFormat(navigator.language || 'en-US', {
+            style: 'currency',
+            currency: amount.currency || currency || 'USD',
+          }).format(amount.value);
+        } catch (e) {
+          // Fallback: just prefix with currency code
+          return (amount.currency || 'USD') + ' ' + amount.display;
+        }
+      }
+
+      if (!sessionId) {
+        // No session id — leave default copy in place
+        return;
+      }
+
+      fetch('/api/get-order?session_id=' + encodeURIComponent(sessionId))
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+        .then(function (data) {
+          if (!data || !data.items) return;
+
+          // Custom-portrait copy tweak
+          if (data.is_custom || orderType === 'custom') {
+            setText('successSubtitle', 'Thank you for your order. Your custom horse portrait case is now in the artist\'s hands.');
+            setText('successShippingNote', 'Your custom portrait will be hand-illustrated and delivered within 2–3 weeks. You\'ll receive a confirmation email from Stripe with your receipt, and a preview from our artist before final printing.');
+          }
+
+          // Line items
+          var itemsHtml = data.items.map(function (item) {
+            var lineAmount = formatMoney(item.amount, data.currency);
+            var qty = item.quantity > 1 ? ' × ' + item.quantity : '';
+            return '<div class="success-detail-row">' +
+                     '<span class="success-detail-label">' +
+                       escapeHtml(item.description) + qty +
+                     '</span>' +
+                     '<span class="success-detail-value">' +
+                       (lineAmount || '') +
+                     '</span>' +
+                   '</div>';
+          }).join('');
+          document.getElementById('orderItems').innerHTML = itemsHtml;
+
+          // Only show subtotal row if it differs from total (i.e. there's
+          // shipping/tax/discount). Otherwise it's noise.
+          var hasExtras = (data.shipping && data.shipping.value > 0) ||
+                          (data.tax && data.tax.value > 0) ||
+                          (data.discount && data.discount.value > 0);
+
+          if (hasExtras && data.subtotal) {
+            setText('orderSubtotal', formatMoney(data.subtotal, data.currency));
+            showRow('rowSubtotal');
+          }
+          if (data.shipping && data.shipping.value > 0) {
+            setText('orderShipping', formatMoney(data.shipping, data.currency));
+            showRow('rowShipping');
+          }
+          if (data.discount && data.discount.value > 0) {
+            setText('orderDiscount', '−' + formatMoney(data.discount, data.currency));
+            showRow('rowDiscount');
+          }
+          if (data.tax && data.tax.value > 0) {
+            setText('orderTax', formatMoney(data.tax, data.currency));
+            showRow('rowTax');
+          }
+
+          setText('orderTotal', formatMoney(data.total, data.currency));
+          document.getElementById('orderDetails').hidden = false;
+        })
+        .catch(function (err) {
+          // On error, leave default confirmation visible without prices
+          // (better than showing wrong/hardcoded numbers).
+          if (window.console) console.warn('Order summary unavailable:', err);
+        });
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+    })();
+  </script>
 
   <script src="js/main.js"></script>
 

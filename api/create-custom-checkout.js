@@ -53,10 +53,20 @@ module.exports = async (req, res) => {
     initials: wantsInitials ? cleanInitials : '',
   };
 
+  // Custom Payment Methods configured in the Stripe Dashboard
+  // (Venmo, PayPal, Tabby). Stripe will surface each one only where
+  // the customer is eligible (region + currency).
+  const CUSTOM_PAYMENT_METHODS = [
+    { id: 'cpmt_1TiFWTLJ28WKMh7YskYhV3nj', display_preference: { preference: 'on' } }, // Venmo
+    { id: 'cpmt_1TiFVdLJ28WKMh7YeimyawHM', display_preference: { preference: 'on' } }, // PayPal
+    { id: 'cpmt_1TbLZjLJ28WKMh7YZ36pw9Zu', display_preference: { preference: 'on' } }, // Tabby
+  ];
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       allow_promotion_codes: true,
+      custom_payment_methods: CUSTOM_PAYMENT_METHODS,
       customer_email: email,
       payment_intent_data: {
         metadata: orderMetadata,

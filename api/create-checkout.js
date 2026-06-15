@@ -29,22 +29,10 @@ module.exports = async (req, res) => {
     : 4800; // $48.00 default
   const description = `${designName} — ${modelName} (${finishName})`;
 
-  // Custom Payment Methods configured in the Stripe Dashboard
-  // (Venmo, PayPal, Tabby). Pass them explicitly so Checkout shows
-  // them as options alongside cards / Link / Apple Pay / Google Pay.
-  // Stripe will only surface each one to customers where it's
-  // eligible (e.g. Tabby for GCC/AED, Venmo for US, etc.).
-  const CUSTOM_PAYMENT_METHODS = [
-    { id: 'cpmt_1TiFWTLJ28WKMh7YskYhV3nj', display_preference: { preference: 'on' } }, // Venmo
-    { id: 'cpmt_1TiFVdLJ28WKMh7YeimyawHM', display_preference: { preference: 'on' } }, // PayPal
-    { id: 'cpmt_1TbLZjLJ28WKMh7YZ36pw9Zu', display_preference: { preference: 'on' } }, // Tabby
-  ];
-
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       allow_promotion_codes: true,
-      custom_payment_methods: CUSTOM_PAYMENT_METHODS,
       line_items: [
         {
           price_data: {

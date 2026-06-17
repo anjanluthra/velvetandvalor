@@ -870,18 +870,9 @@ select.form-input {
   width: 100%;
   height: auto;
   display: block;
-  /* Soft radial mask fades the JPG's baked-in white frame into the
-     dark navy page background — gives a clean floating-product look
-     without needing a transparent PNG. The case sits in the inner
-     50–70% which stays fully opaque; the white frame at the edges
-     fades to transparent and reveals the navy behind. */
-  -webkit-mask-image: radial-gradient(ellipse 72% 82% at center, #000 50%, transparent 92%);
-          mask-image: radial-gradient(ellipse 72% 82% at center, #000 50%, transparent 92%);
-  /* drop-shadow (not box-shadow) follows the masked alpha shape */
-  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.45));
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
+  border: 1px solid var(--gold-subtle);
+  border-radius: 6px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 .custom-hero-image-cap {
   margin-top: 12px;
@@ -896,7 +887,10 @@ select.form-input {
 .custom-hero-copy { max-width: 480px; }
 .custom-hero-copy .custom-title { margin-top: 12px; }
 .custom-hero-copy .custom-price {
-  margin-bottom: 36px;
+  /* Force block-level flex so the CTA below drops to its own row
+     with full breathing room (base .custom-price is inline-flex). */
+  display: flex;
+  margin-bottom: 44px;
   justify-content: flex-start;
 }
 .custom-hero-cta {
@@ -942,12 +936,11 @@ select.form-input {
     max-width: 240px;
     margin: 0 auto;
   }
-  .custom-hero-image img { border-radius: 20px; }
   .custom-hero-image-cap { font-size: 0.625rem; letter-spacing: 0.18em; }
   .custom-hero-copy { max-width: none; text-align: center; }
   .custom-hero-copy .custom-price {
     justify-content: center;
-    margin-bottom: 28px;
+    margin-bottom: 36px;
   }
   .custom-hero-copy .custom-eyebrow::before,
   .custom-hero-copy .custom-eyebrow::after { width: 18px; }

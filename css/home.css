@@ -2293,3 +2293,113 @@
     transform: none;
   }
 }
+
+
+/* ============================================================
+   HOMEPAGE HERO — Mobile compression pass
+   Tightens every vertical gap so the testimonial bubble and
+   CTAs land higher in the viewport (less scrolling required to
+   see social proof + start the buy path).
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero-left {
+    padding: 28px var(--page-padding) 32px;
+  }
+  .hero-eyebrow {
+    margin-bottom: 14px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+  }
+  .hero-title {
+    margin-bottom: 16px;
+  }
+  .hero-pillars {
+    margin-bottom: 12px;
+  }
+  .hero-subtitle {
+    margin-bottom: 16px;
+  }
+  .hero-tagline {
+    margin-bottom: 16px;
+  }
+  .hero-rating {
+    margin-bottom: 16px;
+  }
+  .hero-actions {
+    gap: 10px;
+  }
+  .hero-story-link {
+    margin-top: 14px;
+  }
+  .hero-testimonial-bubble {
+    margin-top: 18px;
+    padding: 16px 18px 12px;
+    min-height: 154px;
+    border-radius: 14px;
+  }
+  .hero-testimonial-item {
+    inset: 16px 18px 30px;
+  }
+  .hero-testimonial-quote {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .hero-testimonial-author {
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+  }
+  .hero-testimonial-dots {
+    bottom: 10px;
+    left: 18px;
+    gap: 5px;
+  }
+  .hero-testimonial-dot {
+    width: 5px;
+    height: 5px;
+  }
+  /* Cap the hero photo so it doesn't push the bubble + CTAs out of
+     the initial viewport. Was 50vh — now 40vh with a sensible min. */
+  .hero-right {
+    height: 40vh;
+    min-height: 280px;
+    max-height: 380px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-left {
+    padding: 22px var(--page-padding) 26px;
+  }
+  .hero-eyebrow {
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    margin-bottom: 14px;
+  }
+  .hero-pillars {
+    margin-bottom: 10px;
+  }
+  .hero-subtitle {
+    margin-bottom: 14px;
+    line-height: 1.55;
+  }
+  .hero-rating {
+    margin-bottom: 14px;
+  }
+  .hero-actions {
+    gap: 8px;
+  }
+  .hero-story-link {
+    margin-top: 12px;
+  }
+  .hero-testimonial-bubble {
+    margin-top: 16px;
+    min-height: 146px;
+  }
+  .hero-right {
+    height: 34vh;
+    min-height: 240px;
+    max-height: 320px;
+  }
+}

@@ -272,11 +272,74 @@
   font-weight: 600;
 }
 
-/* ── Hero Secondary CTA ───────────────────────────────────────── */
+/* ── Hero CTAs — sleeker pill treatment (homepage hero only) ──── */
+.hero-cta-primary,
 .hero-cta-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 15px 30px;
+  border-radius: 999px;
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.4s var(--ease-out),
+              box-shadow 0.4s var(--ease-out),
+              background 0.3s,
+              border-color 0.3s,
+              color 0.3s;
+}
+
+.hero-cta-primary {
+  background: linear-gradient(180deg, var(--gold-bright, var(--gold)) 0%, var(--gold) 100%);
+  color: var(--obsidian);
+  border: 1px solid var(--gold);
+  box-shadow: 0 8px 22px rgba(26, 144, 144, 0.22),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.hero-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(26, 144, 144, 0.34),
+              inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.hero-cta-secondary {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: var(--cream-mid);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.hero-cta-secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  color: var(--cream);
+  background: rgba(212, 175, 55, 0.06);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* Arrow icon — smaller and slightly translated on hover */
+.hero-cta-primary svg,
+.hero-cta-secondary svg {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.35s var(--ease-out);
+}
+.hero-cta-primary:hover svg,
+.hero-cta-secondary:hover svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 480px) {
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    padding: 13px 22px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+  }
 }
 
 /* ── Hero Trust Pills ────────────────────────────────────────── */

@@ -165,3 +165,47 @@
     form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1.125rem; padding: 12px 0;">You\u2019re on the waiting list! \u2728<br><span style="font-weight: 400; font-size: 0.9rem; color: var(--cream-muted); margin-top: 8px; display: block;">We\u2019ll be in touch when The Equestrian Journal launches.</span></p>';
   });
 })();
+
+
+/* ── Hero rotating testimonial bubble ─────────────────────────────
+   Cycles through customer reviews every ~7s so visitors see social
+   proof above the fold (before they scroll to the full testimonials
+   section further down the page). */
+(function () {
+  'use strict';
+  const wrap = document.getElementById('heroTestimonialBubble');
+  if (!wrap) return;
+  const items = wrap.querySelectorAll('.hero-testimonial-item');
+  const dots = wrap.querySelectorAll('.hero-testimonial-dot');
+  if (items.length < 2) return;
+
+  // Respect prefers-reduced-motion: leave the first review on, do not cycle.
+  const mql = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mql && mql.matches) return;
+
+  let idx = 0;
+  const ROTATE_MS = 7000;
+
+  function show(i) {
+    items.forEach((el, n) => el.classList.toggle('is-active', n === i));
+    dots.forEach((el, n) => el.classList.toggle('is-active', n === i));
+  }
+
+  let timer = window.setInterval(() => {
+    idx = (idx + 1) % items.length;
+    show(idx);
+  }, ROTATE_MS);
+
+  // Pause when the tab is hidden so it doesn't drift on resume
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      window.clearInterval(timer);
+      timer = null;
+    } else if (!timer) {
+      timer = window.setInterval(() => {
+        idx = (idx + 1) % items.length;
+        show(idx);
+      }, ROTATE_MS);
+    }
+  });
+})();

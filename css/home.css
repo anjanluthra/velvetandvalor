@@ -2626,6 +2626,17 @@
   }
 }
 
+/* Extra-small phones (iPhone SE 1st gen / older Android) — keep
+   the 3 stickers in a single row by shrinking further so the row
+   fits inside the ~272px usable width after page padding. */
+@media (max-width: 360px) {
+  .hero-stickers {
+    gap: 6px;
+    justify-content: space-between;
+  }
+  .hero-sticker { width: 80px; }
+}
+
 
 /* ============================================================
    HOMEPAGE HERO v4 — Diptyque-inspired vertical oval stickers

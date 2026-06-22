@@ -2685,3 +2685,15 @@
   .hero-stickers { gap: 8px; }
   .hero-sticker { width: 88px; }
 }
+
+
+/* Knock the dark navy background out of the V&V logo PNG so the
+   monogram floats cleanly on the cream sticker. invert() swaps the
+   navy bg → light + cream V → dark, then multiply blends the
+   inverted-light area into the cream sticker (disappears) while the
+   inverted-dark V remains visible. Lets us avoid re-exporting the
+   PNG with a true transparent background. */
+.hero-sticker svg image {
+  filter: invert(1);
+  mix-blend-mode: multiply;
+}

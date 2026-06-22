@@ -51,10 +51,11 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { sessionId, shipped, tracking, notify } = req.body || {};
+  const { sessionId, shipped, tracking, notify, deliveryDate } = req.body || {};
   if (!sessionId || typeof sessionId !== 'string') {
     return res.status(400).json({ error: 'sessionId required' });
   }
+  const cleanDelivery = String(deliveryDate || '').trim().slice(0, 40);
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const isShipped = shipped !== false; // default to true
@@ -65,6 +66,7 @@ module.exports = async (req, res) => {
         fulfillment_status: isShipped ? 'shipped' : 'unfulfilled',
         shipped_at: isShipped ? String(Date.now()) : '',
         tracking: isShipped ? String(tracking || '') : '',
+        estimated_delivery: isShipped ? cleanDelivery : '',
       },
     });
 
@@ -85,6 +87,7 @@ module.exports = async (req, res) => {
             to,
             name: cust.name || md.customer_name || '',
             product,
+            deliveryDate: md.estimated_delivery || cleanDelivery,
           });
           emailed = true;
         } catch (e) {
@@ -101,6 +104,7 @@ module.exports = async (req, res) => {
         status: md.fulfillment_status || 'unfulfilled',
         shippedAt: md.shipped_at ? Number(md.shipped_at) : null,
         tracking: md.tracking || '',
+        estimatedDelivery: md.estimated_delivery || '',
       },
     });
   } catch (err) {

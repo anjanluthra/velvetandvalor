@@ -141,9 +141,28 @@ async function sendFounderWelcomeEmail({ to, name, product }) {
 }
 
 // ── Shipping confirmation ────────────────────────────────────
-function shippedHtml({ name, product }) {
+/** Format a delivery date for the email. Accepts YYYY-MM-DD (from <input type=date>)
+ *  or any Date-parseable string; falls back to the raw value if unparseable. */
+function formatDeliveryDate(d) {
+  if (!d) return '';
+  const s = String(d).trim();
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  const date = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(s);
+  if (isNaN(date.getTime())) return escapeHtml(s);
+  try {
+    return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  } catch {
+    return escapeHtml(s);
+  }
+}
+
+function shippedHtml({ name, product, deliveryDate }) {
   const greeting = firstName(name) ? `Hi ${firstName(name)},` : 'Hello,';
   const item = product ? escapeHtml(product) : 'your order';
+  const arrival = formatDeliveryDate(deliveryDate);
+  const deliveryLine = arrival
+    ? `It should reach you by <strong>${arrival}</strong>. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.`
+    : `Standard worldwide delivery typically takes a few business days from dispatch. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.`;
 
   return `
   <div style="margin:0;padding:0;background:#EFEAE1;">
@@ -160,7 +179,7 @@ function shippedHtml({ name, product }) {
               Wonderful news &mdash; <strong>${item}</strong> has shipped and is making its way to you.
             </p>
             <p style="font-size:15px;line-height:1.8;margin:0 0 8px;color:#3A3A37;">
-              Standard worldwide delivery typically takes a few business days from dispatch. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.
+              ${deliveryLine}
             </p>
           </td></tr>
           <tr><td style="padding:22px 36px 30px;border-top:1px solid #EDE6D9;text-align:center;font-family:Arial,sans-serif;">
@@ -177,12 +196,12 @@ function shippedHtml({ name, product }) {
   </div>`;
 }
 
-async function sendShippedEmail({ to, name, product }) {
+async function sendShippedEmail({ to, name, product, deliveryDate }) {
   return sendEmail({
     to,
     replyTo: process.env.RESEND_REPLY_TO || 'info@velvet-valor.com',
     subject: 'Your Velvet & Valor order has shipped',
-    html: shippedHtml({ name, product }),
+    html: shippedHtml({ name, product, deliveryDate }),
   });
 }
 

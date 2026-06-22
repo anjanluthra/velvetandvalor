@@ -185,8 +185,10 @@
     <div class="modal">
       <h3>Mark order as shipped?</h3>
       <p class="modal-product" id="shipModalProduct"></p>
-      <label class="modal-label" for="shipModalTracking">Tracking number (optional)</label>
+      <label class="modal-label" for="shipModalTracking">Tracking number (optional, internal)</label>
       <input type="text" id="shipModalTracking" placeholder="e.g. RM123456789GB" autocomplete="off" />
+      <label class="modal-label" for="shipModalDelivery">Estimated delivery date (optional)</label>
+      <input type="date" id="shipModalDelivery" autocomplete="off" />
       <p class="modal-note" id="shipModalEmail"></p>
       <div class="modal-actions">
         <button class="modal-cancel" id="shipModalCancel">Cancel</button>
@@ -360,13 +362,13 @@
         </div>`;
     }
 
-    async function setShipped(id, shipped, tracking, notify) {
+    async function setShipped(id, shipped, tracking, notify, deliveryDate) {
       const order = ORDERS.find((o) => o.id === id);
       try {
         const r = await fetch('/api/admin/ship', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId: id, shipped, tracking, notify: !!notify }),
+          body: JSON.stringify({ sessionId: id, shipped, tracking, notify: !!notify, deliveryDate: deliveryDate || '' }),
         });
         if (r.status === 401) { window.location.href = '/admin/login'; return; }
         if (!r.ok) throw new Error('update failed');
@@ -399,6 +401,7 @@
       else emailEl.innerHTML = '<span style="color:#ffcf8b">No email on this order — it will be marked shipped without notifying.</span>';
       const tr = document.getElementById('shipModalTracking');
       tr.value = o.fulfillment.tracking || '';
+      document.getElementById('shipModalDelivery').value = o.fulfillment.estimatedDelivery || '';
       document.getElementById('shipModal').classList.add('open');
       setTimeout(() => tr.focus(), 50);
     }
@@ -407,9 +410,10 @@
       if (!SHIP_TARGET) return;
       const id = SHIP_TARGET;
       const tracking = document.getElementById('shipModalTracking').value.trim();
+      const deliveryDate = document.getElementById('shipModalDelivery').value;
       const btn = document.getElementById('shipModalConfirm');
       btn.disabled = true; btn.textContent = 'Shipping…';
-      await setShipped(id, true, tracking, true);
+      await setShipped(id, true, tracking, true, deliveryDate);
       btn.disabled = false; btn.textContent = 'Confirm & Notify Customer';
       closeShipModal();
     }

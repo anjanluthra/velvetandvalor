@@ -104,6 +104,28 @@
     .track-row button:hover { border-color: var(--gold-bright); color: var(--cream); }
 
     .state { padding: 60px; text-align: center; color: var(--cream-muted); }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(4, 13, 28, 0.72); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 420px; background: var(--obsidian-mid);
+      border: 1px solid var(--gold-muted); border-radius: 14px; padding: 28px;
+    }
+    .modal h3 { font-family: var(--font-serif); font-weight: 500; color: var(--cream); font-size: 1.3rem; margin-bottom: 6px; }
+    .modal-product { color: var(--gold-pale); font-size: 0.95rem; margin-bottom: 20px; }
+    .modal-label { display: block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-muted); margin-bottom: 7px; }
+    .modal input { width: 100%; padding: 12px 14px; background: var(--obsidian-deep); border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream); font-size: 0.92rem; }
+    .modal input:focus { border-color: var(--gold-bright); }
+    .modal-note { font-size: 0.83rem; color: var(--cream-mid); margin: 14px 0 0; line-height: 1.6; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+    .modal-cancel { padding: 11px 18px; border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream-mid); font-size: 0.88rem; }
+    .modal-cancel:hover { border-color: var(--cream-muted); color: var(--cream); }
+    .modal-confirm { padding: 11px 20px; background: var(--gold); color: var(--obsidian-deep); border-radius: 8px; font-weight: 600; font-size: 0.88rem; }
+    .modal-confirm:hover:not(:disabled) { background: var(--gold-bright); }
+    .modal-confirm:disabled { opacity: 0.6; cursor: default; }
+
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
       background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream);
@@ -158,6 +180,20 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="shipModal">
+    <div class="modal">
+      <h3>Mark order as shipped?</h3>
+      <p class="modal-product" id="shipModalProduct"></p>
+      <label class="modal-label" for="shipModalTracking">Tracking number (optional)</label>
+      <input type="text" id="shipModalTracking" placeholder="e.g. RM123456789GB" autocomplete="off" />
+      <p class="modal-note" id="shipModalEmail"></p>
+      <div class="modal-actions">
+        <button class="modal-cancel" id="shipModalCancel">Cancel</button>
+        <button class="modal-confirm" id="shipModalConfirm">Confirm &amp; Notify Customer</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     let ORDERS = [];
@@ -324,13 +360,13 @@
         </div>`;
     }
 
-    async function setShipped(id, shipped, tracking) {
+    async function setShipped(id, shipped, tracking, notify) {
       const order = ORDERS.find((o) => o.id === id);
       try {
         const r = await fetch('/api/admin/ship', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId: id, shipped, tracking }),
+          body: JSON.stringify({ sessionId: id, shipped, tracking, notify: !!notify }),
         });
         if (r.status === 401) { window.location.href = '/admin/login'; return; }
         if (!r.ok) throw new Error('update failed');
@@ -339,16 +375,49 @@
         SUMMARY.unfulfilledCount = ORDERS.filter((o) => o.fulfillment.status !== 'shipped').length;
         renderCards();
         renderRows();
-        toast(shipped ? 'Marked as shipped' : 'Moved back to To Ship');
+        if (!shipped) toast('Moved back to To Ship');
+        else if (notify && data.emailed) toast('Shipped — confirmation email sent to customer');
+        else if (notify && data.emailError) toast('Marked shipped, but email failed: ' + esc(data.emailError), true);
+        else toast('Marked as shipped');
       } catch {
         toast('Could not update order');
       }
     }
 
+    // ── Mark-shipped confirmation modal ──
+    let SHIP_TARGET = null;
+    function openShipModal(id) {
+      const o = ORDERS.find((x) => x.id === id);
+      if (!o) return;
+      SHIP_TARGET = id;
+      const product = [o.product.design, o.product.model, o.product.finish].filter(Boolean).join(' · ') || (o.isCustom ? 'Custom portrait' : 'Order');
+      document.getElementById('shipModalProduct').textContent = product;
+      const email = o.customer.email;
+      const who = [o.customer.name, email].filter(Boolean).join(' · ');
+      const emailEl = document.getElementById('shipModalEmail');
+      if (email) emailEl.innerHTML = 'A shipping confirmation email will be sent to <b>' + esc(email) + '</b>.';
+      else emailEl.innerHTML = '<span style="color:#ffcf8b">No email on this order — it will be marked shipped without notifying.</span>';
+      const tr = document.getElementById('shipModalTracking');
+      tr.value = o.fulfillment.tracking || '';
+      document.getElementById('shipModal').classList.add('open');
+      setTimeout(() => tr.focus(), 50);
+    }
+    function closeShipModal() { document.getElementById('shipModal').classList.remove('open'); SHIP_TARGET = null; }
+    async function confirmShip() {
+      if (!SHIP_TARGET) return;
+      const id = SHIP_TARGET;
+      const tracking = document.getElementById('shipModalTracking').value.trim();
+      const btn = document.getElementById('shipModalConfirm');
+      btn.disabled = true; btn.textContent = 'Shipping…';
+      await setShipped(id, true, tracking, true);
+      btn.disabled = false; btn.textContent = 'Confirm & Notify Customer';
+      closeShipModal();
+    }
+
     // Event delegation
     document.getElementById('rows').addEventListener('click', (e) => {
       const ship = e.target.closest('[data-ship]');
-      if (ship) { e.stopPropagation(); setShipped(ship.dataset.ship, true); return; }
+      if (ship) { e.stopPropagation(); openShipModal(ship.dataset.ship); return; }
       const undo = e.target.closest('[data-undo]');
       if (undo) { e.stopPropagation(); setShipped(undo.dataset.undo, false); return; }
       const save = e.target.closest('[data-track-save]');
@@ -356,7 +425,8 @@
         e.stopPropagation();
         const id = save.dataset.trackSave;
         const input = document.querySelector(`[data-track-input="${id}"]`);
-        setShipped(id, true, input ? input.value.trim() : '');
+        setShipped(id, true, input ? input.value.trim() : '', false);
+        toast('Tracking saved');
         return;
       }
       const copy = e.target.closest('[data-copy]');
@@ -388,6 +458,19 @@
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await fetch('/api/admin/logout', { method: 'POST' });
       window.location.href = '/admin/login';
+    });
+
+    // Ship modal wiring
+    document.getElementById('shipModalCancel').addEventListener('click', closeShipModal);
+    document.getElementById('shipModalConfirm').addEventListener('click', confirmShip);
+    document.getElementById('shipModal').addEventListener('click', (e) => {
+      if (e.target.id === 'shipModal') closeShipModal();
+    });
+    document.getElementById('shipModalTracking').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') confirmShip();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('shipModal').classList.contains('open')) closeShipModal();
     });
 
     load();

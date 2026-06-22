@@ -572,10 +572,26 @@ svg    { display: block; }
   transition: color 0.2s, padding-left 0.2s;
 }
 .mega-link:hover { color: var(--gold-pale); padding-left: 4px; }
-.mega-swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
-.mega-swatch { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--cream-mid); transition: color 0.2s; }
-.mega-swatch span { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); flex-shrink: 0; }
-.mega-swatch:hover { color: var(--cream); }
+.mega-collection {
+  display: block;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gold-whisper);
+}
+.mega-collection:last-child { border-bottom: none; }
+.mega-collection-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--cream);
+  transition: color 0.2s;
+}
+.mega-collection-sub {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--cream-muted);
+  margin-top: 1px;
+}
+.mega-collection:hover .mega-collection-name { color: var(--gold-pale); }
 .mega-feature {
   display: flex; flex-direction: column; gap: 6px; justify-content: center;
   background: var(--gold-whisper);

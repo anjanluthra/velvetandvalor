@@ -239,10 +239,9 @@ window.addEventListener('unhandledrejection', function (e) {
     { label: 'iPhone 15', q: 'iphone-15' },
     { label: 'iPhone 14', q: 'iphone-14' },
   ];
-  const colours = [
-    { name: 'Nude', hex: '#D4B896' }, { name: 'Blush Rose', hex: '#D4A0A0' },
-    { name: 'Royal Plum', hex: '#6B3A6B' }, { name: 'Emerald Teal', hex: '#1A7070' },
-    { name: 'Burgundy', hex: '#6B1A2C' }, { name: 'Racing Green', hex: '#1F3D2B' },
+  const collections = [
+    { name: 'Noble Steed', sub: 'Artist equestrian cases', href: '/collections/iphone-cases#noble-steed-collection' },
+    { name: "The Rider's Motto", sub: 'Quote editions', href: '/collections/iphone-cases#riders-motto-heading' },
   ];
   const panel = document.createElement('div');
   panel.className = 'mega-menu';
@@ -255,10 +254,8 @@ window.addEventListener('unhandledrejection', function (e) {
         ${series.map(s => `<a class="mega-link" href="/collections/iphone-cases?model=${s.q}">${s.label}</a>`).join('')}
       </div>
       <div class="mega-col">
-        <p class="mega-head">Shop by colour</p>
-        <div class="mega-swatches">
-          ${colours.map(c => `<a class="mega-swatch" href="/collections/iphone-cases" title="${c.name}" aria-label="${c.name}"><span style="background:${c.hex}"></span>${c.name}</a>`).join('')}
-        </div>
+        <p class="mega-head">Shop by collection</p>
+        ${collections.map(c => `<a class="mega-collection" href="${c.href}"><span class="mega-collection-name">${c.name}</span><span class="mega-collection-sub">${c.sub}</span></a>`).join('')}
       </div>
       <a class="mega-feature" href="/custom">
         <span class="mega-feature-kicker">Make it yours</span>

@@ -69,6 +69,18 @@
     .badge.shipped { background: rgba(60, 200, 140, 0.16); color: #6fe0ad; }
     .badge.unfulfilled { background: rgba(255, 207, 139, 0.14); color: #ffcf8b; }
     .badge.refund { background: rgba(255, 154, 154, 0.14); color: #ff9a9a; margin-left: 6px; }
+    .badge.custom { background: rgba(34, 170, 170, 0.20); color: var(--gold-pale); }
+    .badge.standard { background: rgba(255, 255, 255, 0.07); color: var(--cream-muted); }
+
+    .custom-section { grid-column: 1 / -1; border-top: 1px solid var(--gold-whisper); padding-top: 16px; }
+    .custom-section h4 { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-pale); margin-bottom: 8px; }
+    .custom-section .kv { font-size: 0.88rem; line-height: 1.9; }
+    .custom-section .kv b { color: var(--cream-muted); font-weight: 500; display: inline-block; min-width: 70px; }
+    .photos { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .photo-thumb { display: block; width: 96px; height: 96px; border-radius: 8px; overflow: hidden; border: 1px solid var(--gold-muted); transition: border-color 0.2s var(--ease-out); }
+    .photo-thumb:hover { border-color: var(--gold-bright); }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-links { margin-top: 10px; font-size: 0.78rem; color: var(--cream-muted); }
 
     .btn-ship {
       padding: 7px 14px; background: var(--gold); color: var(--obsidian-deep);
@@ -213,8 +225,8 @@
         if (FILTER === 'shipped' && !isShipped) return false;
         if (FILTER === 'unfulfilled' && isShipped) return false;
         if (QUERY) {
-          const hay = [o.customer.name, o.customer.email, o.product.sku, o.product.design, o.product.model]
-            .join(' ').toLowerCase();
+          const hay = [o.customer.name, o.customer.email, o.product.sku, o.product.design, o.product.model, o.custom && o.custom.horseName, o.isCustom ? 'custom' : 'standard']
+            .filter(Boolean).join(' ').toLowerCase();
           if (!hay.includes(QUERY)) return false;
         }
         return true;
@@ -231,6 +243,12 @@
       tbody.innerHTML = rows.map((o) => {
         const shipped = o.fulfillment.status === 'shipped';
         const product = [o.product.design, o.product.model, o.product.finish].filter(Boolean).join(' · ') || '—';
+        const typeBadge = o.isCustom
+          ? '<span class="badge custom">Custom</span>'
+          : '<span class="badge standard">Standard</span>';
+        const subline = o.isCustom
+          ? (o.custom && o.custom.horseName ? '🐴 ' + esc(o.custom.horseName) : 'Custom portrait')
+          : esc(o.product.sku);
         const refundBadge = o.refunded ? '<span class="badge refund">Refunded</span>' : '';
         const amountCell = CAN_SEE_MONEY
           ? `<span class="amount ${o.refunded ? 'refunded' : ''}">${fmtMoney(o.amount, o.currency)}</span> ${refundBadge}`
@@ -243,7 +261,7 @@
         return `
           <tr class="main-row" data-row="${o.id}">
             <td><span class="muted">${fmtDate(o.created)}</span></td>
-            <td>${esc(product)}<br><span class="muted">${esc(o.product.sku)}</span></td>
+            <td>${typeBadge} ${esc(product)}<br><span class="muted">${subline}</span></td>
             <td class="hide-sm">${esc(o.customer.name) || '—'}<br><span class="muted">${esc(o.customer.email)}</span></td>
             <td>${amountCell}</td>
             <td>${fulfillCell}</td>
@@ -275,6 +293,7 @@
                   <div>${addr}</div>
                 </div>
               </div>
+              ${o.isCustom ? customSection(o) : ''}
               <div class="track-row">
                 <input type="text" placeholder="Tracking number (optional)" value="${esc(o.fulfillment.tracking)}" data-track-input="${o.id}" />
                 <button data-track-save="${o.id}">Save tracking</button>
@@ -283,6 +302,26 @@
             </div>
           </td>
         </tr>`;
+    }
+
+    function customSection(o) {
+      const c = o.custom || {};
+      const photos = (c.photos || []).map((u, i) =>
+        `<a href="${esc(u)}" target="_blank" rel="noopener" class="photo-thumb" title="Open full image"><img src="${esc(u)}" alt="Customer photo ${i + 1}" loading="lazy" /></a>`
+      ).join('');
+      return `
+        <div class="custom-section">
+          <h4>Custom Portrait — customer upload</h4>
+          <div class="kv">
+            ${c.horseName ? `<div><b>Horse</b> ${esc(c.horseName)}</div>` : ''}
+            ${c.initials ? `<div><b>Initials</b> ${esc(c.initials)}</div>` : ''}
+            ${c.notes ? `<div><b>Notes</b> ${esc(c.notes)}</div>` : ''}
+          </div>
+          ${photos
+            ? `<div class="photos">${photos}</div>
+               <div class="photo-links">${(c.photos || []).map((u, i) => `<a class="copy" data-copy="${esc(u)}">Copy image ${i + 1} URL</a>`).join(' · ')}</div>`
+            : '<div class="muted">No photo URL stored on this order.</div>'}
+        </div>`;
     }
 
     async function setShipped(id, shipped, tracking) {

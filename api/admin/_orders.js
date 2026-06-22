@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
           {};
         const shipAddr = ship.address || {};
         const md = s.metadata || {};
+        const isCustom = md.order_type === 'custom_portrait';
 
         orders.push({
           id: s.id,
@@ -54,12 +55,22 @@ module.exports = async (req, res) => {
           currency: (s.currency || 'usd').toUpperCase(),
           refunded,
           paymentStatus: s.payment_status,
+          isCustom,
           product: {
-            design: md.design || '',
-            model: md.model || '',
+            // Custom and standard checkouts store product fields under different keys.
+            design: isCustom ? (md.case_colour || '') : (md.design || ''),
+            model: isCustom ? (md.iphone_model || '') : (md.model || ''),
             finish: md.finish || '',
             sku: md.sku || '',
           },
+          custom: isCustom
+            ? {
+                horseName: md.horse_name || '',
+                initials: md.initials || '',
+                notes: md.notes || '',
+                photos: [md.photo_url_1, md.photo_url_2].filter(Boolean),
+              }
+            : null,
           customer: {
             name: cust.name || ship.name || '',
             email: cust.email || '',

@@ -52,6 +52,15 @@
       background: var(--obsidian-mid); border: 1px solid var(--gold-muted);
       border-radius: 8px; color: var(--cream); font-size: 0.88rem;
     }
+    .date-range { display: flex; align-items: center; gap: 8px; }
+    .date-label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cream-muted); }
+    .date-range input[type="date"] {
+      padding: 8px 10px; background: var(--obsidian-mid); border: 1px solid var(--gold-muted);
+      border-radius: 8px; color: var(--cream); font-size: 0.82rem; color-scheme: dark;
+    }
+    .date-range input[type="date"]:focus { border-color: var(--gold-bright); }
+    .date-clear { font-size: 0.78rem; color: var(--cream-muted); text-decoration: underline; cursor: pointer; }
+    .date-clear:hover { color: var(--cream); }
 
     /* Table */
     .table-wrap { background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px; overflow: hidden; }
@@ -144,6 +153,7 @@
     <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
     <div class="actions">
       <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
+      <button class="btn-ghost" id="exportBtn" title="Copy orders and open a new Google Sheet">⤓ Export to Sheets</button>
       <button class="btn-ghost" id="refreshBtn">Refresh</button>
       <button class="btn-ghost" id="logoutBtn">Log out</button>
     </div>
@@ -157,6 +167,13 @@
         <button class="filter active" data-filter="all">All</button>
         <button class="filter" data-filter="unfulfilled">To Ship</button>
         <button class="filter" data-filter="shipped">Shipped</button>
+      </div>
+      <div class="date-range">
+        <span class="date-label">From</span>
+        <input type="date" id="dateFrom" />
+        <span class="date-label">To</span>
+        <input type="date" id="dateTo" />
+        <a class="date-clear" id="dateClear" style="display:none">Clear</a>
       </div>
       <input class="search" id="search" type="search" placeholder="Search name, email, SKU…" />
     </div>
@@ -201,6 +218,8 @@
     let FILTER = 'all';
     let QUERY = '';
     let CAN_SEE_MONEY = true;
+    let DATE_FROM = '';
+    let DATE_TO = '';
     const expanded = new Set();
 
     const fmtMoney = (cents, currency) =>
@@ -209,12 +228,30 @@
       new Date(unixSec * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-    function toast(msg) {
+    function toast(msg, ms) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
       clearTimeout(t._t);
-      t._t = setTimeout(() => t.classList.remove('show'), 2200);
+      t._t = setTimeout(() => t.classList.remove('show'), ms || 2200);
+    }
+
+    // Orders within the selected date range (drives headline numbers).
+    function inDateRange(o) {
+      if (DATE_FROM) { const f = new Date(DATE_FROM + 'T00:00:00').getTime() / 1000; if (o.created < f) return false; }
+      if (DATE_TO) { const t = new Date(DATE_TO + 'T23:59:59').getTime() / 1000; if (o.created > t) return false; }
+      return true;
+    }
+    function dateScopedOrders() { return ORDERS.filter(inDateRange); }
+    function computeSummary(list) {
+      const gross = list.reduce((s, o) => s + (o.amount || 0), 0);
+      const refunds = list.reduce((s, o) => s + (o.refunded || 0), 0);
+      return {
+        currency: (SUMMARY && SUMMARY.currency) || (list[0] && list[0].currency) || 'USD',
+        gross, refunds, net: gross - refunds,
+        orderCount: list.length,
+        unfulfilledCount: list.filter((o) => o.fulfillment.status !== 'shipped').length,
+      };
     }
 
     async function load() {
@@ -237,18 +274,20 @@
 
     function renderCards() {
       if (!SUMMARY) return;
-      const c = SUMMARY.currency;
+      const s = computeSummary(dateScopedOrders());
+      const c = s.currency;
+      const dateLabel = (DATE_FROM || DATE_TO) ? ' (in range)' : '';
       const cards = CAN_SEE_MONEY
         ? [
-            { label: 'Gross Revenue', value: fmtMoney(SUMMARY.gross, c), cls: 'gold' },
-            { label: 'Refunds', value: fmtMoney(SUMMARY.refunds, c), cls: SUMMARY.refunds ? 'warn' : '' },
-            { label: 'Net Sales', value: fmtMoney(SUMMARY.net, c), cls: '' },
-            { label: 'Orders', value: SUMMARY.orderCount, cls: '' },
-            { label: 'To Ship', value: SUMMARY.unfulfilledCount, cls: SUMMARY.unfulfilledCount ? 'warn' : '' },
+            { label: 'Gross Revenue' + dateLabel, value: fmtMoney(s.gross, c), cls: 'gold' },
+            { label: 'Refunds', value: fmtMoney(s.refunds, c), cls: s.refunds ? 'warn' : '' },
+            { label: 'Net Sales', value: fmtMoney(s.net, c), cls: '' },
+            { label: 'Orders' + dateLabel, value: s.orderCount, cls: '' },
+            { label: 'To Ship', value: s.unfulfilledCount, cls: s.unfulfilledCount ? 'warn' : '' },
           ]
         : [
-            { label: 'Orders', value: SUMMARY.orderCount, cls: '' },
-            { label: 'To Ship', value: SUMMARY.unfulfilledCount, cls: SUMMARY.unfulfilledCount ? 'warn' : '' },
+            { label: 'Orders' + dateLabel, value: s.orderCount, cls: '' },
+            { label: 'To Ship', value: s.unfulfilledCount, cls: s.unfulfilledCount ? 'warn' : '' },
           ];
       document.getElementById('cards').innerHTML = cards.map((k) =>
         `<div class="card"><div class="label">${k.label}</div><div class="value ${k.cls}">${k.value}</div></div>`
@@ -257,6 +296,7 @@
 
     function visibleOrders() {
       return ORDERS.filter((o) => {
+        if (!inDateRange(o)) return false;
         const isShipped = o.fulfillment.status === 'shipped';
         if (FILTER === 'shipped' && !isShipped) return false;
         if (FILTER === 'unfulfilled' && isShipped) return false;
@@ -461,6 +501,69 @@
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await fetch('/api/admin/logout', { method: 'POST' });
       window.location.href = '/admin/login';
+    });
+
+    // ── Date range ──
+    function onDateChange() {
+      DATE_FROM = document.getElementById('dateFrom').value;
+      DATE_TO = document.getElementById('dateTo').value;
+      document.getElementById('dateClear').style.display = (DATE_FROM || DATE_TO) ? '' : 'none';
+      renderCards();
+      renderRows();
+    }
+    document.getElementById('dateFrom').addEventListener('change', onDateChange);
+    document.getElementById('dateTo').addEventListener('change', onDateChange);
+    document.getElementById('dateClear').addEventListener('click', () => {
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
+      onDateChange();
+    });
+
+    // ── Export to Google Sheets (copies TSV, opens a fresh sheet to paste) ──
+    function buildExport() {
+      const list = dateScopedOrders();
+      const cols = ['Date', 'Type', 'Product', 'SKU', 'Horse', 'Initials', 'Customer', 'Email', 'Phone', 'Ship To', 'Country'];
+      if (CAN_SEE_MONEY) cols.push('Amount', 'Refunded');
+      cols.push('Status', 'Tracking', 'Order ID');
+      const rows = list.map((o) => {
+        const sh = o.shipping || {};
+        const addr = [sh.line1, sh.line2, sh.city, sh.state, sh.postal].filter(Boolean).join(', ');
+        const r = [
+          fmtDate(o.created),
+          o.isCustom ? 'Custom' : 'Standard',
+          [o.product.design, o.product.model, o.product.finish].filter(Boolean).join(' '),
+          o.product.sku || '',
+          (o.custom && o.custom.horseName) || '',
+          (o.custom && o.custom.initials) || '',
+          o.customer.name || '',
+          o.customer.email || '',
+          o.customer.phone || '',
+          addr,
+          sh.country || '',
+        ];
+        if (CAN_SEE_MONEY) r.push(o.amount != null ? (o.amount / 100).toFixed(2) : '', o.refunded ? (o.refunded / 100).toFixed(2) : '0.00');
+        r.push(o.fulfillment.status, o.fulfillment.tracking || '', o.id);
+        return r;
+      });
+      const clean = (v) => String(v == null ? '' : v).replace(/[\t\n\r]/g, ' ');
+      return { rows: list.length, tsv: [cols, ...rows].map((r) => r.map(clean).join('\t')).join('\n') };
+    }
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const { rows, tsv } = buildExport();
+      if (!rows) { toast('No orders to export'); return; }
+      // Open the new sheet synchronously (avoids popup blocking), then copy.
+      const win = window.open('https://sheets.new', '_blank');
+      const done = () => toast('Copied ' + rows + ' orders — paste (⌘V / Ctrl+V) into the new Google Sheet', 6000);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(tsv).then(done).catch(() => {
+          if (!win) toast('Allow pop-ups, then try Export again', 5000);
+          else toast('Sheet opened — copy failed, try Export again', 5000);
+        });
+      } else if (!win) {
+        toast('Allow pop-ups for this site, then try Export again', 5000);
+      } else {
+        done();
+      }
     });
 
     // Ship modal wiring

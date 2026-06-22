@@ -185,8 +185,6 @@
     <div class="modal">
       <h3>Mark order as shipped?</h3>
       <p class="modal-product" id="shipModalProduct"></p>
-      <label class="modal-label" for="shipModalTracking">Tracking number (optional, internal)</label>
-      <input type="text" id="shipModalTracking" placeholder="e.g. RM123456789GB" autocomplete="off" />
       <label class="modal-label" for="shipModalDelivery">Estimated delivery date (optional)</label>
       <input type="date" id="shipModalDelivery" autocomplete="off" />
       <p class="modal-note" id="shipModalEmail"></p>
@@ -399,17 +397,18 @@
       const emailEl = document.getElementById('shipModalEmail');
       if (email) emailEl.innerHTML = 'A shipping confirmation email will be sent to <b>' + esc(email) + '</b>.';
       else emailEl.innerHTML = '<span style="color:#ffcf8b">No email on this order — it will be marked shipped without notifying.</span>';
-      const tr = document.getElementById('shipModalTracking');
-      tr.value = o.fulfillment.tracking || '';
-      document.getElementById('shipModalDelivery').value = o.fulfillment.estimatedDelivery || '';
+      const dd = document.getElementById('shipModalDelivery');
+      dd.value = o.fulfillment.estimatedDelivery || '';
       document.getElementById('shipModal').classList.add('open');
-      setTimeout(() => tr.focus(), 50);
+      setTimeout(() => dd.focus(), 50);
     }
     function closeShipModal() { document.getElementById('shipModal').classList.remove('open'); SHIP_TARGET = null; }
     async function confirmShip() {
       if (!SHIP_TARGET) return;
       const id = SHIP_TARGET;
-      const tracking = document.getElementById('shipModalTracking').value.trim();
+      // Tracking is managed in the order detail row, not this popup — preserve any existing value.
+      const order = ORDERS.find((o) => o.id === id) || {};
+      const tracking = (order.fulfillment && order.fulfillment.tracking) || '';
       const deliveryDate = document.getElementById('shipModalDelivery').value;
       const btn = document.getElementById('shipModalConfirm');
       btn.disabled = true; btn.textContent = 'Shipping…';
@@ -470,7 +469,7 @@
     document.getElementById('shipModal').addEventListener('click', (e) => {
       if (e.target.id === 'shipModal') closeShipModal();
     });
-    document.getElementById('shipModalTracking').addEventListener('keydown', (e) => {
+    document.getElementById('shipModalDelivery').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') confirmShip();
     });
     document.addEventListener('keydown', (e) => {

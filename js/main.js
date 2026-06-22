@@ -82,14 +82,17 @@ window.addEventListener('unhandledrejection', function (e) {
 })();
 
 
-/* ── Navigation (nav scrolls naturally — no fixed/smart-sticky) ──── */
+/* ── Navigation — sticky nav + condense-on-scroll ──────────────── */
 (function initNav() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
-  // Keep .scrolled class so backwards-compatible style hooks still apply
+  const root = document.documentElement;
   function onScroll() {
-    nav.classList.toggle('scrolled', window.scrollY > 50);
-    // Ensure smart-sticky hidden state can never be set anymore
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 50);
+    // Once past the announcement bar, collapse it and slim the nav so the
+    // sticky nav (and cart) stays reachable without the full three-bar stack.
+    root.classList.toggle('header-condensed', y > 24);
     nav.classList.remove('nav-hidden');
   }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -118,6 +121,163 @@ window.addEventListener('unhandledrejection', function (e) {
       menu.setAttribute('aria-hidden', 'true');
     });
   });
+})();
+
+
+/* ── Announcement bar — rotate on mobile + click-to-copy promo ─── */
+(function initBanner() {
+  const inner = document.querySelector('.top-banner-inner');
+  if (!inner) return;
+  const items = Array.from(inner.querySelectorAll('.top-banner-item'))
+    .filter(el => !el.classList.contains('top-banner-currency'));
+
+  // Click-to-copy the promo code
+  const promo = inner.querySelector('.top-banner-promo');
+  if (promo) {
+    const code = (promo.querySelector('strong') || {}).textContent || 'FIRST10';
+    promo.setAttribute('role', 'button');
+    promo.setAttribute('tabindex', '0');
+    promo.setAttribute('aria-label', `Copy promo code ${code}`);
+    if (!promo.querySelector('.promo-copy-icon')) {
+      const icon = document.createElement('span');
+      icon.className = 'promo-copy-icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+      promo.appendChild(icon);
+    }
+    const original = promo.innerHTML;
+    let resetT;
+    const doCopy = () => {
+      const done = () => {
+        promo.classList.add('is-copied');
+        promo.innerHTML = `<strong>${code}</strong> copied ✓`;
+        clearTimeout(resetT);
+        resetT = setTimeout(() => {
+          promo.classList.remove('is-copied');
+          promo.innerHTML = original;
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = code; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    };
+    promo.addEventListener('click', doCopy);
+    promo.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doCopy(); }
+    });
+  }
+
+  // Rotate messages one-at-a-time where space only shows one (mobile)
+  if (items.length < 2) return;
+  const mq = window.matchMedia('(max-width: 768px)');
+  let idx = 0, timer = null;
+  function show(i) {
+    items.forEach((el, n) => {
+      el.style.transition = 'opacity 0.4s';
+      el.style.display = n === i ? '' : 'none';
+    });
+  }
+  function start() {
+    if (mq.matches) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+      show(idx);
+      timer = setInterval(() => { idx = (idx + 1) % items.length; show(idx); }, 4000);
+    }
+  }
+  function stop() {
+    clearInterval(timer); timer = null;
+    items.forEach(el => { el.style.display = ''; });
+  }
+  function sync() { stop(); start(); }
+  mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
+  start();
+})();
+
+
+/* ── Dismissible shipping alert (remembers dismissal) ──────────── */
+(function initShippingAlert() {
+  const alert = document.querySelector('.shipping-alert');
+  if (!alert) return;
+  const KEY = 'vv_alert_hormuz_dismissed';
+  let dismissed = false;
+  try { dismissed = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  if (dismissed) { alert.style.display = 'none'; return; }
+
+  if (!alert.querySelector('.shipping-alert-close')) {
+    const btn = document.createElement('button');
+    btn.className = 'shipping-alert-close';
+    btn.setAttribute('aria-label', 'Dismiss shipping notice');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    btn.addEventListener('click', () => {
+      alert.classList.add('is-dismissing');
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      setTimeout(() => { alert.style.display = 'none'; }, 300);
+    });
+    const inner = alert.querySelector('.shipping-alert-inner') || alert;
+    inner.appendChild(btn);
+  }
+})();
+
+
+/* ── Mega-menu for iPhone Cases ────────────────────────────────── */
+(function initMegaMenu() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  const trigger = nav.querySelector('.nav-links a[href*="iphone-cases"], .nav-links a[href*="collections"]');
+  if (!trigger) return;
+  const li = trigger.closest('li') || trigger.parentElement;
+  li.classList.add('has-mega');
+
+  const series = [
+    { label: 'iPhone 17', q: 'iphone-17' },
+    { label: 'iPhone 16', q: 'iphone-16' },
+    { label: 'iPhone 15', q: 'iphone-15' },
+    { label: 'iPhone 14', q: 'iphone-14' },
+  ];
+  const colours = [
+    { name: 'Nude', hex: '#D4B896' }, { name: 'Blush Rose', hex: '#D4A0A0' },
+    { name: 'Royal Plum', hex: '#6B3A6B' }, { name: 'Emerald Teal', hex: '#1A7070' },
+    { name: 'Burgundy', hex: '#6B1A2C' }, { name: 'Racing Green', hex: '#1F3D2B' },
+  ];
+  const panel = document.createElement('div');
+  panel.className = 'mega-menu';
+  panel.setAttribute('role', 'region');
+  panel.setAttribute('aria-label', 'iPhone cases menu');
+  panel.innerHTML = `
+    <div class="mega-inner">
+      <div class="mega-col">
+        <p class="mega-head">Shop by model</p>
+        ${series.map(s => `<a class="mega-link" href="/collections/iphone-cases?model=${s.q}">${s.label}</a>`).join('')}
+      </div>
+      <div class="mega-col">
+        <p class="mega-head">Shop by colour</p>
+        <div class="mega-swatches">
+          ${colours.map(c => `<a class="mega-swatch" href="/collections/iphone-cases" title="${c.name}" aria-label="${c.name}"><span style="background:${c.hex}"></span>${c.name}</a>`).join('')}
+        </div>
+      </div>
+      <a class="mega-feature" href="/custom">
+        <span class="mega-feature-kicker">Make it yours</span>
+        <span class="mega-feature-title">Custom horse portrait</span>
+        <span class="mega-feature-cta">Start a portrait →</span>
+      </a>
+    </div>`;
+  li.appendChild(panel);
+
+  let hideT;
+  const open = () => { clearTimeout(hideT); li.classList.add('mega-open'); trigger.setAttribute('aria-expanded', 'true'); };
+  const close = () => { hideT = setTimeout(() => { li.classList.remove('mega-open'); trigger.setAttribute('aria-expanded', 'false'); }, 120); };
+  trigger.setAttribute('aria-haspopup', 'true');
+  trigger.setAttribute('aria-expanded', 'false');
+  li.addEventListener('mouseenter', open);
+  li.addEventListener('mouseleave', close);
+  trigger.addEventListener('focus', open);
+  li.addEventListener('focusout', (e) => { if (!li.contains(e.relatedTarget)) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { li.classList.remove('mega-open'); } });
 })();
 
 

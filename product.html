@@ -312,11 +312,14 @@
             </span>
           </label>
 
-          <!-- Buy Now -->
+          <!-- Add to Bag + express Buy it now -->
           <div class="buy-controls">
-            <a href="#" class="btn-atb btn-atb-disabled" id="buyNow">
-              <span class="btn-atb-text">Buy Now</span>
+            <button type="button" class="btn-atb btn-atb-disabled" id="addToBag">
+              <span class="btn-atb-text">Add to Bag</span>
               <span class="btn-atb-price" id="atbPrice" data-price-usd="48.00" data-price-gbp="38.00" data-price-prefix="&mdash; ">&mdash; $48.00</span>
+            </button>
+            <a href="#" class="btn-atb-express btn-atb-disabled" id="buyNow">
+              <span class="btn-atb-text">Buy it now</span>
             </a>
           </div>
 
@@ -698,5 +701,6 @@
   <script src="/js/main.js"></script>
   <script src="/js/product.js"></script>
   <script src="/js/currency.js" defer></script>
+  <script src="/js/cart.js" defer></script>
 </body>
 </html>

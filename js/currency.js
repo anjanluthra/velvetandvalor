@@ -208,8 +208,21 @@
       : detectCountry().then(cc => COUNTRY_TO_CURRENCY[cc] || 'USD');
 
     Promise.all([loadRates(), codePromise]).then(([rates, code]) => {
-      mountToggle(code, (newCode) => applyPrices(rates, newCode));
+      // Public hooks so dynamically-rendered UI (e.g. the cart drawer) can
+      // reuse the exact same FX/symbol/override logic — no duplication.
+      window.vvCurrency = {
+        code: code,
+        rates: rates,
+        apply: function () { applyPrices(rates, window.vvCurrency.code); },
+        format: function (usdAmount) { return formatPrice(usdAmount, rates, window.vvCurrency.code); },
+      };
+      mountToggle(code, (newCode) => {
+        window.vvCurrency.code = newCode;
+        applyPrices(rates, newCode);
+        window.dispatchEvent(new CustomEvent('vv:currencychange', { detail: { code: newCode } }));
+      });
       applyPrices(rates, code);
+      window.dispatchEvent(new CustomEvent('vv:currencyready', { detail: { code: code } }));
     });
   }
 

@@ -265,6 +265,7 @@ function updateURL() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          collectionId: 'noble-steed',
           design: designLabel,
           model: modelLabel,
           finish: finishLabel,
@@ -313,18 +314,39 @@ function updateURL() {
 })();
 
 
+/* ── Add to Bag ────────────────────────────────────────────────── */
+(function initAddToBag() {
+  const btn = document.getElementById('addToBag');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('btn-atb-disabled') || !window.vvCart) return;
+    const design = DESIGNS[currentDesign] || { name: 'Nude', image: '' };
+    const select = document.getElementById('deviceSelect');
+    const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
+    window.vvCart.add({
+      collectionId: 'noble-steed',
+      design: design.name,
+      model: modelLabel,
+      finish: 'Glossy',
+      unitAmountCents: 4800,
+      image: design.image,
+      name: 'Noble Steed — ' + design.name,
+    });
+    window.vvCart.open();
+  });
+})();
+
+
 /* ── Model Confirmation Checkbox ───────────────────────────────── */
 (function initModelConfirm() {
   const checkbox = document.getElementById('modelConfirmCheckbox');
-  const buyBtn = document.getElementById('buyNow');
-  if (!checkbox || !buyBtn) return;
+  const buttons = ['addToBag', 'buyNow']
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  if (!checkbox || !buttons.length) return;
 
   function updateBtn() {
-    if (checkbox.checked) {
-      buyBtn.classList.remove('btn-atb-disabled');
-    } else {
-      buyBtn.classList.add('btn-atb-disabled');
-    }
+    buttons.forEach((b) => b.classList.toggle('btn-atb-disabled', !checkbox.checked));
   }
 
   checkbox.addEventListener('change', updateBtn);

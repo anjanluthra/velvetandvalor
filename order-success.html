@@ -241,6 +241,11 @@
         .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
         .then(function (data) {
           if (!data) return;
+          // Payment is confirmed (Stripe only redirects here post-payment and
+          // the order was found) — empty the bag.
+          if (window.vvCart && typeof window.vvCart.clear === 'function') {
+            try { window.vvCart.clear(); } catch (e) {}
+          }
           var totalDisplay = formatMoney(data.total, data.currency);
           if (!totalDisplay) return;
           setText('orderTotal', totalDisplay);
@@ -257,5 +262,6 @@
   <script src="js/main.js"></script>
 
   <script src="/js/currency.js" defer></script>
+  <script src="/js/cart.js" defer></script>
 </body>
 </html>

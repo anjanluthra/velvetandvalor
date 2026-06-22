@@ -84,20 +84,41 @@ if (deviceSelect) {
   });
 })();
 
-/* ── Model confirm checkbox gates the Buy Now button ───────── */
+/* ── Model confirm checkbox gates Add to Bag + Buy it now ───── */
 (function initBuyGate() {
   const cb = document.getElementById('modelConfirmCheckbox');
-  const btn = document.getElementById('buyNow');
-  if (!cb || !btn) return;
+  const buttons = ['addToBag', 'buyNow']
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  if (!cb || !buttons.length) return;
   function refresh() {
-    if (cb.checked) {
-      btn.classList.remove('btn-atb-disabled');
-    } else {
-      btn.classList.add('btn-atb-disabled');
-    }
+    buttons.forEach((b) => b.classList.toggle('btn-atb-disabled', !cb.checked));
   }
   cb.addEventListener('change', refresh);
   refresh();
+})();
+
+/* ── Add to Bag ────────────────────────────────────────────── */
+(function initAddToBag() {
+  const btn = document.getElementById('addToBag');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('btn-atb-disabled') || !window.vvCart) return;
+    const cfg = RM_DESIGNS[currentVariant] || RM_DESIGNS.pink;
+    const modelLabel = deviceSelect
+      ? deviceSelect.options[deviceSelect.selectedIndex].text
+      : 'iPhone 17';
+    window.vvCart.add({
+      collectionId: 'riders-motto',
+      design: cfg.name,
+      model: modelLabel,
+      finish: 'Glossy',
+      unitAmountCents: RM_UNIT_AMOUNT_CENTS,
+      image: cfg.image,
+      name: "Rider's Motto — " + cfg.name,
+    });
+    window.vvCart.open();
+  });
 })();
 
 /* ── Buy Now → Stripe Checkout ─────────────────────────────── */
@@ -121,6 +142,7 @@ if (deviceSelect) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          collectionId: 'riders-motto',
           collection: RM_COLLECTION,
           design: variantName,
           model: modelLabel,

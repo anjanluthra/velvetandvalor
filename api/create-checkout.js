@@ -1,7 +1,56 @@
 const Stripe = require('stripe');
 
+// Server-derived prices (cents). NEVER trust a client-sent price.
+const COLLECTIONS = {
+  'noble-steed':  { name: 'Noble Steed',       cents: 4800 },
+  'riders-motto': { name: "The Rider's Motto",  cents: 4000 },
+};
+
+// Resolve a collection to its trusted name + price. Prefer a stable slug
+// (collectionId); fall back to legacy free-text `collection` so existing
+// single-item Buy Now keeps working until all clients send collectionId.
+function resolveCollection(collectionId, legacyName) {
+  if (collectionId && COLLECTIONS[collectionId]) {
+    return { id: collectionId, ...COLLECTIONS[collectionId] };
+  }
+  if (typeof legacyName === 'string' && /rider/i.test(legacyName)) {
+    return { id: 'riders-motto', ...COLLECTIONS['riders-motto'] };
+  }
+  return { id: 'noble-steed', ...COLLECTIONS['noble-steed'] };
+}
+
+// Strip control characters; cap length. Display use only.
+function clean(v, max) {
+  return String(v == null ? '' : v)
+    .replace(/[\x00-\x1F\x7F]/g, '')
+    .trim()
+    .slice(0, max || 80);
+}
+
+function clampQty(q) {
+  const n = Math.floor(Number(q));
+  if (!Number.isFinite(n) || n < 1) return 1;
+  return Math.min(n, 10);
+}
+
+function lineItem(col, design, model, finish, qty) {
+  const designName = clean(design, 60) || 'Case';
+  const modelName = clean(model, 40) || 'iPhone';
+  const finishName = clean(finish, 20) || 'Glossy';
+  return {
+    price_data: {
+      currency: 'usd',
+      product_data: {
+        name: `${col.name} — ${designName}`,
+        description: `${modelName} (${finishName})`,
+      },
+      unit_amount: col.cents,
+    },
+    quantity: clampQty(qty),
+  };
+}
+
 module.exports = async (req, res) => {
-  // Only allow POST
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -10,42 +59,70 @@ module.exports = async (req, res) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   const {
-    design,
-    model,
-    finish,
-    product_suggestion,
+    items,              // multi-item cart: [{ collectionId, design, model, finish, qty }]
+    design, model, finish, collection, collectionId, // legacy single-item
     journal_waitlist,
-    collection,         // new: 'Noble Steed' (default) or 'The Rider's Motto'
-    unit_amount_cents,  // new: per-collection price override (cents)
-  } = req.body;
+  } = req.body || {};
 
-  // Build a readable description for the order
-  const designName = design || 'Noble Steed Case';
-  const modelName = model || 'iPhone';
-  const finishName = finish || 'Glossy';
-  const collectionName = collection || 'Noble Steed';
-  const safeUnitAmount = (typeof unit_amount_cents === 'number' && unit_amount_cents >= 100 && unit_amount_cents <= 50000)
-    ? unit_amount_cents
-    : 4800; // $48.00 default
-  const description = `${designName} — ${modelName} (${finishName})`;
+  let line_items;
+  let metadata;
+
+  try {
+    if (Array.isArray(items) && items.length > 0) {
+      // ── Multi-item cart path ──
+      if (items.length > 20) {
+        return res.status(400).json({ error: 'Too many items' });
+      }
+      const names = [];
+      line_items = items.map((it) => {
+        if (!it || !it.collectionId || !COLLECTIONS[it.collectionId]) {
+          throw Object.assign(new Error('bad_collection'), { _client: true });
+        }
+        const col = resolveCollection(it.collectionId);
+        names.push(col.name);
+        return lineItem(col, it.design, it.model, it.finish, it.qty);
+      });
+      const first = items[0];
+      const firstCol = resolveCollection(first.collectionId);
+      const totalQty = line_items.reduce((s, li) => s + li.quantity, 0);
+      metadata = {
+        // Keep the webhook welcome-email contract: name from the first line.
+        collection: firstCol.name,
+        design: clean(first.design, 60),
+        item_count: String(totalQty),
+        collections: clean([...new Set(names)].join(', '), 200),
+        items_json: clean(JSON.stringify(items.map((i) => ({
+          c: i.collectionId, d: clean(i.design, 30), m: clean(i.model, 24), q: clampQty(i.qty),
+        }))), 480),
+        journal_waitlist: journal_waitlist || 'no',
+      };
+    } else {
+      // ── Legacy single-item path (price still server-derived) ──
+      const col = resolveCollection(collectionId, collection);
+      const designName = clean(design, 60) || 'Noble Steed Case';
+      const modelName = clean(model, 40) || 'iPhone';
+      const finishName = clean(finish, 20) || 'Glossy';
+      line_items = [lineItem(col, designName, modelName, finishName, 1)];
+      metadata = {
+        design: designName,
+        model: modelName,
+        finish: finishName,
+        sku: `VV-${designName.toUpperCase().replace(/\s+/g, '-')}-${modelName.toUpperCase().replace(/\s+/g, '-')}-${finishName.substring(0, 3).toUpperCase()}`,
+        collection: col.name,
+        journal_waitlist: journal_waitlist || 'no',
+      };
+    }
+  } catch (e) {
+    if (e && e._client) return res.status(400).json({ error: 'Invalid item in cart' });
+    console.error('Checkout build error:', e.message);
+    return res.status(400).json({ error: 'Invalid request' });
+  }
 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       allow_promotion_codes: true,
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `${collectionName} — ${designName}`,
-              description: description,
-            },
-            unit_amount: safeUnitAmount,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items,
       shipping_options: [
         {
           shipping_rate_data: {
@@ -69,13 +146,7 @@ module.exports = async (req, res) => {
           'CO', 'IN', 'MY', 'TH', 'PH', 'ID', 'VN', 'TW',
         ],
       },
-      metadata: {
-        design: designName,
-        model: modelName,
-        finish: finishName,
-        sku: `VV-${(design || '').toUpperCase().replace(/\s+/g, '-')}-${(model || '').toUpperCase().replace(/\s+/g, '-')}-${(finish || 'GLO').substring(0, 3).toUpperCase()}`,
-        journal_waitlist: journal_waitlist || 'no',
-      },
+      metadata,
       custom_fields: [
         {
           key: 'productsuggestion',

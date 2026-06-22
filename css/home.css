@@ -2625,3 +2625,63 @@
     max-width: 72px;
   }
 }
+
+
+/* ============================================================
+   HOMEPAGE HERO v4 — Diptyque-inspired vertical oval stickers
+   Replaces the round circle CTAs with cream-on-navy heritage
+   labels. Pure typography, double border, curved serif arcs.
+   ============================================================ */
+.hero-stickers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-top: 4px;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 0.9s forwards;
+}
+
+.hero-sticker {
+  display: inline-block;
+  width: 132px;
+  text-decoration: none;
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.32));
+  transition: transform 0.45s var(--ease-out), filter 0.45s var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.hero-sticker:hover {
+  transform: translateY(-4px) rotate(-1.5deg);
+  filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.42));
+}
+.hero-sticker:nth-child(2):hover { transform: translateY(-4px) rotate(1.5deg); }
+.hero-sticker:nth-child(3):hover { transform: translateY(-4px) rotate(-1deg); }
+
+.hero-sticker-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Subtle resting tilt — like real stickers stuck slightly askew */
+.hero-sticker:nth-child(1) { transform: rotate(-1deg); }
+.hero-sticker:nth-child(2) { transform: rotate(0.6deg); }
+.hero-sticker:nth-child(3) { transform: rotate(-0.4deg); }
+
+/* Mobile — keep 3 in a row but scale down */
+@media (max-width: 768px) {
+  .hero-stickers {
+    gap: 14px;
+  }
+  .hero-sticker { width: 108px; }
+}
+
+@media (max-width: 480px) {
+  .hero-stickers { gap: 10px; }
+  .hero-sticker { width: 96px; }
+}
+
+@media (max-width: 380px) {
+  .hero-stickers { gap: 8px; }
+  .hero-sticker { width: 88px; }
+}

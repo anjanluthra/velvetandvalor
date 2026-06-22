@@ -606,6 +606,9 @@
   margin-bottom: 24px;
   margin-top: 28px;
 }
+/* In the column layout the button's legacy `flex:1` would govern the
+   vertical axis (flex-basis:0) and collapse its height — pin it instead. */
+.buy-controls .btn-atb { flex: 0 0 auto; }
 
 /* Express "Buy it now" — secondary to Add to Bag */
 .btn-atb-express {
@@ -626,7 +629,12 @@
   transition: border-color 0.3s, color 0.3s, background 0.3s;
 }
 .btn-atb-express:hover { border-color: var(--gold); color: var(--gold-pale); background: var(--gold-whisper); }
-.btn-atb-express.btn-atb-disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+.btn-atb-express.btn-atb-disabled {
+  border-color: var(--gold-whisper);
+  color: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+  cursor: not-allowed;
+}
 
 .quantity-control {
   display: flex;
@@ -1780,10 +1788,12 @@
 
 /* Disabled Buy Now state */
 .btn-atb.btn-atb-disabled {
-  opacity: 0.4;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cream-muted);
   pointer-events: none;
   cursor: not-allowed;
 }
+.btn-atb.btn-atb-disabled::before { display: none; }
 
 
 /* ── Always-visible Product Description ──────────────────────── */

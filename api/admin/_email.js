@@ -85,9 +85,10 @@ function founderWelcomeHtml({ name, product }) {
       <tr><td align="center" style="padding:32px 16px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFDF9;border:1px solid #E4DDD0;border-radius:16px;overflow:hidden;">
           <!-- Brand bar -->
-          <tr><td style="background:#071428;padding:22px 32px;text-align:center;">
-            <div style="font-family:Georgia,'Times New Roman',serif;color:#ffffff;font-size:20px;letter-spacing:0.02em;">Velvet &amp; Valor</div>
-            <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#7FCDCD;margin-top:6px;">A note from the founder</div>
+          <tr><td style="background:#071428;padding:26px 32px;text-align:center;">
+            <img src="${SITE}/images/vv-logo.png" width="46" alt="Velvet &amp; Valor" style="display:inline-block;width:46px;height:auto;margin:0 0 12px;" />
+            <div style="font-family:Georgia,'Times New Roman',serif;color:#ffffff;font-size:19px;letter-spacing:0.1em;">VELVET &amp; VALOR</div>
+            <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#7FCDCD;margin-top:8px;">A note from the founder</div>
           </td></tr>
           <!-- Letter -->
           <tr><td style="padding:40px 36px 28px;font-family:Georgia,'Times New Roman',serif;color:#2A2A28;">
@@ -119,10 +120,8 @@ function founderWelcomeHtml({ name, product }) {
           <tr><td style="padding:22px 36px 30px;border-top:1px solid #EDE6D9;text-align:center;font-family:Arial,sans-serif;">
             <a href="${SITE}/our-story" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Our Story</a>
             <span style="color:#D8CFBF;">&middot;</span>
-            <a href="${SITE}/blog" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Care Guide</a>
-            <span style="color:#D8CFBF;">&middot;</span>
             <a href="${SITE}/contact" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Contact</a>
-            <p style="font-size:11px;color:#A89F90;margin:16px 0 0;line-height:1.6;">Velvet &amp; Valor &mdash; an artist-led equestrian lifestyle brand.</p>
+            <p style="font-size:11px;color:#A89F90;margin:16px 0 0;line-height:1.6;">VELVET &amp; VALOR &mdash; an artist-led equestrian lifestyle brand.</p>
           </td></tr>
         </table>
       </td></tr>

@@ -403,6 +403,62 @@
   animation: heroFadeUp 0.9s var(--ease-out) 0.9s forwards;
 }
 
+/* ── Hero inline social proof ──────────────────────────────────── */
+.hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 1.05s forwards;
+}
+
+.hero-stars {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+.hero-rating-text {
+  font-family: var(--font-authority);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--cream-muted);
+}
+
+.hero-rating-text strong {
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--gold-subtle);
+  list-style: none;
+  opacity: 0;
+  animation: heroFadeUp 0.9s var(--ease-out) 1.2s forwards;
+}
+
+.hero-trust li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--cream-mid);
+}
+
+.hero-trust svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
 /* ── Hero Right (Photo Area) ────────────────────────────────────── */
 .hero-right {
   position: relative;
@@ -1597,17 +1653,35 @@
   .hero {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
+    min-height: auto;
   }
   .hero-left {
-    padding: 40px var(--page-padding) 40px;
+    padding: 36px var(--page-padding) 44px;
     order: 1;
   }
   .hero-right {
-    height: 50vh;
+    height: 56vh;
     order: 2;
     border-left: none;
     border-top: 1px solid var(--gold-subtle);
   }
+
+  .hero-eyebrow { margin-bottom: 20px; }
+  .hero-title { margin-bottom: 20px; }
+  .hero-subtitle { margin-bottom: 28px; max-width: none; }
+
+  /* Full-width, thumb-friendly CTAs */
+  .hero-actions { gap: 12px; }
+  .hero-actions .btn-primary,
+  .hero-actions .btn-ghost {
+    flex: 1 1 100%;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .hero-rating { margin-top: 22px; }
+  .hero-trust { margin-top: 20px; padding-top: 18px; }
 
   .nav-links { display: none; }
   .nav-actions { display: none; }
@@ -1667,6 +1741,8 @@
   .models-grid { grid-template-columns: 1fr; }
 
   .hero-title { font-size: clamp(2rem, 8vw, 2.6rem); }
+  .hero-title-line { white-space: normal; }
+  .hero-trust { gap: 12px 18px; }
 
   .social-proof-inner {
     gap: 16px;

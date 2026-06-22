@@ -42,7 +42,7 @@
 
   /* Layout */
   --banner-height:    34px;
-  --nav-height:       80px;
+  --nav-height:       64px;
   --header-height:    calc(var(--banner-height) + var(--nav-height));
   --max-width:        1320px;
   --page-padding:     48px;

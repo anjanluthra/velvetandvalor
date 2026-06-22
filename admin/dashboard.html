@@ -134,6 +134,9 @@
     .modal-confirm { padding: 11px 20px; background: var(--gold); color: var(--obsidian-deep); border-radius: 8px; font-weight: 600; font-size: 0.88rem; }
     .modal-confirm:hover:not(:disabled) { background: var(--gold-bright); }
     .modal-confirm:disabled { opacity: 0.6; cursor: default; }
+    .modal-check { display: flex; align-items: center; gap: 9px; margin-top: 16px; font-size: 0.86rem; color: var(--cream-mid); cursor: pointer; user-select: none; }
+    .modal-check input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; flex: none; }
+    .modal-check.disabled { opacity: 0.5; cursor: not-allowed; }
 
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -204,6 +207,10 @@
       <p class="modal-product" id="shipModalProduct"></p>
       <label class="modal-label" for="shipModalDelivery">Estimated delivery date (optional)</label>
       <input type="date" id="shipModalDelivery" autocomplete="off" />
+      <label class="modal-check" id="shipModalNotifyRow">
+        <input type="checkbox" id="shipModalNotify" checked />
+        <span>Email a shipping confirmation to the customer</span>
+      </label>
       <p class="modal-note" id="shipModalEmail"></p>
       <div class="modal-actions">
         <button class="modal-cancel" id="shipModalCancel">Cancel</button>
@@ -433,14 +440,35 @@
       const product = [o.product.design, o.product.model, o.product.finish].filter(Boolean).join(' · ') || (o.isCustom ? 'Custom portrait' : 'Order');
       document.getElementById('shipModalProduct').textContent = product;
       const email = o.customer.email;
-      const who = [o.customer.name, email].filter(Boolean).join(' · ');
-      const emailEl = document.getElementById('shipModalEmail');
-      if (email) emailEl.innerHTML = 'A shipping confirmation email will be sent to <b>' + esc(email) + '</b>.';
-      else emailEl.innerHTML = '<span style="color:#ffcf8b">No email on this order — it will be marked shipped without notifying.</span>';
+      const notify = document.getElementById('shipModalNotify');
+      const notifyRow = document.getElementById('shipModalNotifyRow');
+      // No email on file → can't notify; lock the checkbox off.
+      notify.checked = !!email;
+      notify.disabled = !email;
+      notifyRow.classList.toggle('disabled', !email);
+      notifyRow.dataset.email = email || '';
       const dd = document.getElementById('shipModalDelivery');
       dd.value = o.fulfillment.estimatedDelivery || '';
+      syncShipModalUI();
       document.getElementById('shipModal').classList.add('open');
       setTimeout(() => dd.focus(), 50);
+    }
+    // Reflect the notify checkbox in the helper note + confirm button label.
+    function syncShipModalUI() {
+      const notify = document.getElementById('shipModalNotify');
+      const email = document.getElementById('shipModalNotifyRow').dataset.email || '';
+      const emailEl = document.getElementById('shipModalEmail');
+      const btn = document.getElementById('shipModalConfirm');
+      if (!email) {
+        emailEl.innerHTML = '<span style="color:#ffcf8b">No email on this order — it will be marked shipped without notifying.</span>';
+        btn.textContent = 'Mark Shipped';
+      } else if (notify.checked) {
+        emailEl.innerHTML = 'A shipping confirmation email will be sent to <b>' + esc(email) + '</b>.';
+        btn.textContent = 'Confirm & Notify Customer';
+      } else {
+        emailEl.innerHTML = 'No email will be sent — the order is just marked shipped.';
+        btn.textContent = 'Mark Shipped (no email)';
+      }
     }
     function closeShipModal() { document.getElementById('shipModal').classList.remove('open'); SHIP_TARGET = null; }
     async function confirmShip() {
@@ -450,10 +478,11 @@
       const order = ORDERS.find((o) => o.id === id) || {};
       const tracking = (order.fulfillment && order.fulfillment.tracking) || '';
       const deliveryDate = document.getElementById('shipModalDelivery').value;
+      const notify = document.getElementById('shipModalNotify').checked;
       const btn = document.getElementById('shipModalConfirm');
-      btn.disabled = true; btn.textContent = 'Shipping…';
-      await setShipped(id, true, tracking, true, deliveryDate);
-      btn.disabled = false; btn.textContent = 'Confirm & Notify Customer';
+      btn.disabled = true; btn.textContent = notify ? 'Shipping…' : 'Marking…';
+      await setShipped(id, true, tracking, notify, deliveryDate);
+      btn.disabled = false; syncShipModalUI();
       closeShipModal();
     }
 
@@ -548,27 +577,53 @@
       const clean = (v) => String(v == null ? '' : v).replace(/[\t\n\r]/g, ' ');
       return { rows: list.length, tsv: [cols, ...rows].map((r) => r.map(clean).join('\t')).join('\n') };
     }
+    // Synchronous copy — works even when a new tab is about to steal focus
+    // (the async Clipboard API rejects once the document loses focus).
+    function copyTextSync(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { ta.setSelectionRange(0, text.length); } catch (e) { /* ignore */ }
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    function downloadCSV(filename, tsv) {
+      const csv = tsv.split('\n')
+        .map((line) => line.split('\t').map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(','))
+        .join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
     document.getElementById('exportBtn').addEventListener('click', () => {
       const { rows, tsv } = buildExport();
       if (!rows) { toast('No orders to export'); return; }
-      // Open the new sheet synchronously (avoids popup blocking), then copy.
-      const win = window.open('https://sheets.new', '_blank');
-      const done = () => toast('Copied ' + rows + ' orders — paste (⌘V / Ctrl+V) into the new Google Sheet', 6000);
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(tsv).then(done).catch(() => {
-          if (!win) toast('Allow pop-ups, then try Export again', 5000);
-          else toast('Sheet opened — copy failed, try Export again', 5000);
-        });
-      } else if (!win) {
-        toast('Allow pop-ups for this site, then try Export again', 5000);
+      // Copy FIRST (while this tab is focused), then open the sheet.
+      const copied = copyTextSync(tsv);
+      if (copied) {
+        window.open('https://sheets.new', '_blank');
+        toast('✓ Copied ' + rows + ' orders — click the new sheet and press ⌘V / Ctrl+V to paste', 8000);
       } else {
-        done();
+        downloadCSV('velvet-valor-orders.csv', tsv);
+        toast('Downloaded ' + rows + ' orders as CSV — open in Google Sheets via File → Import', 7000);
       }
     });
 
     // Ship modal wiring
     document.getElementById('shipModalCancel').addEventListener('click', closeShipModal);
     document.getElementById('shipModalConfirm').addEventListener('click', confirmShip);
+    document.getElementById('shipModalNotify').addEventListener('change', syncShipModalUI);
     document.getElementById('shipModal').addEventListener('click', (e) => {
       if (e.target.id === 'shipModal') closeShipModal();
     });

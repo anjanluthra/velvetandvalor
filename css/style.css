@@ -100,7 +100,8 @@ svg    { display: block; }
   padding: 0 var(--page-padding);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   gap: 32px;
 }
 
@@ -155,7 +156,9 @@ svg    { display: block; }
   border-bottom: 1px solid var(--gold-subtle);
   color: var(--cream-mid);
   padding: 8px 0;
-  margin-top: var(--header-height);
+  /* Banner + nav are both in normal flow (nav is position:relative), so the
+     alert needs no top margin — any margin here is pure empty space below nav. */
+  margin-top: 0;
   position: relative;
   z-index: 5;
   font-family: var(--font-sans);
@@ -220,8 +223,18 @@ svg    { display: block; }
 
 /* ── Currency Toggle ─────────────────────────────────────────── */
 .top-banner-currency {
-  margin-left: auto;
-  padding-left: 16px;
+  margin-left: 12px;
+}
+/* Desktop: pin to the right edge so the three announcement items stay centered.
+   On mobile it stays inline (below) to avoid overlapping the centered item. */
+@media (min-width: 769px) {
+  .top-banner-currency {
+    position: absolute;
+    right: var(--page-padding);
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+  }
 }
 .currency-toggle {
   display: inline-flex;

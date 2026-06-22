@@ -90,8 +90,8 @@ module.exports = async (req, res) => {
           message: '⚠ UAE shipments delayed due to current Strait of Hormuz closure — please allow up to 4 weeks for delivery. All other worldwide routes (Europe, UK & USA) shipping as normal.',
         },
       },
-      success_url: `${req.headers.origin || 'https://velvetandvalor.com'}/order-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin || 'https://velvetandvalor.com'}/collections/iphone-cases`,
+      success_url: `${req.headers.origin || 'https://velvet-valor.com'}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.origin || 'https://velvet-valor.com'}/collections/iphone-cases`,
     });
 
     return res.status(200).json({ url: session.url });

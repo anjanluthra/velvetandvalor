@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Orders &amp; Revenue — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body { padding: 0; }
+    .admin-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--gold-muted);
+      background: var(--obsidian-mid);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .admin-bar .brand {
+      font-family: var(--font-serif); font-size: 1.2rem; color: var(--cream);
+    }
+    .admin-bar .brand span { color: var(--gold-pale); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; margin-left: 10px; }
+    .admin-bar .actions { display: flex; gap: 12px; align-items: center; }
+    .btn-ghost {
+      padding: 8px 16px; border: 1px solid var(--gold-muted); border-radius: 8px;
+      color: var(--cream-mid); font-size: 0.85rem; transition: 0.2s var(--ease-out);
+    }
+    .btn-ghost:hover { border-color: var(--gold-bright); color: var(--cream); }
+
+    .wrap { max-width: 1320px; margin: 0 auto; padding: 32px; }
+
+    /* Summary cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 36px; }
+    .card {
+      background: var(--obsidian-mid); border: 1px solid var(--gold-subtle);
+      border-radius: 12px; padding: 20px 22px;
+    }
+    .card .label { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream-muted); }
+    .card .value { font-family: var(--font-serif); font-size: 1.9rem; color: var(--cream); margin-top: 8px; }
+    .card .value.gold { color: var(--gold-pale); }
+    .card .value.warn { color: #ffcf8b; }
+
+    /* Controls */
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
+    .filters { display: flex; gap: 8px; }
+    .filter {
+      padding: 7px 14px; border: 1px solid var(--gold-muted); border-radius: 999px;
+      font-size: 0.82rem; color: var(--cream-mid); transition: 0.2s var(--ease-out);
+    }
+    .filter.active { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); font-weight: 600; }
+    .search {
+      margin-left: auto; padding: 9px 14px; min-width: 240px;
+      background: var(--obsidian-mid); border: 1px solid var(--gold-muted);
+      border-radius: 8px; color: var(--cream); font-size: 0.88rem;
+    }
+
+    /* Table */
+    .table-wrap { background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 14px 18px; font-size: 0.88rem; }
+    th { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-muted); border-bottom: 1px solid var(--gold-subtle); }
+    tbody tr { border-bottom: 1px solid var(--gold-whisper); }
+    tbody tr.main-row { cursor: pointer; }
+    tbody tr.main-row:hover { background: var(--obsidian-light); }
+    td .muted { color: var(--cream-muted); font-size: 0.8rem; }
+    .amount { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .amount.refunded { color: #ff9a9a; text-decoration: line-through; opacity: 0.7; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; }
+    .badge.shipped { background: rgba(60, 200, 140, 0.16); color: #6fe0ad; }
+    .badge.unfulfilled { background: rgba(255, 207, 139, 0.14); color: #ffcf8b; }
+    .badge.refund { background: rgba(255, 154, 154, 0.14); color: #ff9a9a; margin-left: 6px; }
+
+    .btn-ship {
+      padding: 7px 14px; background: var(--gold); color: var(--obsidian-deep);
+      border-radius: 8px; font-size: 0.8rem; font-weight: 600; transition: 0.2s var(--ease-out);
+    }
+    .btn-ship:hover { background: var(--gold-bright); }
+    .btn-undo { font-size: 0.76rem; color: var(--cream-muted); text-decoration: underline; margin-left: 10px; }
+    .btn-undo:hover { color: var(--cream); }
+
+    /* Detail row */
+    .detail-row td { background: var(--obsidian-deep); padding: 0; }
+    .detail-inner { padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .detail-inner h4 { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-pale); margin-bottom: 8px; }
+    .detail-inner .kv { font-size: 0.88rem; line-height: 1.9; }
+    .detail-inner .kv b { color: var(--cream-muted); font-weight: 500; display: inline-block; min-width: 90px; }
+    .copy { cursor: pointer; }
+    .copy:hover { color: var(--gold-pale); }
+    .track-row { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--gold-whisper); padding-top: 16px; }
+    .track-row input { flex: 1; max-width: 320px; padding: 9px 12px; background: var(--obsidian-mid); border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream); font-size: 0.85rem; }
+    .track-row button { padding: 9px 16px; border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream-mid); font-size: 0.82rem; }
+    .track-row button:hover { border-color: var(--gold-bright); color: var(--cream); }
+
+    .state { padding: 60px; text-align: center; color: var(--cream-muted); }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream);
+      padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; opacity: 0; pointer-events: none;
+      transition: 0.3s var(--ease-out); z-index: 50;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 720px) {
+      th.hide-sm, td.hide-sm { display: none; }
+      .detail-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-bar">
+    <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
+    <div class="actions">
+      <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
+      <button class="btn-ghost" id="refreshBtn">Refresh</button>
+      <button class="btn-ghost" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="cards" id="cards"></div>
+
+    <div class="controls">
+      <div class="filters">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="unfulfilled">To Ship</button>
+        <button class="filter" data-filter="shipped">Shipped</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search name, email, SKU…" />
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Order</th>
+            <th class="hide-sm">Customer</th>
+            <th>Amount</th>
+            <th>Fulfillment</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="5" class="state">Loading orders…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let ORDERS = [];
+    let SUMMARY = null;
+    let FILTER = 'all';
+    let QUERY = '';
+    let CAN_SEE_MONEY = true;
+    const expanded = new Set();
+
+    const fmtMoney = (cents, currency) =>
+      new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format((cents || 0) / 100);
+    const fmtDate = (unixSec) =>
+      new Date(unixSec * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._t);
+      t._t = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    async function load() {
+      try {
+        const r = await fetch('/api/admin/orders');
+        if (r.status === 401) { window.location.href = '/admin/login'; return; }
+        if (!r.ok) throw new Error('load failed');
+        const data = await r.json();
+        ORDERS = data.orders || [];
+        SUMMARY = data.summary || null;
+        CAN_SEE_MONEY = data.canSeeMoney !== false;
+        document.getElementById('usersLink').style.display = data.role === 'owner' ? '' : 'none';
+        renderCards();
+        renderRows();
+      } catch {
+        document.getElementById('rows').innerHTML =
+          '<tr><td colspan="5" class="state">Could not load orders. Try Refresh.</td></tr>';
+      }
+    }
+
+    function renderCards() {
+      if (!SUMMARY) return;
+      const c = SUMMARY.currency;
+      const cards = CAN_SEE_MONEY
+        ? [
+            { label: 'Gross Revenue', value: fmtMoney(SUMMARY.gross, c), cls: 'gold' },
+            { label: 'Refunds', value: fmtMoney(SUMMARY.refunds, c), cls: SUMMARY.refunds ? 'warn' : '' },
+            { label: 'Net Sales', value: fmtMoney(SUMMARY.net, c), cls: '' },
+            { label: 'Orders', value: SUMMARY.orderCount, cls: '' },
+            { label: 'To Ship', value: SUMMARY.unfulfilledCount, cls: SUMMARY.unfulfilledCount ? 'warn' : '' },
+          ]
+        : [
+            { label: 'Orders', value: SUMMARY.orderCount, cls: '' },
+            { label: 'To Ship', value: SUMMARY.unfulfilledCount, cls: SUMMARY.unfulfilledCount ? 'warn' : '' },
+          ];
+      document.getElementById('cards').innerHTML = cards.map((k) =>
+        `<div class="card"><div class="label">${k.label}</div><div class="value ${k.cls}">${k.value}</div></div>`
+      ).join('');
+    }
+
+    function visibleOrders() {
+      return ORDERS.filter((o) => {
+        const isShipped = o.fulfillment.status === 'shipped';
+        if (FILTER === 'shipped' && !isShipped) return false;
+        if (FILTER === 'unfulfilled' && isShipped) return false;
+        if (QUERY) {
+          const hay = [o.customer.name, o.customer.email, o.product.sku, o.product.design, o.product.model]
+            .join(' ').toLowerCase();
+          if (!hay.includes(QUERY)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderRows() {
+      const rows = visibleOrders();
+      const tbody = document.getElementById('rows');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="state">No matching orders.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map((o) => {
+        const shipped = o.fulfillment.status === 'shipped';
+        const product = [o.product.design, o.product.model, o.product.finish].filter(Boolean).join(' · ') || '—';
+        const refundBadge = o.refunded ? '<span class="badge refund">Refunded</span>' : '';
+        const amountCell = CAN_SEE_MONEY
+          ? `<span class="amount ${o.refunded ? 'refunded' : ''}">${fmtMoney(o.amount, o.currency)}</span> ${refundBadge}`
+          : '<span class="muted">—</span>';
+        const fulfillCell = shipped
+          ? `<span class="badge shipped">✓ Shipped${o.fulfillment.shippedAt ? ' · ' + fmtDate(o.fulfillment.shippedAt / 1000) : ''}</span>
+             <a class="btn-undo" data-undo="${o.id}">undo</a>`
+          : `<button class="btn-ship" data-ship="${o.id}">Mark Shipped</button>`;
+        const detail = expanded.has(o.id) ? detailRow(o) : '';
+        return `
+          <tr class="main-row" data-row="${o.id}">
+            <td><span class="muted">${fmtDate(o.created)}</span></td>
+            <td>${esc(product)}<br><span class="muted">${esc(o.product.sku)}</span></td>
+            <td class="hide-sm">${esc(o.customer.name) || '—'}<br><span class="muted">${esc(o.customer.email)}</span></td>
+            <td>${amountCell}</td>
+            <td>${fulfillCell}</td>
+          </tr>
+          ${detail}`;
+      }).join('');
+    }
+
+    function detailRow(o) {
+      const s = o.shipping;
+      const addr = [s.line1, s.line2, [s.city, s.state, s.postal].filter(Boolean).join(', '), s.country]
+        .filter(Boolean).map(esc).join('<br>') || '—';
+      return `
+        <tr class="detail-row" data-detail="${o.id}">
+          <td colspan="5">
+            <div class="detail-inner">
+              <div>
+                <h4>Customer</h4>
+                <div class="kv">
+                  <div><b>Name</b> ${esc(o.customer.name) || '—'}</div>
+                  <div><b>Email</b> <span class="copy" data-copy="${esc(o.customer.email)}">${esc(o.customer.email) || '—'}</span></div>
+                  <div><b>Phone</b> ${esc(o.customer.phone) || '—'}</div>
+                </div>
+              </div>
+              <div>
+                <h4>Ship To</h4>
+                <div class="kv">
+                  <div><b>${esc(s.name) || '—'}</b></div>
+                  <div>${addr}</div>
+                </div>
+              </div>
+              <div class="track-row">
+                <input type="text" placeholder="Tracking number (optional)" value="${esc(o.fulfillment.tracking)}" data-track-input="${o.id}" />
+                <button data-track-save="${o.id}">Save tracking</button>
+                <span class="muted" style="margin-left:auto">Order ${esc(o.id)}</span>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+    }
+
+    async function setShipped(id, shipped, tracking) {
+      const order = ORDERS.find((o) => o.id === id);
+      try {
+        const r = await fetch('/api/admin/ship', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: id, shipped, tracking }),
+        });
+        if (r.status === 401) { window.location.href = '/admin/login'; return; }
+        if (!r.ok) throw new Error('update failed');
+        const data = await r.json();
+        if (order) order.fulfillment = data.fulfillment;
+        SUMMARY.unfulfilledCount = ORDERS.filter((o) => o.fulfillment.status !== 'shipped').length;
+        renderCards();
+        renderRows();
+        toast(shipped ? 'Marked as shipped' : 'Moved back to To Ship');
+      } catch {
+        toast('Could not update order');
+      }
+    }
+
+    // Event delegation
+    document.getElementById('rows').addEventListener('click', (e) => {
+      const ship = e.target.closest('[data-ship]');
+      if (ship) { e.stopPropagation(); setShipped(ship.dataset.ship, true); return; }
+      const undo = e.target.closest('[data-undo]');
+      if (undo) { e.stopPropagation(); setShipped(undo.dataset.undo, false); return; }
+      const save = e.target.closest('[data-track-save]');
+      if (save) {
+        e.stopPropagation();
+        const id = save.dataset.trackSave;
+        const input = document.querySelector(`[data-track-input="${id}"]`);
+        setShipped(id, true, input ? input.value.trim() : '');
+        return;
+      }
+      const copy = e.target.closest('[data-copy]');
+      if (copy) { e.stopPropagation(); navigator.clipboard?.writeText(copy.dataset.copy); toast('Copied'); return; }
+      if (e.target.closest('[data-track-input]')) { e.stopPropagation(); return; }
+      const row = e.target.closest('[data-row]');
+      if (row) {
+        const id = row.dataset.row;
+        if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+        renderRows();
+      }
+    });
+
+    document.querySelectorAll('.filter').forEach((b) =>
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach((x) => x.classList.remove('active'));
+        b.classList.add('active');
+        FILTER = b.dataset.filter;
+        renderRows();
+      })
+    );
+
+    document.getElementById('search').addEventListener('input', (e) => {
+      QUERY = e.target.value.trim().toLowerCase();
+      renderRows();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', load);
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      window.location.href = '/admin/login';
+    });
+
+    load();
+  </script>
+</body>
+</html>

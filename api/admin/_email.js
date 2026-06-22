@@ -161,34 +161,34 @@ function shippedHtml({ name, product, deliveryDate }) {
   const item = product ? escapeHtml(product) : 'your order';
   const arrival = formatDeliveryDate(deliveryDate);
   const deliveryLine = arrival
-    ? `It should reach you by <strong>${arrival}</strong>. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.`
-    : `Standard worldwide delivery typically takes a few business days from dispatch. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.`;
+    ? `<p style="font-size:15px;line-height:1.8;margin:0 0 14px;color:#3A3A37;">Your estimated delivery date is <strong>${arrival}</strong>.</p>`
+    : '';
 
   return `
   <div style="margin:0;padding:0;background:#EFEAE1;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EFEAE1;">
       <tr><td align="center" style="padding:32px 16px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFDF9;border:1px solid #E4DDD0;border-radius:16px;overflow:hidden;">
-          <tr><td style="background:#071428;padding:22px 32px;text-align:center;">
-            <div style="font-family:Georgia,'Times New Roman',serif;color:#ffffff;font-size:20px;">Velvet &amp; Valor</div>
-            <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#7FCDCD;margin-top:6px;">Your order is on its way</div>
+          <tr><td style="background:#071428;padding:26px 32px;text-align:center;">
+            <img src="${SITE}/images/vv-logo.png" width="46" alt="Velvet &amp; Valor" style="display:inline-block;width:46px;height:auto;margin:0 0 12px;" />
+            <div style="font-family:Georgia,'Times New Roman',serif;color:#ffffff;font-size:19px;letter-spacing:0.1em;">VELVET &amp; VALOR</div>
+            <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#7FCDCD;margin-top:8px;">Your order is on its way</div>
           </td></tr>
           <tr><td style="padding:38px 36px 28px;font-family:Georgia,'Times New Roman',serif;color:#2A2A28;">
             <p style="font-size:17px;line-height:1.7;margin:0 0 18px;">${greeting}</p>
             <p style="font-size:16px;line-height:1.85;margin:0 0 22px;color:#3A3A37;">
               Wonderful news &mdash; <strong>${item}</strong> has shipped and is making its way to you.
             </p>
+            ${deliveryLine}
             <p style="font-size:15px;line-height:1.8;margin:0 0 8px;color:#3A3A37;">
-              ${deliveryLine}
+              If anything isn't quite right, just reply to this email.
             </p>
           </td></tr>
           <tr><td style="padding:22px 36px 30px;border-top:1px solid #EDE6D9;text-align:center;font-family:Arial,sans-serif;">
             <a href="${SITE}/our-story" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Our Story</a>
             <span style="color:#D8CFBF;">&middot;</span>
-            <a href="${SITE}/blog" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Care Guide</a>
-            <span style="color:#D8CFBF;">&middot;</span>
             <a href="${SITE}/contact" style="color:#1A7A7A;text-decoration:none;font-size:12px;margin:0 10px;">Contact</a>
-            <p style="font-size:11px;color:#A89F90;margin:16px 0 0;line-height:1.6;">Velvet &amp; Valor &mdash; an artist-led equestrian lifestyle brand.</p>
+            <p style="font-size:11px;color:#A89F90;margin:16px 0 0;line-height:1.6;">VELVET &amp; VALOR &mdash; an artist-led equestrian lifestyle brand.</p>
           </td></tr>
         </table>
       </td></tr>

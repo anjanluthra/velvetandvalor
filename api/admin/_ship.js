@@ -17,6 +17,32 @@ function describeProduct(md) {
   return [md.design, md.model, md.finish].filter(Boolean).join(' · ');
 }
 
+/**
+ * Build a customer-specific product summary from the actual Stripe line items —
+ * the source of truth for what was bought, across single, multi-item, and
+ * custom orders. e.g. "Noble Steed — Royal Plum (iPhone 17 Pro, Matte) ×2".
+ * Returns '' if line items can't be read, so the caller can fall back.
+ */
+async function describeFromLineItems(stripe, sessionId) {
+  try {
+    const li = await stripe.checkout.sessions.listLineItems(sessionId, {
+      limit: 20,
+      expand: ['data.price.product'],
+    });
+    const parts = (li.data || []).map((item) => {
+      const prod = item.price && item.price.product;
+      const name = (prod && typeof prod === 'object' && prod.name) || item.description || 'Item';
+      const detail = prod && typeof prod === 'object' ? prod.description : '';
+      const qty = item.quantity > 1 ? ` ×${item.quantity}` : '';
+      return detail ? `${name} (${detail})${qty}` : `${name}${qty}`;
+    });
+    return parts.join(', ');
+  } catch (e) {
+    console.warn('describeFromLineItems failed:', e && e.message);
+    return '';
+  }
+}
+
 module.exports = async (req, res) => {
   const me = await requireUser(req, res);
   if (!me) return;
@@ -54,11 +80,11 @@ module.exports = async (req, res) => {
         emailError = 'No customer email on this order';
       } else {
         try {
+          const product = (await describeFromLineItems(stripe, sessionId)) || describeProduct(md);
           await sendShippedEmail({
             to,
             name: cust.name || md.customer_name || '',
-            product: describeProduct(md),
-            tracking: md.tracking || '',
+            product,
           });
           emailed = true;
         } catch (e) {

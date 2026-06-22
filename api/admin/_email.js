@@ -141,17 +141,9 @@ async function sendFounderWelcomeEmail({ to, name, product }) {
 }
 
 // ── Shipping confirmation ────────────────────────────────────
-function shippedHtml({ name, product, tracking }) {
+function shippedHtml({ name, product }) {
   const greeting = firstName(name) ? `Hi ${firstName(name)},` : 'Hello,';
   const item = product ? escapeHtml(product) : 'your order';
-  const trackingBlock = tracking
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
-         <tr><td style="background:#F4F0E8;border:1px solid #E4DDD0;border-radius:10px;padding:14px 22px;text-align:center;">
-           <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8A8175;margin-bottom:6px;">Tracking number</div>
-           <div style="font-family:Arial,sans-serif;font-size:16px;color:#071428;font-weight:bold;letter-spacing:0.04em;">${escapeHtml(tracking)}</div>
-         </td></tr>
-       </table>`
-    : `<p style="font-size:14px;line-height:1.7;color:#6A6258;text-align:center;margin:0 0 24px;">Tracking details will follow if available for your shipping method.</p>`;
 
   return `
   <div style="margin:0;padding:0;background:#EFEAE1;">
@@ -165,9 +157,8 @@ function shippedHtml({ name, product, tracking }) {
           <tr><td style="padding:38px 36px 28px;font-family:Georgia,'Times New Roman',serif;color:#2A2A28;">
             <p style="font-size:17px;line-height:1.7;margin:0 0 18px;">${greeting}</p>
             <p style="font-size:16px;line-height:1.85;margin:0 0 22px;color:#3A3A37;">
-              Wonderful news &mdash; <strong>${item}</strong> has shipped and is making its way to you. ${tracking ? 'You can follow its journey with the tracking number below.' : ''}
+              Wonderful news &mdash; <strong>${item}</strong> has shipped and is making its way to you.
             </p>
-            ${trackingBlock}
             <p style="font-size:15px;line-height:1.8;margin:0 0 8px;color:#3A3A37;">
               Standard worldwide delivery typically takes a few business days from dispatch. If anything isn't quite right when it arrives, just reply to this email &mdash; we'll take care of it.
             </p>
@@ -186,12 +177,12 @@ function shippedHtml({ name, product, tracking }) {
   </div>`;
 }
 
-async function sendShippedEmail({ to, name, product, tracking }) {
+async function sendShippedEmail({ to, name, product }) {
   return sendEmail({
     to,
     replyTo: process.env.RESEND_REPLY_TO || 'info@velvet-valor.com',
     subject: 'Your Velvet & Valor order has shipped',
-    html: shippedHtml({ name, product, tracking }),
+    html: shippedHtml({ name, product }),
   });
 }
 

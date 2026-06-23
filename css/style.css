@@ -83,15 +83,15 @@ svg    { display: block; }
 
 /* ── Top Banner ──────────────────────────────────────────────── */
 .top-banner {
-  background: var(--obsidian-deep);
-  color: var(--cream-mid);
+  background: var(--cream);
+  color: var(--obsidian);
   padding: 8px 0;
   position: relative;
   z-index: 1001;
   height: var(--banner-height);
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--gold-subtle);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   transition: height 0.45s var(--ease-out), padding 0.45s var(--ease-out),
               opacity 0.35s, transform 0.45s var(--ease-out);
 }
@@ -114,26 +114,25 @@ svg    { display: block; }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cream-mid);
+  color: var(--obsidian);
 }
 .top-banner-promo {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: var(--gold-whisper);
-  color: var(--gold-pale);
+  background: var(--obsidian);
+  color: var(--cream);
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px dashed var(--gold-muted);
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.25s, border-color 0.25s, color 0.25s;
 }
 .top-banner-promo:hover {
-  background: var(--gold-subtle);
-  border-color: var(--gold);
+  background: var(--obsidian-mid);
 }
 .top-banner-promo strong {
-  color: var(--gold-pale);
+  color: var(--gold);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -268,16 +267,16 @@ svg    { display: block; }
   align-items: center;
   gap: 6px;
   padding: 2px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.04);
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
   position: relative;
 }
 .currency-toggle-label:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--gold-muted);
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.32);
 }
 .currency-toggle-flag {
   font-size: 0.95rem;
@@ -293,7 +292,7 @@ svg    { display: block; }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cream-mid);
+  color: var(--obsidian);
   cursor: pointer;
   padding: 0;
   padding-right: 2px;
@@ -305,7 +304,7 @@ svg    { display: block; }
 }
 .currency-toggle-chevron {
   font-size: 0.65rem;
-  color: var(--cream-mid);
+  color: var(--obsidian);
   opacity: 0.7;
 }
 @media (max-width: 768px) {

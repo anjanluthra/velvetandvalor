@@ -1932,6 +1932,19 @@
   opacity: 0.7;
 }
 
+/* Philosophy quote folded into the Our Story section as a closing beat */
+.story-manifesto {
+  max-width: 760px;
+  margin: 64px auto 0;
+  padding-top: 56px;
+  border-top: 1px solid var(--gold-subtle);
+  text-align: center;
+  position: relative;
+}
+@media (max-width: 768px) {
+  .story-manifesto { margin-top: 44px; padding-top: 40px; }
+}
+
 
 /* ── Journal Coming Soon Section ─────────────────────────────── */
 .journal-coming-soon {
@@ -1949,6 +1962,14 @@
 
 .journal-cs-image {
   position: relative;
+}
+
+.journal-cs-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 2px;
 }
 
 .journal-cs-placeholder {

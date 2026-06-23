@@ -705,17 +705,17 @@ svg    { display: block; }
 
 /* ── Footer ─────────────────────────────────────────────────── */
 .footer {
-  background: var(--obsidian-deep);
+  background: var(--obsidian-mid);
   border-top: 1px solid var(--gold-subtle);
   padding: 80px 0 36px;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 64px;
-  margin-bottom: 64px;
-  max-width: 880px;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 0;
+  max-width: 1080px;
 }
 
 .footer-brand .footer-logo {
@@ -832,6 +832,91 @@ svg    { display: block; }
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold-muted), transparent);
   margin: 0;
+}
+
+/* Instagram feed grid sits inside the Community module above the footer.
+   Breaks out of the 560px text column so the tiles can be larger, stays centered. */
+.ig-cta-inner .ig-grid {
+  width: min(1200px, 92vw);
+  max-width: none;
+  gap: 6px;
+  margin: 40px 0 36px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── Footer: trust + payment row ─────────────────────────────── */
+.footer-trust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1080px;
+  padding: 24px 0 0;
+  margin-top: 40px;
+  border-top: 1px solid var(--gold-whisper);
+}
+.footer-trust-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+.footer-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--cream-mid);
+}
+.footer-trust-item svg { color: var(--gold); flex-shrink: 0; }
+.footer-pay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.footer-pay-mark {
+  font-family: var(--font-authority);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream-muted);
+  border: 1px solid var(--cream-whisper);
+  border-radius: 4px;
+  padding: 5px 9px;
+}
+.footer-region {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-region svg { flex-shrink: 0; }
+
+/* ── Footer: slim legal line ─────────────────────────────────── */
+.footer-legal-slim {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 18px;
+}
+.footer-legal-slim a {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--cream-muted);
+  transition: color 0.3s;
+}
+.footer-legal-slim a:hover { color: var(--cream); }
+
+@media (max-width: 768px) {
+  .footer-ig {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  .footer-ig-intro { display: flex; flex-direction: column; align-items: center; }
+  .footer-trust { justify-content: center; }
+  .footer-trust-items { justify-content: center; gap: 18px; }
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */

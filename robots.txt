@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /api/
+Disallow: /order-success
 
-Sitemap: https://velvet-valor.com/sitemap.xml
+Sitemap: https://www.velvet-valor.com/sitemap.xml

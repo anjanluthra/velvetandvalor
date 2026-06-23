@@ -373,12 +373,12 @@ function updateURL() {
       const email = document.getElementById('journalWlEmail');
       if (!name || !email || !name.value || !email.value) return;
 
-      // Log to API
+      // Log to API (stores + owner notification + customer confirmation)
       try {
-        await fetch('/api/log-waitlist', {
+        await fetch('/api/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name.value, email: email.value, source: 'checkout-journal-waitlist' }),
+          body: JSON.stringify({ type: 'waitlist', name: name.value, email: email.value, source: 'checkout-journal-waitlist' }),
         });
       } catch (e) { /* silent fail */ }
 

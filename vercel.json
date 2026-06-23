@@ -5,5 +5,8 @@
     { "source": "/products/riders-motto-:slug", "destination": "/riders-motto" },
     { "source": "/products/riders-motto", "destination": "/riders-motto" },
     { "source": "/products/:slug", "destination": "/product" }
+  ],
+  "crons": [
+    { "path": "/api/cron-recover", "schedule": "0 10 * * *" }
   ]
 }

@@ -155,6 +155,7 @@
   <div class="admin-bar">
     <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
     <div class="actions">
+      <a class="btn-ghost" id="submissionsLink" href="/admin/submissions" style="display:none">Submissions</a>
       <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
       <button class="btn-ghost" id="exportBtn" title="Copy orders and open a new Google Sheet">⤓ Export to Sheets</button>
       <button class="btn-ghost" id="refreshBtn">Refresh</button>
@@ -271,6 +272,7 @@
         SUMMARY = data.summary || null;
         CAN_SEE_MONEY = data.canSeeMoney !== false;
         document.getElementById('usersLink').style.display = data.role === 'owner' ? '' : 'none';
+        document.getElementById('submissionsLink').style.display = data.role !== 'staff' ? '' : 'none';
         renderCards();
         renderRows();
       } catch {

@@ -107,6 +107,20 @@
 })();
 
 
+/* ── Waitlist submit helper (reads name/email, posts to backend) ── */
+function vvSubmitWaitlist(form, source) {
+  try {
+    const email = (form.querySelector('input[type="email"]') || {}).value || '';
+    const name = (form.querySelector('input[type="text"]') || {}).value || '';
+    if (email) {
+      fetch('/api/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'waitlist', name: name, email: email, source: source }),
+      }).catch(() => {});
+    }
+  } catch (e) { /* never block the UX */ }
+}
+
 /* ── Journal Waitlist Popup (triggered after newsletter signup) ── */
 (function initJournalPopup() {
   const overlay = document.getElementById('journalPopup');
@@ -137,6 +151,7 @@
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      vvSubmitWaitlist(form, 'journal-popup');
       form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1rem; padding: 16px 0;">You\u2019re on the waiting list!<br><span style="font-weight: 400; font-size: 0.85rem; color: var(--cream-muted); margin-top: 8px; display: block;">We\u2019ll let you know as soon as it launches.</span></p>';
       setTimeout(closePopup, 3000);
     });
@@ -162,7 +177,26 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    vvSubmitWaitlist(form, 'journal-homepage');
     form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1.125rem; padding: 12px 0;">You\u2019re on the waiting list! \u2728<br><span style="font-weight: 400; font-size: 0.9rem; color: var(--cream-muted); margin-top: 8px; display: block;">We\u2019ll be in touch when The Equestrian Journal launches.</span></p>';
+  });
+})();
+
+
+/* ── Newsletter signup (mid-page CTA) ──────────────────────────── */
+(function initNewsletter() {
+  const form = document.querySelector('.mid-cta-form');
+  if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = form.querySelector('input[type="email"]');
+    const email = input ? input.value.trim() : '';
+    if (!email) return;
+    fetch('/api/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'newsletter', email: email, source: 'mid-cta' }),
+    }).catch(() => {});
+    form.innerHTML = '<p style="color: var(--gold); font-weight: 600; font-size: 1rem; padding: 14px 0;">You’re in! Check your inbox for 10% off.</p>';
   });
 })();
 

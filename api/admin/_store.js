@@ -83,6 +83,25 @@ async function deleteInvite(token) {
   await cmd(['DEL', `vv:invite:${token}`]);
 }
 
+// ── Form submissions (newsletter / waitlist / contact) ──────────
+const SUBS_KEY = 'vv:submissions'; // Redis list of JSON entries, newest first
+
+async function addSubmission(entry) {
+  await cmd(['LPUSH', SUBS_KEY, JSON.stringify(entry)]);
+  await cmd(['LTRIM', SUBS_KEY, '0', '4999']); // cap at 5000
+}
+
+async function listSubmissions() {
+  const arr = await cmd(['LRANGE', SUBS_KEY, '0', '4999']);
+  return (arr || []).map((s) => { try { return JSON.parse(s); } catch { return null; } }).filter(Boolean);
+}
+
+async function deleteSubmission(id) {
+  const arr = await cmd(['LRANGE', SUBS_KEY, '0', '4999']);
+  const raw = (arr || []).find((s) => { try { return JSON.parse(s).id === id; } catch { return false; } });
+  if (raw) await cmd(['LREM', SUBS_KEY, '1', raw]);
+}
+
 module.exports = {
   isConfigured,
   getUser,
@@ -92,4 +111,7 @@ module.exports = {
   putInvite,
   getInvite,
   deleteInvite,
+  addSubmission,
+  listSubmissions,
+  deleteSubmission,
 };

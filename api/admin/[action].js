@@ -13,6 +13,7 @@ const handlers = {
   user: require('./_user'),
   users: require('./_users'),
   'set-password': require('./_set-password'),
+  submissions: require('./_submissions'),
 };
 
 module.exports = async (req, res) => {

@@ -267,11 +267,15 @@
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = form.querySelector('[type="submit"]');
+        const val = (n) => { const el = form.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
+        fetch('/api/submit', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'contact', name: val('name'), email: val('email'), subject: val('subject'), order: val('order'), message: val('message') }),
+        }).catch(() => {});
         btn.textContent = 'Message Sent ✓';
         btn.style.background = '#1A3A1A';
         btn.style.color = '#6EC46E';
         form.querySelectorAll('input, textarea').forEach(el => { el.value = ''; el.disabled = true; });
-        // TODO: Connect to your form backend / Formspree / EmailJS etc.
       });
     }
   </script>

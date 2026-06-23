@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Submissions — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body { padding: 0; }
+    .admin-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 32px; border-bottom: 1px solid var(--gold-muted);
+      background: var(--obsidian-mid); position: sticky; top: 0; z-index: 10;
+    }
+    .admin-bar .brand { font-family: var(--font-serif); font-size: 1.2rem; color: var(--cream); }
+    .admin-bar .brand span { color: var(--gold-pale); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; margin-left: 10px; }
+    .admin-bar .actions { display: flex; gap: 12px; align-items: center; }
+    .btn-ghost { padding: 8px 16px; border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream-mid); font-size: 0.85rem; transition: 0.2s var(--ease-out); }
+    .btn-ghost:hover, .btn-ghost.active { border-color: var(--gold-bright); color: var(--cream); }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 32px; }
+    h2 { font-family: var(--font-serif); font-weight: 500; color: var(--cream); font-size: 1.4rem; margin-bottom: 4px; }
+    .lede { color: var(--cream-muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
+    .filters { display: flex; gap: 8px; }
+    .filter { padding: 7px 14px; border: 1px solid var(--gold-muted); border-radius: 999px; font-size: 0.82rem; color: var(--cream-mid); }
+    .filter.active { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); font-weight: 600; }
+    .filter .count { opacity: 0.7; margin-left: 4px; }
+    .search { margin-left: auto; padding: 9px 14px; min-width: 240px; background: var(--obsidian-mid); border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream); font-size: 0.88rem; }
+
+    .list { display: flex; flex-direction: column; gap: 12px; }
+    .sub {
+      background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px;
+      padding: 16px 18px; display: flex; gap: 16px; align-items: flex-start;
+    }
+    .sub-main { flex: 1; min-width: 0; }
+    .sub-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge.newsletter { background: rgba(34,170,170,0.20); color: var(--gold-pale); }
+    .badge.waitlist { background: rgba(255,207,139,0.16); color: #ffcf8b; }
+    .badge.contact { background: rgba(160,160,255,0.16); color: #b9b9ff; }
+    .sub-name { color: var(--cream); font-weight: 600; font-size: 0.95rem; }
+    .sub-email { color: var(--gold-pale); font-size: 0.85rem; cursor: pointer; }
+    .sub-email:hover { text-decoration: underline; }
+    .sub-date { color: var(--cream-muted); font-size: 0.78rem; margin-left: auto; white-space: nowrap; }
+    .sub-meta { color: var(--cream-muted); font-size: 0.82rem; margin-top: 2px; }
+    .sub-msg { color: var(--cream-mid); font-size: 0.88rem; margin-top: 8px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+    .sub-actions { display: flex; flex-direction: column; gap: 6px; }
+    .mini { padding: 6px 11px; border: 1px solid var(--gold-muted); border-radius: 7px; color: var(--cream-mid); font-size: 0.78rem; }
+    .mini:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .mini.danger:hover { border-color: #ff9a9a; color: #ff9a9a; }
+    .mini.reply { text-decoration: none; }
+
+    .state { padding: 56px; text-align: center; color: var(--cream-muted); background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream); padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: 0.3s var(--ease-out); z-index: 50; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 640px) { .sub { flex-direction: column; } .sub-actions { flex-direction: row; } }
+  </style>
+</head>
+<body>
+  <div class="admin-bar">
+    <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
+    <div class="actions">
+      <a class="btn-ghost" href="/admin/dashboard">Orders</a>
+      <a class="btn-ghost active" href="/admin/submissions">Submissions</a>
+      <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
+      <button class="btn-ghost" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>Submissions</h2>
+    <div class="lede">Newsletter signups, journal waitlist, and contact messages from the site.</div>
+
+    <div class="controls">
+      <div class="filters" id="filters">
+        <button class="filter active" data-filter="all">All <span class="count" id="c-all"></span></button>
+        <button class="filter" data-filter="newsletter">Newsletter <span class="count" id="c-newsletter"></span></button>
+        <button class="filter" data-filter="waitlist">Waitlist <span class="count" id="c-waitlist"></span></button>
+        <button class="filter" data-filter="contact">Contact <span class="count" id="c-contact"></span></button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search name, email, message…" />
+    </div>
+
+    <div class="list" id="list"><div class="state">Loading…</div></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let SUBS = [];
+    let FILTER = 'all';
+    let QUERY = '';
+    const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const fmtDate = (ms) => ms ? new Date(ms).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
+    }
+
+    async function guard() {
+      try {
+        const r = await fetch('/api/admin/me');
+        if (r.status === 401) { location.href = '/admin/login'; return false; }
+        const me = await r.json();
+        if (me.role === 'staff') { location.href = '/admin/dashboard'; return false; }
+        document.getElementById('usersLink').style.display = me.role === 'owner' ? '' : 'none';
+        return true;
+      } catch { location.href = '/admin/login'; return false; }
+    }
+
+    async function load() {
+      try {
+        const r = await fetch('/api/admin/submissions');
+        if (r.status === 401) { location.href = '/admin/login'; return; }
+        if (r.status === 403) { location.href = '/admin/dashboard'; return; }
+        if (!r.ok) {
+          const d = await r.json().catch(() => ({}));
+          document.getElementById('list').innerHTML = '<div class="state">' + esc(d.error || 'Could not load submissions') + '</div>';
+          return;
+        }
+        const d = await r.json();
+        SUBS = d.submissions || [];
+        render();
+      } catch {
+        document.getElementById('list').innerHTML = '<div class="state">Could not load submissions.</div>';
+      }
+    }
+
+    function counts() {
+      const c = { all: SUBS.length, newsletter: 0, waitlist: 0, contact: 0 };
+      SUBS.forEach((s) => { if (c[s.type] != null) c[s.type]++; });
+      document.getElementById('c-all').textContent = c.all || '';
+      document.getElementById('c-newsletter').textContent = c.newsletter || '';
+      document.getElementById('c-waitlist').textContent = c.waitlist || '';
+      document.getElementById('c-contact').textContent = c.contact || '';
+    }
+
+    function visible() {
+      return SUBS.filter((s) => {
+        if (FILTER !== 'all' && s.type !== FILTER) return false;
+        if (QUERY) {
+          const hay = [s.name, s.email, s.subject, s.message, s.order, s.source].filter(Boolean).join(' ').toLowerCase();
+          if (!hay.includes(QUERY)) return false;
+        }
+        return true;
+      });
+    }
+
+    function render() {
+      counts();
+      const rows = visible();
+      const list = document.getElementById('list');
+      if (!rows.length) { list.innerHTML = '<div class="state">No submissions yet.</div>'; return; }
+      list.innerHTML = rows.map((s) => {
+        const meta = [s.subject && ('Subject: ' + esc(s.subject)), s.order && ('Order: ' + esc(s.order)), s.source && ('via ' + esc(s.source))].filter(Boolean).join(' · ');
+        return `
+          <div class="sub">
+            <div class="sub-main">
+              <div class="sub-top">
+                <span class="badge ${esc(s.type)}">${esc(s.type)}</span>
+                <span class="sub-name">${esc(s.name) || 'No name'}</span>
+                <span class="sub-email" data-copy="${esc(s.email)}">${esc(s.email)}</span>
+                <span class="sub-date">${fmtDate(s.ts)}</span>
+              </div>
+              ${meta ? `<div class="sub-meta">${meta}</div>` : ''}
+              ${s.message ? `<div class="sub-msg">${esc(s.message)}</div>` : ''}
+            </div>
+            <div class="sub-actions">
+              <a class="mini reply" href="mailto:${esc(s.email)}">Reply</a>
+              <button class="mini danger" data-del="${esc(s.id)}">Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    document.getElementById('list').addEventListener('click', async (e) => {
+      const copy = e.target.closest('[data-copy]');
+      if (copy) { navigator.clipboard?.writeText(copy.dataset.copy); toast('Email copied'); return; }
+      const del = e.target.closest('[data-del]');
+      if (del) {
+        if (!confirm('Delete this submission?')) return;
+        try {
+          const r = await fetch('/api/admin/submissions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: del.dataset.del }) });
+          if (!r.ok) { toast('Could not delete'); return; }
+          SUBS = SUBS.filter((s) => s.id !== del.dataset.del);
+          render();
+          toast('Deleted');
+        } catch { toast('Network error'); }
+      }
+    });
+
+    document.querySelectorAll('.filter').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active'); FILTER = b.dataset.filter; render();
+    }));
+    document.getElementById('search').addEventListener('input', (e) => { QUERY = e.target.value.trim().toLowerCase(); render(); });
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/api/admin/logout', { method: 'POST' }); location.href = '/admin/login'; });
+
+    (async () => { if (await guard()) load(); })();
+  </script>
+</body>
+</html>

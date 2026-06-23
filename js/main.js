@@ -305,27 +305,32 @@ window.addEventListener('unhandledrejection', function (e) {
 })();
 
 
-/* ── Newsletter Form ─────────────────────────────────────────── */
+/* ── Newsletter signup forms ─────────────────────────────────────
+   Note: the homepage .mid-cta-form is handled in home.js — only handle
+   .newsletter-form here to avoid double submissions. */
 (function initNewsletter() {
-  const form = document.querySelector('.newsletter-form');
-  if (!form) return;
+  const forms = document.querySelectorAll('.newsletter-form');
+  forms.forEach((form) => {
+    const btn = form.querySelector('.newsletter-btn, button[type="submit"], button');
+    const input = form.querySelector('.newsletter-input, input[type="email"]');
+    const doneLabel = 'Subscribed ✓';
+    const restoreLabel = btn ? btn.textContent : '';
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('.newsletter-btn');
-    const input = form.querySelector('.newsletter-input');
-
-    btn.textContent = 'Subscribed ✓';
-    btn.style.background = '#1A3A1A';
-    btn.style.color = '#6EC46E';
-    input.value = '';
-    input.disabled = true;
-
-    setTimeout(() => {
-      btn.textContent = 'Subscribe';
-      btn.style.background = '';
-      btn.style.color = '';
-      input.disabled = false;
-    }, 4000);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = input ? input.value.trim() : '';
+      if (email) {
+        fetch('/api/submit', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'newsletter', email: email, source: form.className }),
+        }).catch(() => {});
+      }
+      if (btn) { btn.textContent = doneLabel; btn.style.background = '#1A3A1A'; btn.style.color = '#6EC46E'; }
+      if (input) { input.value = ''; input.disabled = true; }
+      setTimeout(() => {
+        if (btn) { btn.textContent = restoreLabel; btn.style.background = ''; btn.style.color = ''; }
+        if (input) input.disabled = false;
+      }, 4000);
+    });
   });
 })();

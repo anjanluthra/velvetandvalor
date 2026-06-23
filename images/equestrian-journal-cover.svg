@@ -1,0 +1,69 @@
+<svg viewBox="0 0 620 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="jt jd" preserveAspectRatio="xMidYMid slice">
+<title id="jt">The Equestrian Journal — Velvet &amp; Valor</title>
+<desc id="jd">A premium navy leather equestrian journal with an embossed gold horseshoe emblem, the Velvet &amp; Valor wordmark, a burgundy ribbon bookmark and visible cream page edges.</desc>
+<defs>
+  <linearGradient id="jbg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0E1B2E"/><stop offset="1" stop-color="#070F1C"/>
+  </linearGradient>
+  <radialGradient id="jvig" cx="0.5" cy="0.42" r="0.7">
+    <stop offset="0" stop-color="#16263E"/><stop offset="1" stop-color="#0A1424"/>
+  </radialGradient>
+  <linearGradient id="jcover" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#193454"/><stop offset="0.55" stop-color="#0E2240"/><stop offset="1" stop-color="#091628"/>
+  </linearGradient>
+  <linearGradient id="jpages" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#C9BE9F"/><stop offset="0.5" stop-color="#EBE2CB"/><stop offset="1" stop-color="#D5CAAC"/>
+  </linearGradient>
+  <linearGradient id="jgold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E7D199"/><stop offset="1" stop-color="#BE9C5E"/>
+  </linearGradient>
+</defs>
+
+<rect width="620" height="780" fill="url(#jbg)"/>
+<rect x="40" y="36" width="540" height="708" rx="16" fill="url(#jvig)"/>
+
+<ellipse cx="312" cy="688" rx="196" ry="24" fill="#040B16" opacity="0.55"/>
+
+<rect x="150" y="120" width="318" height="540" rx="12" fill="url(#jpages)"/>
+<g stroke="#B7AC8C" stroke-width="1" opacity="0.55">
+  <line x1="458" y1="140" x2="458" y2="650"/><line x1="462" y1="150" x2="462" y2="640"/>
+</g>
+
+<rect x="138" y="112" width="318" height="540" rx="12" fill="url(#jcover)" stroke="#23436A" stroke-width="1.5"/>
+<rect x="138" y="112" width="26" height="540" rx="12" fill="#08142A" opacity="0.6"/>
+<line x1="167" y1="120" x2="167" y2="644" stroke="#2C5078" stroke-width="1.5" opacity="0.7"/>
+
+<rect x="158" y="132" width="278" height="500" rx="7" fill="none" stroke="#C9A86A" stroke-width="1.4" stroke-dasharray="4 6" opacity="0.55"/>
+
+<g stroke="url(#jgold)" stroke-width="2.4" fill="none" opacity="0.9">
+  <path d="M150 130 h22 M150 130 v22"/>
+  <path d="M444 130 h-22 M444 130 v22"/>
+  <path d="M150 634 h22 M150 634 v-22"/>
+  <path d="M444 634 h-22 M444 634 v-22"/>
+</g>
+
+<g>
+  <path d="M271 278 C249 222 263 178 297 178 C331 178 345 222 323 278" fill="none" stroke="url(#jgold)" stroke-width="13" stroke-linecap="round"/>
+  <g fill="#0C1F38">
+    <circle cx="278" cy="246" r="2.6"/><circle cx="272" cy="216" r="2.6"/><circle cx="282" cy="190" r="2.6"/>
+    <circle cx="312" cy="190" r="2.6"/><circle cx="322" cy="216" r="2.6"/><circle cx="316" cy="246" r="2.6"/>
+  </g>
+</g>
+
+<text x="297" y="338" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" letter-spacing="4" textLength="248" lengthAdjust="spacingAndGlyphs" fill="#EAD9AC">VELVET <tspan fill="#3FB6B0">&amp;</tspan> VALOR</text>
+
+<line x1="262" y1="362" x2="332" y2="362" stroke="#C9A86A" stroke-width="1" opacity="0.6"/>
+<circle cx="297" cy="362" r="2.2" fill="#C9A86A" opacity="0.8"/>
+
+<text x="297" y="418" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="25" textLength="256" lengthAdjust="spacingAndGlyphs" fill="#F1EAD8">The Equestrian Journal</text>
+
+<text x="297" y="460" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" letter-spacing="2" textLength="250" lengthAdjust="spacingAndGlyphs" fill="#C9A86A" opacity="0.85">PERFORMANCE&#160;&#160;&#183;&#160;&#160;MINDSET&#160;&#160;&#183;&#160;&#160;GROWTH</text>
+
+<text x="297" y="600" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#7E8CA0">EST. MMXXVI</text>
+
+<path d="M289 652 h18 v52 l-9 -10 -9 10 Z" fill="#6B1A2C"/>
+<path d="M289 652 h6 v52 l-3 -3 Z" fill="#4A111E"/>
+
+<rect x="446" y="106" width="15" height="552" rx="3" fill="#0A1626" opacity="0.92"/>
+<line x1="449" y1="110" x2="449" y2="654" stroke="#2A4868" stroke-width="1" opacity="0.6"/>
+</svg>

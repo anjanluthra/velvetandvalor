@@ -897,6 +897,7 @@ svg    { display: block; }
 .footer-legal-slim {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 18px;
   margin-top: 18px;
 }
@@ -1491,9 +1492,10 @@ img, video, picture, iframe { max-width: 100%; height: auto; }
   .featured-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
   .featured-cases { padding: 56px 0 !important; }
 
-  /* Highlights compact */
+  /* Highlights compact — single column on mobile (avoids 5-item orphan) */
   .highlights { padding: 48px 0 !important; }
-  .highlights-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .highlights-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .highlights .section-heading { text-align: center !important; }
 
   /* Page hero (legal/contact/shipping) — tight */
   .page-hero { padding: 80px 16px 32px !important; }

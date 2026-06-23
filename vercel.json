@@ -3,9 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/products/riders-motto-:slug", "destination": "/riders-motto" },
-    { "source": "/products/:slug", "destination": "/product" },
-    { "source": "/blog/category/:slug", "destination": "/blog/category" },
-    { "source": "/blog/author/:slug", "destination": "/blog/author" },
-    { "source": "/blog/:slug", "destination": "/blog/post" }
+    { "source": "/products/riders-motto", "destination": "/riders-motto" },
+    { "source": "/products/:slug", "destination": "/product" }
   ]
 }

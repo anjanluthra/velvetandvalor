@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The Equestrian Journal — Velvet &amp; Valor</title>
+    <link>https://www.velvet-valor.com/blog</link>
+    <description>Gift guides for horse lovers, equestrian lifestyle, and craft heritage from Velvet &amp; Valor.</description>
+    <language>en</language>
+    <atom:link href="https://www.velvet-valor.com/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Care for Your Full-Grain Leather Case: A Complete Guide</title>
+      <link>https://www.velvet-valor.com/blog/how-to-care-for-your-full-grain-leather-case</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/how-to-care-for-your-full-grain-leather-case</guid>
+      <pubDate>Wed, 10 Jun 2026 09:00:00 GMT</pubDate>
+      <category>Care &amp; Craft</category>
+      <description>Your Noble Steed Case is built to last a lifetime — but like all fine leather goods, it rewards a little attention. Kate Luthra walks you through everything you need to keep your case supple, protected, and looking impeccable for years to come.</description>
+    </item>
+    <item>
+      <title>Why We Source Leather from the Same Florentine Tannery</title>
+      <link>https://www.velvet-valor.com/blog/why-we-source-leather-from-the-same-florentine-tannery</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/why-we-source-leather-from-the-same-florentine-tannery</guid>
+      <pubDate>Wed, 20 May 2026 09:00:00 GMT</pubDate>
+      <category>The Atelier</category>
+      <description>Kate Luthra on the decades-old relationship behind every Velvet &amp; Valor case — and why provenance matters in luxury craft.</description>
+    </item>
+    <item>
+      <title>The Art of the Personalised Gift: Engraving at V&amp;V</title>
+      <link>https://www.velvet-valor.com/blog/the-art-of-the-personalised-gift-engraving-at-vv</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/the-art-of-the-personalised-gift-engraving-at-vv</guid>
+      <pubDate>Sat, 02 May 2026 09:00:00 GMT</pubDate>
+      <category>Equestrian Life</category>
+      <description>From initials to yard mottos — discover how our bespoke engraving service transforms a case into a keepsake worth passing down.</description>
+    </item>
+    <item>
+      <title>The Discerning Rider's Gift Guide for the Season</title>
+      <link>https://www.velvet-valor.com/blog/the-discerning-riders-gift-guide-for-the-season</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/the-discerning-riders-gift-guide-for-the-season</guid>
+      <pubDate>Wed, 15 Apr 2026 09:00:00 GMT</pubDate>
+      <category>Gift Guides</category>
+      <description>Whether you're shopping for a competition rider or a weekend hacker, our curated selection of gifts reflects the equestrian lifestyle at its finest.</description>
+    </item>
+    <item>
+      <title>24K Gold Hardware: Why We Never Compromise on Fittings</title>
+      <link>https://www.velvet-valor.com/blog/24k-gold-hardware-why-we-never-compromise-on-fittings</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/24k-gold-hardware-why-we-never-compromise-on-fittings</guid>
+      <pubDate>Sat, 28 Mar 2026 09:00:00 GMT</pubDate>
+      <category>Care &amp; Craft</category>
+      <description>The hardware on your Noble Steed Case isn't merely decorative. A closer look at how gold hardware outlasts the alternatives — and why it matters.</description>
+    </item>
+    <item>
+      <title>From the Tack Room to the Show Ring: A Day in the Life</title>
+      <link>https://www.velvet-valor.com/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life</guid>
+      <pubDate>Tue, 10 Mar 2026 09:00:00 GMT</pubDate>
+      <category>Equestrian Life</category>
+      <description>We spent a morning at a yard in the Cotswolds with three of our customers — riders who carry their Noble Steed Cases from early hacks to evening stables.</description>
+    </item>
+    <item>
+      <title>Named for Those Who Ride First: The Story Behind Noble Steed</title>
+      <link>https://www.velvet-valor.com/blog/named-for-those-who-ride-first-the-story-behind-noble-steed</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/named-for-those-who-ride-first-the-story-behind-noble-steed</guid>
+      <pubDate>Wed, 18 Feb 2026 09:00:00 GMT</pubDate>
+      <category>The Atelier</category>
+      <description>How a love of equestrian heritage and a frustration with generic accessories became the founding philosophy of Velvet &amp; Valor's debut collection.</description>
+    </item>
+  </channel>
+</rss>

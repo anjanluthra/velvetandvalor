@@ -1,57 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://velvet-valor.com/</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/collections/iphone-cases</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/collections/iphone-cases</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/product.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/products/noble-steed</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/contact.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/products/riders-motto</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/custom</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/our-story</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/blog/</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://velvet-valor.com/shipping.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/contact</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/privacy.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/shipping</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/privacy</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/terms.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.velvet-valor.com/cookies</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://velvet-valor.com/cookies.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.velvet-valor.com/blog</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/category/care-and-craft</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/category/the-atelier</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/category/equestrian-life</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/category/gift-guides</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/author/kate-luthra</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/how-to-care-for-your-full-grain-leather-case</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/why-we-source-leather-from-the-same-florentine-tannery</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/the-art-of-the-personalised-gift-engraving-at-vv</loc>
+    <lastmod>2026-05-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/the-discerning-riders-gift-guide-for-the-season</loc>
+    <lastmod>2026-04-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/24k-gold-hardware-why-we-never-compromise-on-fittings</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.velvet-valor.com/blog/named-for-those-who-ride-first-the-story-behind-noble-steed</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

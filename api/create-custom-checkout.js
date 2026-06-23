@@ -58,6 +58,10 @@ module.exports = async (req, res) => {
       mode: 'payment',
       allow_promotion_codes: true,
       customer_email: email,
+      // Abandoned-cart recovery: expire after 1h so checkout.session.expired
+      // fires and our webhook sends the recovery email with a fresh link.
+      expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
+      after_expiration: { recovery: { enabled: true, allow_promotion_codes: true } },
       payment_intent_data: {
         metadata: orderMetadata,
         description: description,

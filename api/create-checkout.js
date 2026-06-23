@@ -122,6 +122,10 @@ module.exports = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       allow_promotion_codes: true,
+      // Abandoned-cart recovery: expire after 1h and let Stripe mint a recovery
+      // link. checkout.session.expired then triggers our recovery email.
+      expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
+      after_expiration: { recovery: { enabled: true, allow_promotion_codes: true } },
       line_items,
       shipping_options: [
         {

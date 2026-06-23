@@ -1,16 +1,18 @@
 /**
- * Stripe webhook — sends Kate's personal thank-you when a purchase completes.
+ * Stripe webhook — transactional emails driven by checkout lifecycle events.
  *
- * Listens for `checkout.session.completed`, verifies the Stripe signature
- * against the raw request body, then emails the buyer via Resend.
+ *   checkout.session.completed → Kate's founder welcome email
+ *   checkout.session.expired   → cart-recovery "you left something behind" email
+ *
+ * Verifies the Stripe signature against the raw request body, then sends via Resend.
  *
  * Required env: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY.
  * Configure the endpoint in Stripe → Developers → Webhooks:
  *   URL: https://www.velvet-valor.com/api/stripe-webhook
- *   Event: checkout.session.completed
+ *   Events: checkout.session.completed, checkout.session.expired
  */
 const Stripe = require('stripe');
-const { sendFounderWelcomeEmail } = require('./admin/_email');
+const { sendFounderWelcomeEmail, sendCartRecoveryEmail } = require('./admin/_email');
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -29,6 +31,66 @@ function productName(session, lineItems) {
   if (m.design) return m.design;
   const first = lineItems && lineItems[0];
   return (first && (first.description || (first.price && first.price.product && first.price.product.name))) || 'order';
+}
+
+/** Human-readable list of the items in a session, for the recovery email. */
+function itemDescriptions(lineItems) {
+  return (lineItems || []).map((li) => {
+    const name = li.description || (li.price && li.price.product && li.price.product.name) || 'Item';
+    return li.quantity > 1 ? `${name} × ${li.quantity}` : name;
+  });
+}
+
+/** checkout.session.completed → founder welcome email. */
+async function handleCompleted(stripe, sessionId) {
+  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+  if (session.payment_status !== 'paid') return { skipped: 'not paid' };
+
+  const details = session.customer_details || {};
+  const to = details.email || session.customer_email;
+  if (!to) return { skipped: 'no email' };
+
+  const lineItems = (session.line_items && session.line_items.data) || [];
+  await sendFounderWelcomeEmail({ to, name: details.name || '', product: productName(session, lineItems) });
+  console.log('stripe-webhook: welcome sent to', to, 'for', session.id);
+  return { emailed: true };
+}
+
+/** checkout.session.expired → cart-recovery email (only if we have an email). */
+async function handleExpired(stripe, sessionId) {
+  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+
+  // Never email a session that actually paid (defensive — expired implies unpaid).
+  if (session.payment_status === 'paid') return { skipped: 'paid' };
+  // Don't double-send if a recovery touch already went out.
+  if (session.metadata && session.metadata.recovery_stage) return { skipped: 'already recovered' };
+
+  const details = session.customer_details || {};
+  const to = details.email || session.customer_email;
+  if (!to) return { skipped: 'no email' };
+
+  const recoveryUrl =
+    (session.after_expiration && session.after_expiration.recovery && session.after_expiration.recovery.url) || '';
+  const lineItems = (session.line_items && session.line_items.data) || [];
+
+  await sendCartRecoveryEmail({
+    to,
+    name: details.name || '',
+    items: itemDescriptions(lineItems),
+    recoveryUrl,
+  });
+
+  // Stamp state so the Phase 2 discount cron knows this one was reminded.
+  try {
+    await stripe.checkout.sessions.update(session.id, {
+      metadata: { ...(session.metadata || {}), recovery_stage: 'reminded', reminded_at: String(Date.now()) },
+    });
+  } catch (e) {
+    console.warn('stripe-webhook: could not stamp recovery_stage:', e && e.message);
+  }
+
+  console.log('stripe-webhook: recovery sent to', to, 'for', session.id);
+  return { emailed: true };
 }
 
 const handler = async (req, res) => {
@@ -55,37 +117,17 @@ const handler = async (req, res) => {
     return res.status(400).json({ error: 'Invalid signature' });
   }
 
-  if (event.type !== 'checkout.session.completed') {
-    return res.status(200).json({ received: true });
-  }
-
+  const id = event.data.object.id;
   try {
-    // Re-fetch with line items expanded (the event payload omits them).
-    const session = await stripe.checkout.sessions.retrieve(event.data.object.id, {
-      expand: ['line_items'],
-    });
-
-    if (session.payment_status !== 'paid') {
-      return res.status(200).json({ received: true, skipped: 'not paid' });
+    let result;
+    if (event.type === 'checkout.session.completed') {
+      result = await handleCompleted(stripe, id);
+    } else if (event.type === 'checkout.session.expired') {
+      result = await handleExpired(stripe, id);
+    } else {
+      return res.status(200).json({ received: true });
     }
-
-    const details = session.customer_details || {};
-    const to = details.email || session.customer_email;
-    if (!to) {
-      console.warn('stripe-webhook: no customer email on session', session.id);
-      return res.status(200).json({ received: true, skipped: 'no email' });
-    }
-
-    const lineItems = (session.line_items && session.line_items.data) || [];
-
-    await sendFounderWelcomeEmail({
-      to,
-      name: details.name || '',
-      product: productName(session, lineItems),
-    });
-
-    console.log('stripe-webhook: welcome sent to', to, 'for', session.id);
-    return res.status(200).json({ received: true, emailed: true });
+    return res.status(200).json({ received: true, ...result });
   } catch (err) {
     // Already past signature verification — log and 200 so Stripe doesn't retry
     // a transient email hiccup into a duplicate send. Failures are visible in logs.

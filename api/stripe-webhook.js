@@ -12,7 +12,16 @@
  *   Events: checkout.session.completed, checkout.session.expired
  */
 const Stripe = require('stripe');
-const { sendFounderWelcomeEmail, sendCartRecoveryEmail } = require('./admin/_email');
+const { sendFounderWelcomeEmail, sendCartRecoveryEmail, sendPurchaseNotification } = require('./admin/_email');
+
+/** Format a Stripe minor-unit amount (e.g. 4800, "usd") as "$48.00". */
+function formatAmount(amount, currency) {
+  if (amount == null) return '';
+  const value = (amount / 100).toFixed(2);
+  const cur = String(currency || 'usd').toUpperCase();
+  const symbol = { USD: '$', GBP: '£', EUR: '€', AED: 'AED ' }[cur] || `${cur} `;
+  return `${symbol}${value}`;
+}
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -51,17 +60,37 @@ function itemDescriptions(lineItems) {
 
 /** checkout.session.completed → founder welcome email. */
 async function handleCompleted(stripe, sessionId) {
-  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['line_items.data.price.product'],
+  });
   if (session.payment_status !== 'paid') return { skipped: 'not paid' };
 
   const details = session.customer_details || {};
   const to = details.email || session.customer_email;
-  if (!to) return { skipped: 'no email' };
-
   const lineItems = (session.line_items && session.line_items.data) || [];
-  await sendFounderWelcomeEmail({ to, name: details.name || '', product: productName(session, lineItems) });
+  const product = productName(session, lineItems);
+
+  // Always notify the owners of a new purchase (best-effort, independent of the
+  // customer welcome so one failing never blocks the other).
+  try {
+    await sendPurchaseNotification({
+      name: details.name || '',
+      email: to || '',
+      product,
+      amount: formatAmount(session.amount_total, session.currency),
+      items: itemDescriptions(lineItems),
+      sessionId: session.id,
+    });
+    console.log('stripe-webhook: purchase notification sent for', session.id);
+  } catch (e) {
+    console.error('stripe-webhook: purchase notification failed:', e && e.message);
+  }
+
+  if (!to) return { skipped: 'no customer email', notified: true };
+
+  await sendFounderWelcomeEmail({ to, name: details.name || '', product });
   console.log('stripe-webhook: welcome sent to', to, 'for', session.id);
-  return { emailed: true };
+  return { emailed: true, notified: true };
 }
 
 /** checkout.session.expired → cart-recovery email (only if we have an email). */

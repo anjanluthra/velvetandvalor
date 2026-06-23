@@ -33,11 +33,19 @@ function productName(session, lineItems) {
   return (first && (first.description || (first.price && first.price.product && first.price.product.name))) || 'order';
 }
 
-/** Human-readable list of the items in a session, for the recovery email. */
+/**
+ * Human-readable list of the exact items in a session, for the recovery email.
+ * Pulls the product name + its model/finish detail (needs price.product expanded)
+ * so the customer sees precisely what they left behind, e.g.
+ * "Noble Steed — Royal Plum · iPhone 17 Pro (Matte) × 2".
+ */
 function itemDescriptions(lineItems) {
   return (lineItems || []).map((li) => {
-    const name = li.description || (li.price && li.price.product && li.price.product.name) || 'Item';
-    return li.quantity > 1 ? `${name} × ${li.quantity}` : name;
+    const prod = li.price && li.price.product;
+    const name = (prod && typeof prod === 'object' && prod.name) || li.description || 'Item';
+    const detail = prod && typeof prod === 'object' ? prod.description : '';
+    const qty = li.quantity > 1 ? ` × ${li.quantity}` : '';
+    return detail ? `${name} · ${detail}${qty}` : `${name}${qty}`;
   });
 }
 
@@ -58,7 +66,9 @@ async function handleCompleted(stripe, sessionId) {
 
 /** checkout.session.expired → cart-recovery email (only if we have an email). */
 async function handleExpired(stripe, sessionId) {
-  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['line_items.data.price.product'],
+  });
 
   // Never email a session that actually paid (defensive — expired implies unpaid).
   if (session.payment_status === 'paid') return { skipped: 'paid' };

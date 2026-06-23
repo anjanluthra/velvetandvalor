@@ -3,7 +3,7 @@
  * Configure with RESEND_API_KEY and RESEND_FROM
  * (e.g. RESEND_FROM="Velvet & Valor <admin@velvet-valor.com>").
  */
-async function sendEmail({ to, subject, html, from, replyTo }) {
+async function sendEmail({ to, subject, html, from, replyTo, bcc }) {
   const key = process.env.RESEND_API_KEY;
   const sender = from || process.env.RESEND_FROM;
   if (!key) throw new Error('RESEND_API_KEY not configured');
@@ -11,6 +11,7 @@ async function sendEmail({ to, subject, html, from, replyTo }) {
 
   const body = { from: sender, to: Array.isArray(to) ? to : [to], subject, html };
   if (replyTo) body.reply_to = replyTo;
+  if (bcc) body.bcc = Array.isArray(bcc) ? bcc : [bcc];
 
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -211,6 +212,7 @@ function shippedHtml({ name, product, deliveryDate }) {
 async function sendShippedEmail({ to, name, product, deliveryDate }) {
   return sendEmail({
     to,
+    bcc: adminRecipients(),
     replyTo: process.env.RESEND_REPLY_TO || 'info@velvet-valor.com',
     subject: 'Your Velvet & Valor order has shipped',
     html: shippedHtml({ name, product, deliveryDate }),

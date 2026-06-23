@@ -172,30 +172,11 @@ window.addEventListener('unhandledrejection', function (e) {
     });
   }
 
-  // Rotate messages one-at-a-time where space only shows one (mobile)
-  if (items.length < 2) return;
-  const mq = window.matchMedia('(max-width: 768px)');
-  let idx = 0, timer = null;
-  function show(i) {
-    items.forEach((el, n) => {
-      el.style.transition = 'opacity 0.4s';
-      el.style.display = n === i ? '' : 'none';
-    });
-  }
-  function start() {
-    if (mq.matches) {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-      show(idx);
-      timer = setInterval(() => { idx = (idx + 1) % items.length; show(idx); }, 4000);
-    }
-  }
-  function stop() {
-    clearInterval(timer); timer = null;
-    items.forEach(el => { el.style.display = ''; });
-  }
-  function sync() { stop(); start(); }
-  mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
-  start();
+  // NOTE: Mobile message rotation removed. It set `display = ''` to reveal an
+  // item, which cleared the inline style and fell back to the mobile CSS rule
+  // (only the 2nd item shows) — so two of three rotation states displayed no
+  // message, producing a visible flicker between blank and "Rated Excellent".
+  // The banner now stays static; CSS decides what shows at each breakpoint.
 })();
 
 

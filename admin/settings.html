@@ -54,7 +54,14 @@
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream); padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: 0.3s var(--ease-out); z-index: 50; max-width: 90vw; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast a { color: var(--gold-pale); text-decoration: underline; }
-    @media (max-width: 760px) { .invite { grid-template-columns: 1fr 1fr; } th.hide-sm, td.hide-sm { display: none; } }
+    @media (max-width: 760px) {
+      .invite { grid-template-columns: 1fr 1fr; }
+      th.hide-sm, td.hide-sm { display: none; }
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 480px; }
+      .kv b { min-width: 70px; }
+    }
+    @media (max-width: 480px) { .invite { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>

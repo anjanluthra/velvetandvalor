@@ -50,5 +50,8 @@
   .admin-navitem .ic { display: none; }
   .admin-foot { border-top: none; padding-top: 0; margin-left: auto; display: flex; align-items: center; }
   .admin-user { display: none; }
-  .admin-logout { width: auto; padding: 8px 12px; }
+  .admin-logout { width: auto; padding: 8px 12px; white-space: nowrap; }
+  .admin-main .wrap { padding: 18px 16px; }
+  .page-head { margin-bottom: 18px; }
+  .page-head h1 { font-size: 1.3rem; }
 }

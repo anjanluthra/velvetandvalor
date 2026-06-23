@@ -1,0 +1,54 @@
+/* ============================================================
+   VELVET & VALOR — Admin shell (left sidebar layout)
+   Shared across /admin/* pages. Component styles stay per-page.
+   ============================================================ */
+
+.admin-layout { display: flex; min-height: 100vh; }
+
+#adminSidebar {
+  width: 232px; flex-shrink: 0;
+  background: var(--obsidian-mid);
+  border-right: 1px solid var(--gold-muted);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  padding: 24px 16px;
+}
+.admin-brand { font-family: var(--font-serif); font-size: 1.15rem; color: var(--cream); padding: 0 8px 24px; }
+.admin-brand span { display: block; color: var(--gold-pale); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px; }
+
+.admin-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.admin-navitem {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 9px;
+  color: var(--cream-mid); font-size: 0.92rem;
+  transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
+}
+.admin-navitem:hover { background: var(--obsidian-light); color: var(--cream); }
+.admin-navitem.active { background: var(--gold-subtle); color: var(--cream); font-weight: 600; }
+.admin-navitem .ic { width: 20px; text-align: center; flex-shrink: 0; opacity: 0.9; }
+
+.admin-foot { border-top: 1px solid var(--gold-whisper); padding-top: 14px; }
+.admin-user { font-size: 0.78rem; color: var(--cream-muted); line-height: 1.5; margin-bottom: 10px; padding: 0 8px; }
+.admin-user b { color: var(--cream); }
+.admin-user .role { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.62rem; color: var(--gold-pale); }
+.admin-logout { width: 100%; padding: 9px; border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream-mid); font-size: 0.82rem; transition: 0.2s var(--ease-out); }
+.admin-logout:hover { border-color: var(--gold-bright); color: var(--cream); }
+
+.admin-main { flex: 1; min-width: 0; }
+.admin-main .wrap { max-width: 1180px; margin: 0 auto; padding: 32px; }
+
+.page-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+.page-head h1 { font-family: var(--font-serif); font-weight: 500; color: var(--cream); font-size: 1.5rem; }
+.page-head .actions { display: flex; gap: 10px; align-items: center; }
+
+@media (max-width: 760px) {
+  .admin-layout { flex-direction: column; }
+  #adminSidebar { width: auto; height: auto; position: sticky; top: 0; z-index: 20; flex-direction: row; align-items: center; padding: 10px 14px; overflow-x: auto; }
+  .admin-brand { display: none; }
+  .admin-nav { flex-direction: row; gap: 2px; }
+  .admin-navitem { padding: 9px 12px; white-space: nowrap; font-size: 0.85rem; }
+  .admin-navitem .ic { display: none; }
+  .admin-foot { border-top: none; padding-top: 0; margin-left: auto; display: flex; align-items: center; }
+  .admin-user { display: none; }
+  .admin-logout { width: auto; padding: 8px 12px; }
+}

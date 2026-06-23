@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Submissions — V&amp;V Admin</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
   <style>
     body { padding: 0; }
     .admin-bar {
@@ -60,18 +61,11 @@
   </style>
 </head>
 <body>
-  <div class="admin-bar">
-    <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
-    <div class="actions">
-      <a class="btn-ghost" href="/admin/dashboard">Orders</a>
-      <a class="btn-ghost active" href="/admin/submissions">Submissions</a>
-      <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
-      <button class="btn-ghost" id="logoutBtn">Log out</button>
-    </div>
-  </div>
-
+  <div class="admin-layout">
+  <aside id="adminSidebar"></aside>
+  <main class="admin-main">
   <div class="wrap">
-    <h2>Submissions</h2>
+    <div class="page-head"><h1>Form Submissions</h1></div>
     <div class="lede">Newsletter signups, journal waitlist, and contact messages from the site.</div>
 
     <div class="controls">
@@ -85,6 +79,8 @@
     </div>
 
     <div class="list" id="list"><div class="state">Loading…</div></div>
+  </div>
+  </main>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -108,7 +104,6 @@
         if (r.status === 401) { location.href = '/admin/login'; return false; }
         const me = await r.json();
         if (me.role === 'staff') { location.href = '/admin/dashboard'; return false; }
-        document.getElementById('usersLink').style.display = me.role === 'owner' ? '' : 'none';
         return true;
       } catch { location.href = '/admin/login'; return false; }
     }
@@ -199,9 +194,8 @@
       b.classList.add('active'); FILTER = b.dataset.filter; render();
     }));
     document.getElementById('search').addEventListener('input', (e) => { QUERY = e.target.value.trim().toLowerCase(); render(); });
-    document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/api/admin/logout', { method: 'POST' }); location.href = '/admin/login'; });
-
     (async () => { if (await guard()) load(); })();
   </script>
+  <script src="/js/admin-nav.js"></script>
 </body>
 </html>

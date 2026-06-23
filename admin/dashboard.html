@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Orders &amp; Revenue — V&amp;V Admin</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
   <style>
     body { padding: 0; }
     .admin-bar {
@@ -152,18 +153,17 @@
   </style>
 </head>
 <body>
-  <div class="admin-bar">
-    <div class="brand">Velvet &amp; Valor <span>Admin</span></div>
-    <div class="actions">
-      <a class="btn-ghost" id="submissionsLink" href="/admin/submissions" style="display:none">Submissions</a>
-      <a class="btn-ghost" id="usersLink" href="/admin/users" style="display:none">Users</a>
-      <button class="btn-ghost" id="exportBtn" title="Copy orders and open a new Google Sheet">⤓ Export to Sheets</button>
-      <button class="btn-ghost" id="refreshBtn">Refresh</button>
-      <button class="btn-ghost" id="logoutBtn">Log out</button>
-    </div>
-  </div>
-
+  <div class="admin-layout">
+  <aside id="adminSidebar"></aside>
+  <main class="admin-main">
   <div class="wrap">
+    <div class="page-head">
+      <h1>Orders &amp; Revenue</h1>
+      <div class="actions">
+        <button class="btn-ghost" id="exportBtn" title="Copy orders and open a new Google Sheet">⤓ Export to Sheets</button>
+        <button class="btn-ghost" id="refreshBtn">Refresh</button>
+      </div>
+    </div>
     <div class="cards" id="cards"></div>
 
     <div class="controls">
@@ -198,6 +198,8 @@
         </tbody>
       </table>
     </div>
+  </div>
+  </main>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -271,8 +273,6 @@
         ORDERS = data.orders || [];
         SUMMARY = data.summary || null;
         CAN_SEE_MONEY = data.canSeeMoney !== false;
-        document.getElementById('usersLink').style.display = data.role === 'owner' ? '' : 'none';
-        document.getElementById('submissionsLink').style.display = data.role !== 'staff' ? '' : 'none';
         renderCards();
         renderRows();
       } catch {
@@ -529,10 +529,6 @@
     });
 
     document.getElementById('refreshBtn').addEventListener('click', load);
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await fetch('/api/admin/logout', { method: 'POST' });
-      window.location.href = '/admin/login';
-    });
 
     // ── Date range ──
     function onDateChange() {
@@ -638,5 +634,6 @@
 
     load();
   </script>
+  <script src="/js/admin-nav.js"></script>
 </body>
 </html>

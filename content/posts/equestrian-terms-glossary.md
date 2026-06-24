@@ -1,206 +1,185 @@
 ---
 title: "Equestrian Terms: The Complete Glossary"
-description: "<meta description: A complete guide to equestrian terms — from gaits and tack to dressage and jumping. Master the language of the horse world with this definitive glossary.>"
-excerpt: "From aids and impulsion to turnout and going, equestrian terms can feel like a language unto themselves. This definitive glossary decodes the vocabulary every rider, spectator, and horse enthusiast needs to know."
+description: "<meta description: Master every equestrian terms from aids to volt with our definitive glossary — riding disciplines, tack, gaits, and stable language explained clearly.>"
+excerpt: "From aids to volt, this definitive glossary covers every equestrian term you need — whether you're a curious newcomer, a seasoned competitor, or simply passionate about the horse world."
 category: equestrian-life
-tags: ["equestrian terms", "horse riding glossary", "equestrian lifestyle", "dressage terms", "horse care"]
+tags: ["equestrian terms", "horse riding glossary", "equestrian lifestyle", "riding disciplines", "tack and equipment"]
 author: kate-luthra
 date: 2026-06-24
 featured: false
 keyTakeaways:
-  - "Equestrian terminology spans multiple disciplines — dressage, show jumping, eventing, polo, and more — each with its own specialist vocabulary that rewards careful study."
-  - "Understanding tack terminology is practical as well as cultural: knowing the difference between a snaffle and a pelham, or a numnah and a saddle pad, helps you buy correctly and communicate clearly with your yard."
-  - "The language of movement — gaits, paces, and schooling figures — forms the grammatical backbone of equestrian conversation, whether you are at a competition or simply hacking out."
-  - "Many equestrian terms carry centuries of history, originating in French, Spanish, and classical horsemanship traditions that remain alive in the modern arena."
+  - "Equestrian vocabulary spans four distinct domains: the horse's body and movement, tack and equipment, riding aids and technique, and competitive disciplines — knowing which domain a term belongs to makes it far easier to learn."
+  - "The word \"equestrian\" derives from the Latin *eques* (horseman), and many classical dressage terms still used today come directly from 17th-century French academic riding tradition."
+  - "Tack terminology is precise because fit is a welfare issue — a misused term (e.g. confusing a cavesson with a flash noseband) can lead to ill-fitting equipment and genuine discomfort for the horse."
+  - "Many equestrian terms carry layered meaning: \"contact,\" for instance, describes not just a physical connection through the reins but an entire philosophy of communication between horse and rider."
 faq:
-  - q: "What are the most important equestrian terms for a complete beginner to learn first?"
-    a: "Start with the four gaits (walk, trot, canter, gallop), the basic aids (leg, seat, and hand), and the key tack items (saddle, bridle, stirrups, girth). Once those are secure, move on to schooling figures and the terms specific to whichever discipline you are pursuing."
-  - q: "What is the difference between a horse and a pony in equestrian terms?"
-    a: "The distinction is primarily one of height. In most equestrian contexts, a horse stands 14.2 hands (hh) or above, while a pony stands below that threshold. One hand equals four inches (approximately 10.2 cm). Breed and bone structure also play a role — a Connemara, for instance, may stand at 14.2 hh yet is always referred to as a pony."
+  - q: "What are equestrian terms, and why do they matter?"
+    a: "Equestrian terms are the specialised vocabulary used across horse riding, horse care, and competitive disciplines. They matter because precision in language translates directly to precision in horsemanship — using the correct term ensures clearer communication with instructors, vets, farriers, and fellow riders, and ultimately supports better horse welfare."
+  - q: "What is the difference between a gait and a pace?"
+    a: "A gait is any natural or trained sequence of footfalls by which a horse moves — walk, trot, canter, and gallop are the four principal gaits. \"Pace\" is sometimes used colloquially as a synonym, but technically it refers to a specific lateral two-beat gait (both legs on the same side move together) seen in harness racing and certain gaited breeds such as the Standardbred."
   - q: "What does \"on the bit\" mean?"
-    a: "A horse is described as \"on the bit\" when it accepts the contact of the rider's hands through a relaxed jaw and poll, carries itself in a correct outline, and moves forward willingly into that contact. It is a sign of harmony between horse and rider, not mere head position."
-  - q: "Are equestrian terms the same across all disciplines?"
-    a: "Core terms — gaits, basic tack, directional commands — are shared across disciplines, but each sport adds its own specialist vocabulary. Dressage borrows heavily from French and classical traditions; polo has its own field-specific language; and eventing uses cross-country terminology unfamiliar to pure arena riders. This glossary covers the most widely used terms across all major disciplines."
-  - q: "What does \"going\" mean in equestrian contexts?"
-    a: "\"Going\" refers to the condition of the ground underfoot — the footing on which a horse works or competes. Terms range from \"firm\" and \"good\" through \"soft\" and \"heavy\". Good going is generally considered safe and springy; heavy going is deep and tiring, placing greater strain on tendons and joints."
+    a: "\"On the bit\" describes a horse that is accepting the contact through the reins, is working through its back, and has adopted a rounded outline with its nose slightly in front of the vertical. It is a state of balance and submission rather than a head position alone — a horse can appear to have its head in the right place while evading true contact, which experienced riders and judges distinguish immediately."
+  - q: "What is the difference between English and Western riding terminology?"
+    a: "English riding (including dressage, show jumping, and eventing) uses terminology rooted largely in French and classical European tradition — aids, impulsion, collection, and so on. Western riding has its own vocabulary influenced by working ranch culture: a saddle horn replaces the pommel, a bridle may be a \"hackamore,\" and manoeuvres such as the \"reining spin\" or \"sliding stop\" have no direct English equivalent. Both traditions share core anatomical terms for the horse itself."
+  - q: "How many equestrian disciplines are there?"
+    a: "The number depends on how broadly you define \"discipline.\" The Fédération Equestre Internationale (FEI) — the international governing body — currently recognises eight Olympic and non-Olympic disciplines including dressage, jumping, eventing, endurance, vaulting, reining, para equestrian, and driving. Beyond FEI governance, dozens of further disciplines exist nationally and regionally, from polo and polocrosse to mounted games and side-saddle."
 ---
 
-The moment you step into a yard, a saddlery, or a ringside conversation, you encounter a vocabulary that has been refined over centuries — precise, evocative, and occasionally baffling to the uninitiated. **Equestrian terms** are the shared language of everyone who works with horses, from Olympic grand prix riders to weekend hackers, and mastering them is one of the quieter pleasures of entering this world. This glossary covers the full breadth of that vocabulary: gaits, tack, schooling, disciplines, conformation, horse care, and the classical traditions that underpin it all. Whether you are entirely new to horses or simply filling gaps in your knowledge, consider this your definitive reference.
+Walk into any yard, arena, or tack room and you will encounter a language that has been refined over centuries — precise, layered, and occasionally baffling to the uninitiated. Equestrian terms are the specialised vocabulary that governs every aspect of horsemanship: how a horse moves, how a rider communicates, how equipment fits, and how competition is judged. Whether you are preparing for your first lesson, studying for a [British Horse Society](https://www.bhs.org.uk) qualification, or simply trying to follow a dressage commentary with confidence, this glossary is the most thorough guide you will find. We have organised it not alphabetically — as most glossaries do, to their detriment — but by domain, so each term sits in the context that gives it meaning.
 
-## The Core Equestrian Terms Every Rider Should Know
+## The Horse's Body: Anatomical Terms Every Rider Should Know
 
-Before diving into specialist disciplines, there is a foundational layer of equestrian terms that applies universally — the shared grammar of the horse world.
+Before you can discuss movement or tack, you need a working map of the horse itself. Equestrian terms for anatomy are not merely academic; they inform everything from saddle fitting to veterinary conversations.
 
-### Gaits and Paces
+### Points of the Horse
 
-A **gait** is a distinct pattern of footfall. The four natural gaits of the horse are:
+- **Poll** — the bony prominence at the very top of the horse's head, behind the ears. Flexion at the poll is central to collection and self-carriage.
+- **Withers** — the ridge between the shoulder blades, at the base of the neck. Horse height is measured in hands (one hand = 4 inches / 10.16 cm) to the highest point of the withers.
+- **Croup** — the muscular area from the hip to the root of the tail. A "croup-high" young horse is one whose hindquarters are temporarily higher than the withers during a growth phase.
+- **Cannon bone** — the large bone of the lower leg between knee (front) or hock (hind) and fetlock. Its circumference is a traditional indicator of bone density and load-bearing capacity.
+- **Pastern** — the short, sloping bone between the fetlock and the hoof. Pastern angle directly affects how concussion is absorbed.
+- **Ergot** — a small horny growth at the back of the fetlock, the vestigial remnant of a toe from the horse's multi-toed ancestors.
+- **Chestnuts** — the flat, horny growths on the inner legs (front and, in most breeds, hind). Like fingerprints, no two horses' chestnuts are identical.
 
-- **Walk** — a four-beat gait; the slowest and most fundamental pace, used for warming up, cooling down, and hacking.
-- **Trot** — a two-beat diagonal gait in which the horse springs from one diagonal pair of legs to the other. Riders either sit to the trot or rise (post) in alternation.
-- **Canter** — a three-beat gait with a characteristic rocking motion. The "leading leg" — the foreleg that reaches furthest forward — should match the direction of travel: left lead on a left circle, right lead on a right.
-- **Gallop** — a four-beat gait and the horse's fastest pace, in which all four feet are briefly off the ground simultaneously (the moment of **suspension**).
+### Colour and Markings
 
-Some breeds possess additional gaits. The Icelandic Horse, recognised by the [International Federation for Equestrian Sports (FEI)](https://www.fei.org), performs the **tölt** — a smooth, four-beat running walk — and occasionally the **flying pace**.
+A **bay** horse has a brown body with a black mane, tail, and lower legs (points). A **grey** horse has a mixture of white and dark hairs and typically lightens with age — it is not the same as white. **Roan** describes a coat in which white hairs are permanently interspersed with the base colour. **Skewbald** (brown and white patches) and **piebald** (black and white patches) are the British terms for what American riders call **pinto** colouring.
 
-### Aids
+Facial markings follow their own vocabulary: a **star** is a small white mark on the forehead; a **stripe** is a narrow vertical line down the face; a **blaze** is a broad white marking covering much of the face; a **snip** is a small white mark on the muzzle.
 
-**Aids** are the signals a rider uses to communicate with a horse. They are divided into:
+## Gaits and Movement: The Language of How Horses Travel
 
-- **Natural aids** — leg, seat, weight, and hand (rein contact).
-- **Artificial aids** — whip, spurs, and martingales.
+Understanding movement terms is the foundation of riding instruction, dressage scoring, and veterinary lameness assessment.
 
-A well-schooled horse responds to light, subtle aids. The goal of good riding is to make the aids progressively invisible to an observer.
+### The Four Natural Gaits
 
-### Going
+**Walk** — a four-beat gait, the slowest, in which each hoof strikes the ground separately. A correct walk has a clear, even rhythm: left hind, left fore, right hind, right fore.
 
-**Going** describes the condition of the ground. Descriptions run from **firm** through **good to firm**, **good**, **good to soft**, **soft**, and **heavy**. Heavy going is deep and tiring; very firm going risks concussion to joints and tendons. Understanding going is especially important in racing and eventing, where ground conditions directly influence horse welfare and performance.
+**Trot** — a two-beat diagonal gait in which paired legs (left fore with right hind, and vice versa) move together. Riders either *sit* the trot or *rise* (post) to it.
 
-## Tack and Equipment: Equestrian Terms for What You Wear and Carry
+**Canter** — a three-beat gait with a moment of suspension. The "lead" matters: on the left rein, a horse should be on the *left lead*, meaning the left foreleg appears to reach furthest forward.
 
-**Tack** is the collective term for all equipment placed on a horse for riding or driving. Knowing tack terminology helps you shop accurately, communicate with your saddle fitter, and understand competition rules.
+**Gallop** — a four-beat gait, the fastest, in which the canter's three beats separate into four. A thoroughbred in full gallop covers roughly 6–8 metres per stride.
 
-### The Saddle and Its Parts
+### Advanced Movement Terms
 
-- **Tree** — the rigid internal frame of a saddle, traditionally made from beech wood, now often from fibreglass or carbon fibre. The tree determines the saddle's fit.
-- **Gullet** — the channel running down the centre of the saddle's underside, designed to clear the horse's spine entirely.
-- **Panels** — the padded undersides of the saddle that rest against the horse's back.
-- **Stirrup irons** — the metal loops in which the rider places their feet. Attached to the saddle via **stirrup leathers**.
-- **Girth** — the strap that runs under the horse's belly to keep the saddle in place. Fitted through **billets** (straps) on the saddle flap.
-- **Numnah / Saddle pad** — a shaped or square pad placed between saddle and horse's back to absorb sweat and reduce friction. "Numnah" is the traditional British term; "saddle pad" is more common in American usage.
+- **Impulsion** — the energetic, elastic thrust generated from the hindquarters. Often confused with speed, but impulsion is about power in collection, not pace.
+- **Suspension** — the moment in trot or canter when all four hooves are off the ground simultaneously.
+- **Engagement** — the degree to which the hindquarters step under the horse's body, carrying weight rather than merely pushing.
+- **Lateral work** — movements in which the horse travels on two tracks, moving sideways as well as forward. Includes *leg-yield*, *shoulder-in*, *travers*, *renvers*, and *half-pass*.
+- **Piaffe** — a highly collected, cadenced trot in place, or with minimal forward movement. One of dressage's most demanding movements.
+- **Passage** — a slow, elevated, very cadenced trot with a prolonged moment of suspension. Piaffe and passage together are the hallmark of Grand Prix dressage.
+- **Flying change** — a change of canter lead performed during the moment of suspension. *Tempi changes* are sequences of flying changes performed every stride, every two strides, and so on.
 
-### The Bridle and Bit
+## Tack and Equipment: Getting the Terminology Right
 
-- **Bridle** — the headgear used to control the horse via the bit and reins. Consists of a headpiece, browband, cheekpieces, noseband, and throatlatch.
-- **Snaffle** — the simplest and most commonly used type of bit, acting directly on the corners of the mouth and bars. Recommended for young horses and novice riders.
-- **Pelham** — a single-shanked bit that combines the actions of a snaffle and a curb, used with two reins or a **roundings** (a leather loop that allows use of a single rein).
-- **Double bridle** — uses two bits simultaneously — a **bradoon** (thin snaffle) and a **curb bit** — for refined communication in advanced dressage.
-- **Noseband** — the strap around the horse's nose. Varieties include the **cavesson** (plain), **flash** (with a lower strap), **drop**, and **grackle** (crossed, also called a figure-eight).
-- **Martingale** — a device that limits how high the horse can raise its head. A **running martingale** attaches to the reins; a **standing martingale** attaches to the noseband.
+Tack terminology is precise because fit is a welfare issue — using the wrong term with a saddle fitter or bridle maker can result in genuinely ill-fitting equipment. The same care for craft and precision that goes into bespoke tack is something we think about at Velvet & Valor; you will find it reflected in every piece in our [handcrafted leather iPhone case collection](/collections/iphone-cases), made from the same full-grain leather that quality saddlers prize.
 
-One insight that saddlers and leather craftspeople share: the quality of full-grain leather in tack is not merely aesthetic. Full-grain leather — the outermost layer of the hide, with its natural grain intact — is denser and more resistant to moisture and abrasion than corrected-grain alternatives. It moulds gently to the horse's shape over time, improving fit. This same principle guides the handcrafted full-grain leather work at [Velvet & Valor's iPhone cases](/collections/iphone-cases), where the material is chosen for longevity and character rather than surface perfection.
+### Saddles
 
-## Schooling Terms: The Language of the Arena
+- **Tree** — the internal framework of a saddle, traditionally made from wood and fibreglass or, in modern versions, synthetic composites. Tree width determines fit across the horse's withers.
+- **Pommel** — the front arch of the saddle, which must clear the withers with at least three fingers' width when the rider is seated.
+- **Cantle** — the raised back of the saddle seat.
+- **Panels** — the padded underside of the saddle that makes contact with the horse's back. Panel flocking (wool or foam) compresses over time and requires periodic adjustment.
+- **Stirrup leathers and irons** — the leather straps and metal foot supports. *Safety stirrups* (with a flexible outer arm) reduce the risk of a foot becoming trapped in a fall.
+- **Girth** — the strap that passes under the horse's belly to secure the saddle. A *girth gall* is a sore caused by an ill-fitting or dirty girth.
 
-**Schooling** refers to the systematic training of a horse to improve its way of going, responsiveness, and balance. The arena is where most schooling takes place, and it has its own precise vocabulary.
+### Bridles and Bits
 
-### Arena Markers and Figures
+- **Headpiece (crownpiece)** — the main strap that sits behind the poll.
+- **Browband** — the strap across the forehead that prevents the headpiece from slipping back.
+- **Noseband** — sits around the nose. Types include the *cavesson* (simple loop), *flash* (cavesson with a lower strap), *drop* (fastens below the bit), *grackle/figure-eight* (crosses over the nose), and *Kineton* (applies pressure via the bit rings).
+- **Snaffle** — a direct-action bit with a single rein. The most common type; includes loose-ring, eggbutt, and D-ring varieties.
+- **Pelham** — a bit that combines the action of a snaffle and a curb in one mouthpiece, used with two reins or roundings.
+- **Double bridle** — uses two bits simultaneously: a thin snaffle (*bradoon*) and a curb bit (*Weymouth*). Required at higher levels of dressage.
+- **Hackamore** — a bitless bridle that works on nose and chin pressure. Common in Western riding and used in some show jumping by horses with mouth sensitivities.
 
-A standard dressage arena is **20 × 60 metres** (large arena) or **20 × 40 metres** (small arena). Letters are placed at fixed points around the perimeter — **A, K, E, H, C, M, B, F** — and at the centre line — **D, L, X, I, G**. The letter **X** marks the exact centre.
+### Protective Equipment
 
-Common schooling figures include:
+- **Brushing boots** — protect the lower leg from the opposite hoof striking it (*brushing*).
+- **Over-reach boots** — bell-shaped boots on the front hooves, protecting the heel from the hind toe *over-reaching* and striking it.
+- **Tendon boots** — stiffer boots offering support and protection to the flexor tendons at the back of the front leg, widely used in show jumping.
 
-- **Circle** — ridden in sizes of 6, 8, 10, or 20 metres, depending on the horse's level of training.
-- **Serpentine** — a series of equal loops across the width of the arena, requiring the rider to change the bend smoothly.
-- **Figure of eight** — two connected circles that require a change of rein and bend at the centre.
-- **Half-pass** — a lateral movement in which the horse travels forward and sideways simultaneously, remaining parallel to the long side and crossing its legs.
-- **Shoulder-in** — a foundational lateral movement in which the horse's forehand is brought slightly off the track, creating a three-track movement. Widely credited to the French master **François Robichon de la Guérinière** (1688–1751).
+## Riding Aids and Technique: The Conversation Between Horse and Rider
 
-### Collection and Impulsion
+The **aids** are the signals a rider uses to communicate with the horse. They divide into two categories.
 
-- **Collection** — the redistribution of the horse's weight towards its hindquarters, producing shorter, higher steps and greater engagement. A collected horse appears to "sit".
-- **Impulsion** — the stored, elastic energy that propels the horse forward. Impulsion is *not* speed; a horse can be highly impulsive at a slow tempo.
-- **On the bit** — see the FAQ below for a full explanation.
-- **Outline** — the shape the horse makes from nose to tail when correctly ridden: a rounded topline, relaxed jaw, and engaged hindquarters.
-- **Rhythm** — the regularity of the footfall pattern within each gait. Rhythm is the first of the [FEI's Scale of Training](https://www.fei.org), followed by suppleness, contact, impulsion, straightness, and collection.
-- **Transitions** — changes between gaits or within a gait (e.g., working trot to medium trot). Smooth, prompt transitions are a mark of quality training.
+**Natural aids** are the rider's own body: *leg* (creates impulsion and controls the hindquarters), *seat* (directs energy and weight), *hand* (receives and directs energy through the reins), and *voice* (particularly valuable in early training and lungeing).
 
-## Discipline-Specific Equestrian Terms
+**Artificial aids** are tools that reinforce the natural aids: the *whip* (schooling whip or jumping crop), *spurs*, and occasionally *side reins* or *draw reins* on the lunge.
+
+### Key Technical Terms
+
+- **Contact** — the elastic, consistent connection between the rider's hand and the horse's mouth through the reins. Good contact is never rigid or pulling; it is a conversation, not a grip.
+- **Half-halt** — a momentary, coordinated closing of the leg, seat, and hand that rebalances the horse and prepares it for a transition or movement. Arguably the single most important technique in riding.
+- **Transitions** — changes between gaits (*progressive* transitions move through adjacent gaits; *direct* transitions skip one or more, e.g. walk to canter).
+- **On the forehand** — a horse carrying more weight on its front legs than its hindquarters, typically a sign of insufficient engagement. The opposite of collection.
+- **Collection** — a state in which the horse carries more weight on its hindquarters, lightens the forehand, and works with greater elevation and energy. Collection is a spectrum, not a switch.
+- **Outline** — the overall shape of the horse as seen from the side, from poll to tail. A correct *working outline* has the horse's nose slightly in front of the vertical with a relaxed, swinging back.
+- **Behind the vertical** — a fault in which the horse's nose drops behind the line of the vertical, often indicating evasion of contact or excessive use of restrictive equipment.
+- **Rhythm** — the regularity of the footfalls within a gait. The first of the [FEI's](https://www.fei.org) scale of training (Rhythm, Suppleness, Contact, Impulsion, Straightness, Collection), rhythm underpins everything.
+
+## Lungeing, Groundwork, and In-Hand Work
+
+Not all equestrian terms relate to the ridden work. A significant portion of horsemanship happens from the ground.
+
+- **Lungeing (lunging)** — working a horse on a long line (the *lunge rein*) in a circle around the handler. Used for exercise, training, and assessing soundness.
+- **Long-reining** — driving the horse forward from behind using two long reins, allowing lateral and collected work without a rider's weight.
+- **In-hand** — any work performed with the handler on the ground, including leading, showing, and the advanced *work in hand* of classical dressage.
+- **Join-up** — a method popularised by Monty Roberts in which the handler uses the horse's own body language in a round pen to establish trust and communication without force.
+- **Round pen** — a circular enclosure, typically 15–20 metres in diameter, used for groundwork and early starting (breaking) of young horses.
+
+## Stable Management and Yard Terms
+
+The horse's life outside the arena has its own rich vocabulary, much of which is rooted in centuries of working stable practice.
+
+- **Loose box (box stall)** — an enclosed stable in which the horse can move freely. Contrasted with a *tie stall* or *standing stall*, where the horse is tethered.
+- **Mucking out** — removing soiled bedding and droppings from a stable. Bedding types include straw, shavings, paper, and rubber matting.
+- **Turnout** — the time a horse spends at liberty in a paddock or field. Adequate turnout is a fundamental welfare requirement.
+- **Feed room terminology** — **hard feed** refers to grain-based concentrates (oats, barley, mix, cubes); **forage** is fibre-based feed (hay, haylage, grass). The horse's digestive system is designed for near-continuous forage intake.
+- **Farriery** — the craft of trimming and shoeing hooves. A *farrier* is a trained specialist; a *barefoot trimmer* works on unshod horses. Shoes are *fullered* (grooved for grip), *concave*, or *remedial* for therapeutic purposes.
+- **Vet terms you will hear on the yard** — *soundness* describes a horse free of lameness or health issues affecting performance; a *wind* test assesses respiratory function; *scoping* (endoscopy) examines the upper airway; *nerve blocking* isolates the source of lameness during diagnostic work.
+
+## Competitive Disciplines: A Glossary of Equestrian Sport
+
+The [FEI](https://www.fei.org) currently recognises eight disciplines at international level, each with its own specialised vocabulary.
 
 ### Dressage
 
-Dressage — from the French word meaning "training" — is the art of developing a horse's natural movement to its highest expression. Key terms include:
-
-- **Piaffe** — a highly collected trot performed almost on the spot, with maximum engagement and elevation.
-- **Passage** — a slow, elevated, cadenced trot with a moment of suspension between each diagonal step.
-- **Pirouette** — a circle of the smallest possible radius, ridden in walk or canter, in which the horse's hindquarters form the pivot point.
-- **Flying change** — a change of canter lead executed during the moment of suspension. At Grand Prix level, horses perform **tempi changes** — one-, two-, or four-stride sequences of flying changes.
-- **Prix St Georges, Intermediaire, Grand Prix** — the levels of international dressage competition, in ascending order of difficulty.
+Scores are awarded out of 10 for each movement, with **collective marks** for paces, impulsion, submission, and rider position. **Grand Prix** is the highest level, featuring piaffe, passage, and one-time flying changes. A **freestyle** (kür) is a test ridden to music with choreography chosen by the competitor.
 
 ### Show Jumping
 
-- **Course** — a sequence of fences designed by a course builder and ridden in a set order.
-- **Fence types** — **verticals** (upright poles), **oxers** (spread fences with two sets of poles), **combinations** (two or three fences set one or two strides apart, numbered A, B, C).
-- **Clear round** — completing the course without knocking a fence or incurring time penalties.
-- **Four faults** — the penalty for knocking a fence down. A refusal (the horse stopping at a fence) also incurs faults.
-- **Puissance** — a high-jump competition in which a large brick wall is progressively raised; a test of power and nerve.
+- **Course** — a numbered sequence of fences to be jumped in order.
+- **Fault** — a penalty. A *knockdown* (rail falling) incurs 4 faults; a *refusal* incurs 4 faults (under current rules); a *fall* of horse or rider results in elimination.
+- **Oxer** — a spread fence with two sets of poles. A *square oxer* has both rails at the same height; an *ascending oxer* has the back rail higher.
+- **Combination** — two or three fences set at specific distances (one or two non-jumping strides apart), judged as a single obstacle.
+- **Jump-off** — a tiebreaker round over a shortened course, decided on faults and then time.
 
-### Eventing (Horse Trials)
+### Eventing (Three-Day Eventing)
 
-Eventing combines **dressage**, **show jumping**, and **cross-country** across one, two, or three days. Cross-country specific terms include:
+Combines dressage, cross-country, and show jumping over one or more days. **Cross-country** fences are fixed and do not fall; riders must judge their own *striding* between combination elements. **Optimum time** is the target cross-country completion time; seconds over incur time penalties.
 
-- **Combination fence** — a multi-element obstacle requiring precise riding and bold jumping.
-- **Arrowhead** — a narrow, triangular fence that rewards accuracy.
-- **Drop fence** — a fence where the landing is significantly lower than the take-off.
-- **Optimum time** — the target time for the cross-country phase, calculated at a set speed. Exceeding it incurs time penalties.
+### Endurance
+
+Races over marked trails, typically 80–160 km. **Veterinary gates** are mandatory stops at which the horse's heart rate must recover to a set level (usually 64 bpm) within a time limit before the pair may continue. Failure to pass is elimination.
+
+### Reining
+
+A Western discipline judged on patterns including *spins* (360° pivots on the hindquarters), *lead changes*, *circles* (large fast and small slow), and the iconic *sliding stop*, in which the horse locks its hindquarters and slides to a halt, sometimes covering 6–9 metres of ground.
 
 ### Polo
 
-- **Chukka** — one of the periods of play in a polo match, typically seven minutes long. A standard match consists of four to eight chukkas.
-- **Handicap** — each polo player holds a handicap rating from -2 to 10 goals, reflecting their ability. A team's combined handicap determines how goals are awarded at the start.
-- **Mallet** — the long-handled implement used to strike the ball.
-- **Ride-off** — when a player uses their horse to push an opponent off the line of the ball.
+Played in *chukkas* (periods of approximately seven minutes). The *mallet* is used to drive the ball; the *nearside* is the left side of the horse (where most play occurs). Polo ponies — actually full-sized horses, typically 15–15.2 hands — are the true athletes of the game, required to stop, spin, and accelerate repeatedly.
 
-## Conformation: Equestrian Terms for the Horse's Body
+## Personal Identity and the Horse-Human Bond: Terms That Go Deeper
 
-**Conformation** refers to the physical structure and proportions of a horse. Good conformation generally correlates with soundness and athletic ability, though exceptions abound.
+Some equestrian terms are less about technique and more about the profound relationship between horse and human. The word **partnership** appears constantly in equestrian writing, and it is not hyperbole — experienced riders describe their horses in deeply personal terms: a horse's **way of going** is as individual as a signature, and the bond formed over years of shared work is unlike almost any other in sport.
 
-### Key Conformation Terms
+This is why so many riders personalise every aspect of their equestrian life, from monogrammed rugs to engraved browbands. If you feel that pull — the desire to carry something that speaks to your horse and your identity — our [custom design service](/custom) allows you to work with our artists to create something entirely your own.
 
-- **Withers** — the highest point of the horse's back, located at the base of the neck between the shoulder blades. Height is measured here, in **hands** (one hand = 4 inches / 10.16 cm).
-- **Pastern** — the sloping bone between the fetlock joint and the hoof. The angle of the pastern affects shock absorption.
-- **Cannon bone** — the large bone of the lower leg, below the knee (foreleg) or hock (hindleg). A short, dense cannon bone is considered a mark of strength.
-- **Hock** — the large joint of the hindleg, equivalent to the human ankle. A well-angled hock is essential for collection and power.
-- **Quarters** — the horse's hindquarters: the powerful muscular region from the hip to the tail.
-- **Topline** — the musculature along the horse's back and neck. A well-developed topline indicates correct work and good nutrition.
+The term **feel** is perhaps the most elusive in all of equestrian vocabulary. It cannot be taught directly; it is the rider's ability to sense the horse's balance, tension, and intention through their seat, legs, and hands — and to respond before the horse has fully committed to a movement. Masters of feel are rare, and every serious rider spends a lifetime pursuing it.
 
-### Common Conformation Faults
+**Softness** in Western riding and **throughness** (*Durchlässigkeit*) in classical dressage describe a related quality: the state in which the horse's energy flows freely from hindquarters through a relaxed back to a soft contact, without tension or blockage anywhere in the body. It is the holy grail of horsemanship, and the equestrian terms for it vary by tradition while pointing at the same truth.
 
-- **Cow hocks** — hocks that turn inward, reducing the efficiency of the hindleg push.
-- **Sickle hocks** — hindlegs that angle too far forward beneath the body.
-- **Ewe neck** — a neck that curves concavely along the top, making collection more difficult.
-- **Camped out** — legs that stand too far behind the body's vertical line, reducing balance.
-
-## Horse Care and Yard Equestrian Terms
-
-### Daily Management
-
-- **Turnout** — the time a horse spends in a field or paddock. Adequate turnout supports both physical and psychological wellbeing.
-- **Mucking out** — the daily removal of soiled bedding from a stable.
-- **Rugging** — the practice of placing a rug (blanket) on a horse for warmth, waterproofing, or fly protection.
-- **Grooming** — the daily brushing, picking out of hooves, and general maintenance of the horse's coat, mane, and tail.
-- **Clipping** — the removal of the horse's winter coat to prevent excessive sweating during work. Clip patterns include **full clip**, **hunter clip**, **blanket clip**, and **trace clip**.
-
-### Health and Veterinary Terms
-
-- **Lameness** — any alteration in a horse's gait caused by pain or mechanical dysfunction. Assessed on a scale of 0–5 by veterinary surgeons in many countries, following guidelines from bodies such as the [British Horse Society](https://www.bhs.org.uk).
-- **Colic** — abdominal pain in a horse, ranging from mild discomfort to life-threatening intestinal displacement. One of the most common equine emergencies.
-- **Laminitis** — a painful condition of the hooves caused by inflammation of the laminae (the sensitive tissue connecting the hoof wall to the pedal bone). Associated with dietary excess and metabolic disorders.
-- **Navicular syndrome** — a degenerative condition of the navicular bone in the hoof, often causing chronic forelimb lameness.
-- **Worming** — the administration of anthelmintic medication to control intestinal parasites. Modern programmes are increasingly guided by **faecal worm egg counts** rather than routine calendar dosing.
-
-### Breeding Terms
-
-- **Mare** — an adult female horse, typically four years old or above.
-- **Stallion** — an uncastrated adult male horse.
-- **Gelding** — a castrated male horse. Most competition horses are geldings.
-- **Foal** — a horse of either sex under one year old.
-- **Colt** — an uncastrated male horse under four years old.
-- **Filly** — a female horse under four years old.
-- **Dam** — a horse's mother; **sire** — a horse's father.
-- **Warmblood** — a type (not a breed) of sport horse bred by crossing hot-blooded breeds (Thoroughbred, Arabian) with cold-blooded draught breeds. Most modern dressage and jumping horses are warmbloods.
-
-## Classical Traditions and the Origins of Equestrian Language
-
-Much equestrian terminology carries the weight of history. The word **dressage** is French; **piaffe** and **passage** are French; **pirouette** is French. The influence of the great French riding academies — particularly the **École Nationale d'Équitation** at Saumur, home of the Cadre Noir — on modern equestrian language is profound. Spanish riding traditions, most visibly preserved at the [Spanish Riding School of Vienna](https://www.srs.at/en), contributed the **airs above the ground**: the **levade**, **courbette**, and **capriole**, which remain the pinnacle of classical horsemanship.
-
-The vocabulary of the British hunting field — **covert**, **cast**, **holloa**, **gone away** — represents yet another linguistic strand, one that has quietly shaped everyday yard language for generations.
-
-Understanding these origins does more than satisfy curiosity. It reveals *why* equestrian terms are so precise: they evolved in professional contexts where ambiguity could cost a horse its soundness or a rider their life. That precision is worth preserving and passing on.
-
-## Personalising Your Equestrian Identity
-
-Language is only one dimension of equestrian identity. The tack you choose, the colours you compete in, and the objects you carry all tell a story about your relationship with horses. If you have a horse whose name or character you want to carry with you beyond the yard, the [custom design service at Velvet & Valor](/custom) allows you to commission a piece that reflects exactly that bond — something as individual as the horse that inspired it.
-
-For more reading across every aspect of equestrian life — from outfit guides to discipline deep-dives — the [Velvet & Valor Journal](/blog) is a growing archive worth bookmarking.
-
-The language of horses rewards patience. Each term you absorb brings you a little closer to a tradition that stretches back to Xenophon's *On Horsemanship* — written around 350 BCE and still, remarkably, full of advice that any modern trainer would recognise. That continuity is one of the quiet glories of the equestrian world, and it begins, as all things do, with learning the words.
+For further reading across all aspects of the equestrian lifestyle — from competition preparation to yard culture — explore [The Equestrian Journal](/blog), where we cover the world of horses with the same care and precision we bring to our craft.

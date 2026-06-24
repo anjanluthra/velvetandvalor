@@ -14,6 +14,7 @@ const handlers = {
   users: require('./_users'),
   'set-password': require('./_set-password'),
   submissions: require('./_submissions'),
+  catalog: require('./_catalog'),
 };
 
 module.exports = async (req, res) => {

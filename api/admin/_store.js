@@ -102,6 +102,67 @@ async function deleteSubmission(id) {
   if (raw) await cmd(['LREM', SUBS_KEY, '1', raw]);
 }
 
+// ── Newsletter welcome flow (6-email sequence state) ────────────
+const NL_FLOW_KEY = 'vv:nl-flow';   // Redis hash: field=email(lc), value=JSON state
+const NL_UNSUB_KEY = 'vv:nl-unsub'; // Redis set of unsubscribed emails (lc)
+
+/** Enrol a subscriber into the welcome flow. `step` = number of the last email
+ *  sent (0 = none yet). Re-enrolling resets the sequence. */
+async function enrollNewsletterFlow(email, name) {
+  const state = { email: lc(email), name: String(name || '').slice(0, 120), step: 0, startedAt: Date.now(), lastSentAt: 0 };
+  await cmd(['HSET', NL_FLOW_KEY, state.email, JSON.stringify(state)]);
+  return state;
+}
+
+async function getNewsletterFlow(email) {
+  const v = await cmd(['HGET', NL_FLOW_KEY, lc(email)]);
+  if (!v) return null;
+  try { return JSON.parse(v); } catch { return null; }
+}
+
+async function updateNewsletterFlow(state) {
+  state.email = lc(state.email);
+  await cmd(['HSET', NL_FLOW_KEY, state.email, JSON.stringify(state)]);
+  return state;
+}
+
+async function removeNewsletterFlow(email) {
+  await cmd(['HDEL', NL_FLOW_KEY, lc(email)]);
+}
+
+async function listNewsletterFlows() {
+  const flat = await cmd(['HGETALL', NL_FLOW_KEY]);
+  const out = [];
+  if (Array.isArray(flat)) {
+    for (let i = 0; i < flat.length; i += 2) {
+      try { out.push(JSON.parse(flat[i + 1])); } catch { /* skip malformed */ }
+    }
+  }
+  return out;
+}
+
+async function addUnsubscribe(email) {
+  await cmd(['SADD', NL_UNSUB_KEY, lc(email)]);
+}
+
+async function isUnsubscribed(email) {
+  const r = await cmd(['SISMEMBER', NL_UNSUB_KEY, lc(email)]);
+  return r === 1 || r === '1';
+}
+
+// ── Product catalog (collections + colourways + photos) ─────────
+const CATALOG_KEY = 'vv:catalog';
+
+async function getCatalog() {
+  const v = await cmd(['GET', CATALOG_KEY]);
+  if (!v) return null;
+  try { return JSON.parse(v); } catch { return null; }
+}
+
+async function putCatalog(collections) {
+  await cmd(['SET', CATALOG_KEY, JSON.stringify(collections)]);
+}
+
 module.exports = {
   isConfigured,
   getUser,
@@ -114,4 +175,13 @@ module.exports = {
   addSubmission,
   listSubmissions,
   deleteSubmission,
+  enrollNewsletterFlow,
+  getNewsletterFlow,
+  updateNewsletterFlow,
+  removeNewsletterFlow,
+  listNewsletterFlows,
+  addUnsubscribe,
+  isUnsubscribed,
+  getCatalog,
+  putCatalog,
 };

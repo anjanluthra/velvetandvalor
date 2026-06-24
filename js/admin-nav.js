@@ -8,6 +8,7 @@
   const ROLES = { staff: 0, manager: 1, owner: 2 };
   const ITEMS = [
     { href: '/admin/dashboard', label: 'Orders', icon: '◳', match: ['/admin/dashboard'], min: 'staff' },
+    { href: '/admin/products', label: 'Products', icon: '◈', match: ['/admin/products'], min: 'manager' },
     { href: '/admin/submissions', label: 'Form Submissions', icon: '✉', match: ['/admin/submissions'], min: 'manager' },
     { href: '/admin/settings', label: 'Settings', icon: '⚙', match: ['/admin/settings', '/admin/users'], min: 'owner' },
   ];

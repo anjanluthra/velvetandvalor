@@ -11,11 +11,19 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Product photos go to a separate folder and require an admin session;
+  // customer custom-portrait uploads stay public.
+  const folder = (req.query && req.query.folder) === 'products' ? 'products' : 'custom-portraits';
+  if (folder === 'products') {
+    const { requireAuth } = require('./admin/_auth');
+    if (!requireAuth(req, res)) return;
+  }
+
   try {
     const filename = req.headers['x-filename'] || `horse-${Date.now()}.jpg`;
     // Sanitise filename — only safe chars, keep extension
     const safe = filename.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 80);
-    const path = `custom-portraits/${safe}`;
+    const path = `${folder}/${safe}`;
 
     const blob = await put(path, req, {
       access: 'public',

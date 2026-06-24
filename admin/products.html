@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Products — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <style>
+    .banner { background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: var(--cream-mid); margin-bottom: 22px; line-height: 1.6; }
+    .banner b { color: var(--gold-pale); }
+
+    .col-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .col-tab { padding: 9px 16px; border: 1px solid var(--gold-muted); border-radius: 999px; font-size: 0.86rem; color: var(--cream-mid); }
+    .col-tab.active { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); font-weight: 600; }
+    .col-meta { color: var(--cream-muted); font-size: 0.84rem; margin: 10px 0 20px; }
+    .col-meta b { color: var(--cream); font-weight: 600; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+    .cw-card {
+      background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px;
+      overflow: hidden; cursor: pointer; transition: border-color 0.15s var(--ease-out);
+    }
+    .cw-card:hover { border-color: var(--gold-bright); }
+    .cw-thumb { width: 100%; aspect-ratio: 1/1; background: var(--obsidian-deep); position: relative; }
+    .cw-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .cw-thumb .empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--cream-whisper); font-size: 0.8rem; }
+    .cw-badge { position: absolute; top: 8px; left: 8px; padding: 3px 9px; border-radius: 999px; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cw-badge.sold { background: rgba(255,154,154,0.92); color: #3a0d0d; }
+    .cw-count { position: absolute; bottom: 8px; right: 8px; padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; background: rgba(4,13,28,0.75); color: var(--cream); }
+    .cw-body { padding: 12px 14px; }
+    .cw-name { color: var(--cream); font-size: 0.9rem; font-weight: 600; }
+    .cw-sub { color: var(--cream-muted); font-size: 0.76rem; margin-top: 2px; }
+    .cw-add {
+      border: 1px dashed var(--gold-muted); border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      color: var(--cream-mid); font-size: 0.9rem; min-height: 180px; cursor: pointer;
+    }
+    .cw-add:hover { border-color: var(--gold-bright); color: var(--cream); }
+
+    .btn { padding: 9px 16px; border-radius: 8px; font-size: 0.85rem; }
+    .btn-primary { background: var(--gold); color: var(--obsidian-deep); font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: var(--gold-bright); }
+    .btn-primary:disabled { opacity: 0.5; cursor: default; }
+    .btn-ghost { border: 1px solid var(--gold-muted); color: var(--cream-mid); }
+    .btn-ghost:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .dirty-dot { color: #ffcf8b; font-size: 0.8rem; margin-right: 6px; }
+
+    /* Editor modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(4,13,28,0.74); backdrop-filter: blur(3px); display: none; align-items: flex-start; justify-content: center; z-index: 100; padding: 28px 16px; overflow-y: auto; }
+    .modal-overlay.open { display: flex; }
+    .modal { width: 100%; max-width: 620px; background: var(--obsidian-mid); border: 1px solid var(--gold-muted); border-radius: 14px; padding: 26px; }
+    .modal h3 { font-family: var(--font-serif); font-weight: 500; color: var(--cream); font-size: 1.3rem; margin-bottom: 18px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-muted); margin-bottom: 7px; }
+    .field input[type="text"] { width: 100%; padding: 11px 13px; background: var(--obsidian-deep); border: 1px solid var(--gold-muted); border-radius: 8px; color: var(--cream); font-size: 0.9rem; }
+    .field.row { display: flex; gap: 14px; }
+    .field.row > div { flex: 1; }
+    .checkrow { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--cream-mid); }
+
+    .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 8px; }
+    .ph { position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; border: 1px solid var(--gold-muted); background: var(--obsidian-deep); }
+    .ph img { width: 100%; height: 100%; object-fit: cover; }
+    .ph.primary { border-color: var(--gold-bright); box-shadow: 0 0 0 2px var(--gold-bright); }
+    .ph .star { position: absolute; top: 4px; left: 4px; font-size: 0.7rem; background: var(--gold); color: var(--obsidian-deep); border-radius: 999px; padding: 1px 7px; font-weight: 700; }
+    .ph .ph-tools { position: absolute; inset: auto 0 0 0; display: flex; justify-content: center; gap: 4px; padding: 4px; background: linear-gradient(transparent, rgba(4,13,28,0.85)); opacity: 0; transition: 0.15s; }
+    .ph:hover .ph-tools { opacity: 1; }
+    .ph-tools button { width: 24px; height: 24px; border-radius: 6px; background: rgba(4,13,28,0.8); color: var(--cream); font-size: 0.72rem; border: 1px solid var(--gold-muted); }
+    .ph-tools button:hover { border-color: var(--gold-bright); }
+    .ph-add { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--gold-muted); border-radius: 8px; aspect-ratio: 1/1; color: var(--cream-mid); cursor: pointer; font-size: 0.8rem; text-align: center; }
+    .ph-add:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .modal-actions { display: flex; gap: 10px; justify-content: space-between; margin-top: 24px; }
+    .modal-actions .right { display: flex; gap: 10px; }
+    .danger-link { color: var(--cream-muted); font-size: 0.82rem; text-decoration: underline; }
+    .danger-link:hover { color: #ff9a9a; }
+
+    .state { padding: 50px; text-align: center; color: var(--cream-muted); }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream); padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: 0.3s var(--ease-out); z-index: 120; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+  <aside id="adminSidebar"></aside>
+  <main class="admin-main">
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Products</h1>
+      <div class="actions">
+        <span class="dirty-dot" id="dirtyDot" style="display:none">● Unsaved</span>
+        <button class="btn btn-primary" id="saveBtn" disabled>Save changes</button>
+      </div>
+    </div>
+
+    <div class="banner">
+      Edits here are saved to your <b>catalog</b> (instant). Pushing them to the live website is the next step — a <b>Publish</b> button that rebuilds your SEO pages. For now, changes are stored safely and ready to publish.
+    </div>
+
+    <div class="col-tabs" id="colTabs"></div>
+    <div class="col-meta" id="colMeta"></div>
+    <div class="grid" id="grid"><div class="state">Loading products…</div></div>
+  </div>
+  </main>
+  </div>
+
+  <!-- Colourway editor -->
+  <div class="modal-overlay" id="editor">
+    <div class="modal">
+      <h3 id="edTitle">Edit colourway</h3>
+      <div class="field row">
+        <div>
+          <label>Label (shown to customers)</label>
+          <input type="text" id="edLabel" placeholder="e.g. Racing Green" />
+        </div>
+        <div>
+          <label>Colour family</label>
+          <input type="text" id="edColour" placeholder="e.g. green" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="checkrow"><input type="checkbox" id="edSold" /> Mark as sold out (hidden from buyers)</label>
+      </div>
+      <div class="field">
+        <label>Photos — first is the main image. Hover a photo for tools.</label>
+        <div class="photos" id="edPhotos"></div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+      <div class="modal-actions">
+        <a class="danger-link" id="edRemove">Remove this colourway</a>
+        <div class="right">
+          <button class="btn btn-ghost" id="edCancel">Cancel</button>
+          <button class="btn btn-primary" id="edDone">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let CATALOG = [];
+    let ACTIVE = 0;
+    let DIRTY = false;
+    let EDIT = null; // { ci, wi } currently editing
+
+    const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const imgSrc = (ref) => !ref ? '' : (/^https?:\/\//.test(ref) ? ref : '/images/' + ref.replace(/ /g, '%20'));
+    const photosOf = (cw) => (cw.images && cw.images.length) ? cw.images : (cw.image ? [cw.image] : []);
+
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400); }
+    function markDirty() { DIRTY = true; document.getElementById('saveBtn').disabled = false; document.getElementById('dirtyDot').style.display = ''; }
+
+    async function load() {
+      try {
+        const r = await fetch('/api/admin/catalog');
+        if (r.status === 401) { location.href = '/admin/login'; return; }
+        if (r.status === 403) { location.href = '/admin/dashboard'; return; }
+        if (!r.ok) { const d = await r.json().catch(() => ({})); document.getElementById('grid').innerHTML = '<div class="state">' + esc(d.error || 'Could not load products') + '</div>'; return; }
+        const d = await r.json();
+        CATALOG = (d.collections || []).map((c) => { c.colourways = (c.colourways || []).map((w) => { w.images = photosOf(w); return w; }); return c; });
+        renderTabs(); render();
+      } catch { document.getElementById('grid').innerHTML = '<div class="state">Could not load products.</div>'; }
+    }
+
+    function renderTabs() {
+      document.getElementById('colTabs').innerHTML = CATALOG.map((c, i) =>
+        '<button class="col-tab' + (i === ACTIVE ? ' active' : '') + '" data-tab="' + i + '">' + esc(c.name) + '</button>'
+      ).join('');
+    }
+
+    function render() {
+      const c = CATALOG[ACTIVE];
+      if (!c) { document.getElementById('grid').innerHTML = '<div class="state">No collection.</div>'; return; }
+      document.getElementById('colMeta').innerHTML = '<b>' + esc(c.name) + '</b> · ' + (c.price || '') + ' · ' + (c.colourways || []).length + ' colourways';
+      const cards = (c.colourways || []).map((w, wi) => {
+        const ph = photosOf(w);
+        const thumb = ph.length ? '<img src="' + esc(imgSrc(ph[0])) + '" alt="" />' : '<div class="empty">No photo</div>';
+        const sold = w.soldOut ? '<span class="cw-badge sold">Sold out</span>' : '';
+        return '<div class="cw-card" data-cw="' + wi + '">' +
+          '<div class="cw-thumb">' + thumb + sold + '<span class="cw-count">' + ph.length + ' photo' + (ph.length === 1 ? '' : 's') + '</span></div>' +
+          '<div class="cw-body"><div class="cw-name">' + esc(w.label || w.slug || 'Untitled') + '</div><div class="cw-sub">' + esc(w.colour || '') + '</div></div>' +
+          '</div>';
+      }).join('');
+      document.getElementById('grid').innerHTML = cards + '<div class="cw-add" id="addCw">+ Add colourway</div>';
+    }
+
+    // ── Editor ──
+    function openEditor(wi) {
+      const c = CATALOG[ACTIVE]; const w = c.colourways[wi];
+      EDIT = { ci: ACTIVE, wi };
+      document.getElementById('edTitle').textContent = 'Edit — ' + (w.label || 'colourway');
+      document.getElementById('edLabel').value = w.label || '';
+      document.getElementById('edColour').value = w.colour || '';
+      document.getElementById('edSold').checked = !!w.soldOut;
+      renderPhotos();
+      document.getElementById('editor').classList.add('open');
+    }
+    function curCw() { return EDIT ? CATALOG[EDIT.ci].colourways[EDIT.wi] : null; }
+    function renderPhotos() {
+      const w = curCw(); const ph = photosOf(w); w.images = ph;
+      const html = ph.map((p, i) =>
+        '<div class="ph' + (i === 0 ? ' primary' : '') + '">' +
+          (i === 0 ? '<span class="star">Main</span>' : '') +
+          '<img src="' + esc(imgSrc(p)) + '" alt="" />' +
+          '<div class="ph-tools">' +
+            (i > 0 ? '<button data-pact="primary" data-i="' + i + '" title="Make main">★</button>' : '') +
+            (i > 0 ? '<button data-pact="left" data-i="' + i + '" title="Move left">◀</button>' : '') +
+            (i < ph.length - 1 ? '<button data-pact="right" data-i="' + i + '" title="Move right">▶</button>' : '') +
+            '<button data-pact="del" data-i="' + i + '" title="Delete">✕</button>' +
+          '</div></div>'
+      ).join('');
+      document.getElementById('edPhotos').innerHTML = html + '<div class="ph-add" id="phAdd">+ Upload<br>photo</div>';
+    }
+
+    document.getElementById('edPhotos').addEventListener('click', (e) => {
+      if (e.target.id === 'phAdd' || e.target.closest('#phAdd')) { document.getElementById('fileInput').click(); return; }
+      const b = e.target.closest('[data-pact]'); if (!b) return;
+      const w = curCw(); const i = +b.dataset.i; const arr = w.images;
+      if (b.dataset.pact === 'primary') { const [x] = arr.splice(i, 1); arr.unshift(x); }
+      else if (b.dataset.pact === 'left') { [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; }
+      else if (b.dataset.pact === 'right') { [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]]; }
+      else if (b.dataset.pact === 'del') { arr.splice(i, 1); }
+      w.image = arr[0] || '';
+      markDirty(); renderPhotos();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const files = [...e.target.files]; e.target.value = '';
+      if (!files.length) return;
+      const w = curCw();
+      toast('Uploading ' + files.length + ' photo' + (files.length === 1 ? '' : 's') + '…');
+      for (const f of files) {
+        try {
+          const r = await fetch('/api/upload-photo?folder=products', { method: 'POST', headers: { 'x-filename': f.name, 'content-type': f.type || 'application/octet-stream' }, body: f });
+          const d = await r.json();
+          if (!r.ok || !d.url) { toast('Upload failed: ' + esc((d && d.error) || 'error')); continue; }
+          w.images.push(d.url);
+        } catch { toast('Upload failed'); }
+      }
+      w.image = w.images[0] || '';
+      markDirty(); renderPhotos();
+      toast('Photos added');
+    });
+
+    function closeEditor() { document.getElementById('editor').classList.remove('open'); EDIT = null; }
+    document.getElementById('edDone').addEventListener('click', () => {
+      const w = curCw();
+      w.label = document.getElementById('edLabel').value.trim();
+      w.colour = document.getElementById('edColour').value.trim();
+      w.soldOut = document.getElementById('edSold').checked;
+      w.image = (w.images && w.images[0]) || '';
+      markDirty(); closeEditor(); render();
+    });
+    document.getElementById('edCancel').addEventListener('click', closeEditor);
+    document.getElementById('editor').addEventListener('click', (e) => { if (e.target.id === 'editor') closeEditor(); });
+    document.getElementById('edRemove').addEventListener('click', () => {
+      if (!confirm('Remove this colourway from the collection?')) return;
+      CATALOG[EDIT.ci].colourways.splice(EDIT.wi, 1);
+      markDirty(); closeEditor(); render();
+    });
+
+    // ── Grid + tabs ──
+    document.getElementById('grid').addEventListener('click', (e) => {
+      if (e.target.id === 'addCw' || e.target.closest('#addCw')) {
+        const c = CATALOG[ACTIVE];
+        c.colourways = c.colourways || [];
+        c.colourways.push({ slug: 'new-colour', label: 'New colour', colour: '', image: '', images: [], soldOut: false });
+        markDirty(); render(); openEditor(c.colourways.length - 1); return;
+      }
+      const card = e.target.closest('[data-cw]'); if (card) openEditor(+card.dataset.cw);
+    });
+    document.getElementById('colTabs').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-tab]'); if (!t) return;
+      ACTIVE = +t.dataset.tab; renderTabs(); render();
+    });
+
+    // ── Save ──
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('saveBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+      // Normalise: primary image = first photo
+      CATALOG.forEach((c) => (c.colourways || []).forEach((w) => { w.images = photosOf(w); w.image = w.images[0] || ''; }));
+      try {
+        const r = await fetch('/api/admin/catalog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collections: CATALOG }) });
+        if (!r.ok) { const d = await r.json().catch(() => ({})); toast('Save failed: ' + esc((d && d.error) || '')); btn.disabled = false; btn.textContent = 'Save changes'; return; }
+        DIRTY = false; document.getElementById('dirtyDot').style.display = 'none';
+        btn.textContent = 'Saved ✓';
+        setTimeout(() => { btn.textContent = 'Save changes'; btn.disabled = true; }, 1500);
+        toast('Catalog saved');
+      } catch { toast('Network error'); btn.disabled = false; btn.textContent = 'Save changes'; }
+    });
+
+    window.addEventListener('beforeunload', (e) => { if (DIRTY) { e.preventDefault(); e.returnValue = ''; } });
+
+    load();
+  </script>
+  <script src="/js/admin-nav.js"></script>
+</body>
+</html>

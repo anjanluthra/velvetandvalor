@@ -50,7 +50,6 @@ function productCard(p, idx, buyDevice) {
             <div class="sr-prod" data-design="${escAttr(p.design)}" data-colour="${p.colour}" data-price="${p.price}" data-new="${p.isNew ? 1 : 0}" data-idx="${idx}" data-name="${escAttr(p.name)}" data-image="/images/${encodeURIComponent(p.image)}" data-href="${href}">
               <div class="sr-prod-img" data-imgs="${p.images.length}">
                 ${badgeFor(p)}
-                <button class="sr-heart" aria-label="Add ${escAttr(p.name)} to wishlist">&#9825;</button>
                 <a class="sr-prod-link" href="${href}" aria-label="${escAttr(p.design)} ${escAttr(p.name)}">
                   <div class="sr-imgs">
                     ${p.images.map((img, i) => `<img src="/images/${encodeURIComponent(img)}" class="${i === 0 ? 'on' : ''}" alt="${escAttr(p.design)} ${escAttr(p.name)} horse iPhone case${i ? ' — view ' + (i + 1) : ''}" loading="lazy" />`).join('')}
@@ -59,7 +58,6 @@ function productCard(p, idx, buyDevice) {
                 <button class="sr-img-nav sr-img-prev" type="button" aria-label="Previous image">&lsaquo;</button>
                 <button class="sr-img-nav sr-img-next" type="button" aria-label="Next image">&rsaquo;</button>
                 <div class="sr-img-dots">${p.images.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join('')}</div>` : ''}
-                <a class="sr-add" href="${href}" aria-label="Shop ${escAttr(p.name)}">+</a>
               </div>
               <a class="sr-prod-link" href="${href}">
                 <div class="sr-prod-info">

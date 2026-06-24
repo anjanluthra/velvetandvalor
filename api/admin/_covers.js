@@ -92,19 +92,29 @@ async function generateCover({ title, excerpt, category }) {
     parts.push({ text: buildPrompt({ title, excerpt, category }) });
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+    const body = JSON.stringify({
+      contents: [{ role: 'user', parts }],
+      generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: ASPECT } },
+    });
+    // One shared deadline across both attempts so a retry can never push us past
+    // the 60s function budget. Retry only on a transient failure (non-ok response
+    // or network error) — never after a timeout/abort, which means we're out of time.
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
     let r;
     try {
-      r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts }],
-          generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: ASPECT } },
-        }),
-        signal: ctrl.signal,
-      });
+      const attempt = () => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, signal: ctrl.signal });
+      try {
+        r = await attempt();
+        if (!r.ok && !ctrl.signal.aborted) {
+          console.warn('covers: Gemini', r.status, (await r.text().catch(() => '')).slice(0, 200), '— retrying');
+          r = await attempt();
+        }
+      } catch (err) {
+        if (ctrl.signal.aborted) throw err; // timed out — no budget to retry
+        console.warn('covers: Gemini fetch error', err && err.message, '— retrying');
+        r = await attempt();
+      }
     } finally {
       clearTimeout(timer);
     }

@@ -684,7 +684,6 @@ ${journalFilter(null)}
         <section class="journal-grid-section">
           <div class="journal-section-head" data-hide-on-search>
             <div>
-              <p class="journal-section-eyebrow">From The Atelier</p>
               <h2 class="journal-section-title">Recent Articles</h2>
             </div>
             <span class="journal-section-count">${posts.length} ${posts.length === 1 ? 'story' : 'stories'}</span>

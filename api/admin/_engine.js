@@ -179,10 +179,15 @@ async function generate({ id, publish }) {
 
     // Kick the cover image off in parallel with the article draft (fail-soft) so
     // the Gemini call doesn't stack onto Claude's time and blow the 60s budget.
-    // Uses the known title + category; excerpt isn't needed for an on-brand cover.
+    // We can't wait for the draft's excerpt (that would make it sequential), so we
+    // feed the strongest pre-draft relevance signals we already have — the title
+    // and the article's target keyword — to keep the image specific to THIS piece.
     const coverCategory = cluster ? cluster.categorySlug : 'equestrian-life';
+    const coverTheme = item.targetKeyword
+      ? `An editorial cover for an article about "${item.targetKeyword}".`
+      : undefined;
     const coverPromise = (publish && covers.isConfigured())
-      ? covers.generateCover({ title: item.title, category: coverCategory }).catch(() => null)
+      ? covers.generateCover({ title: item.title, excerpt: coverTheme, category: coverCategory }).catch(() => null)
       : Promise.resolve(null);
 
     const result = await agent.generate({ item, cluster, enrichment, relatedLinks, dateISO: isoToday(), onStage });
@@ -210,8 +215,16 @@ async function generate({ id, publish }) {
       `Content engine: publish "${item.title}"${cover ? ' (+ cover)' : ''}`
     );
     await store.patchPlanItem(id, { status: 'Live', publishedDate: isoToday() });
-    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, note: 'published' });
-    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, commit: commit.url } };
+    // Surface a missing cover so it doesn't slip through silently: if Gemini is
+    // configured but returned no image, the article still publishes (fail-soft) —
+    // but the job note flags it so an admin can Regenerate to backfill the cover.
+    const coverNote = cover
+      ? 'published (+ cover)'
+      : (covers.isConfigured()
+        ? 'published — NO COVER (image generation failed; Regenerate to retry)'
+        : 'published — no cover (GEMINI_API_KEY not set)');
+    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, cover: !!cover, note: coverNote });
+    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, cover: !!cover, commit: commit.url } };
   } catch (e) {
     await store.updateJob(jobId, { status: 'failed', error: e.message, note: `error: ${e.message}` }).catch(() => {});
     return { status: 500, body: { error: e.message, jobId } };

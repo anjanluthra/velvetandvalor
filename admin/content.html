@@ -160,7 +160,7 @@
 
     function renderCaps() {
       const c = CFG.capabilities || {};
-      const items = [['KV store', c.kv], ['Ahrefs', c.ahrefs], ['Claude (generation)', c.anthropic], ['GitHub (publish)', c.github]];
+      const items = [['KV store', c.kv], ['Ahrefs', c.ahrefs], ['Claude (generation)', c.anthropic], ['GitHub (publish)', c.github], ['Covers (Gemini)', c.gemini]];
       document.getElementById('caps').innerHTML = items.map(([label, on]) =>
         `<span class="cap ${on ? 'on' : 'off'}"><b>${esc(label)}</b> · ${on ? 'connected' : 'not set'}</span>`).join('');
     }
@@ -321,7 +321,7 @@
       if (!jobs.length) { el.innerHTML = '<div class="state">No generation jobs yet.</div>'; return; }
       el.innerHTML = '<table><thead><tr><th>Article</th><th>Stage</th><th>Progress</th><th>Status</th><th class="hide">When</th></tr></thead><tbody>' +
         jobs.map((j) => `<tr>
-          <td><div class="ttl">${esc(j.title || j.slug)}</div>${j.commit ? `<a class="kw" href="${esc(j.commit)}" target="_blank">commit ↗</a>` : ''}${j.error ? `<div class="kw" style="color:#ff9a9a">${esc(j.error)}</div>` : ''}</td>
+          <td><div class="ttl">${esc(j.title || j.slug)}</div>${j.commit ? `<a class="kw" href="${esc(j.commit)}" target="_blank">commit ↗</a>` : ''}${j.error ? `<div class="kw" style="color:#ff9a9a">${esc(j.error)}</div>` : ''}${j.status === 'done' && j.note ? `<div class="kw" style="color:${j.cover === false ? '#ffcf8a' : ''}">${esc(j.note)}</div>` : ''}</td>
           <td>${esc(j.stage || '')}</td>
           <td><div class="bar"><i style="width:${j.progress || 0}%"></i></div></td>
           <td><span class="st ${j.status === 'done' ? 'Live' : j.status === 'failed' ? 'Cancelled' : 'Outstanding'}">${esc(j.status || '')}</span></td>

@@ -264,7 +264,28 @@ async function generate(ctx) {
   return { markdown, parsed, gate, slug: item.id || item.slug };
 }
 
+/**
+ * Turn a batch of keywords into compelling, editorial article titles (not just
+ * the keyword title-cased). One Claude call for the whole batch. Returns a map
+ * keyword(lowercased) → title. Fails soft to {} so callers fall back gracefully.
+ */
+async function suggestTitles(items, cluster) {
+  if (!isConfigured() || !items || !items.length) return {};
+  const list = items.map((it, i) => `${i + 1}. ${it.targetKeyword}`).join('\n');
+  const system = `You are the editor of The Equestrian Journal by Velvet & Valor, a luxury equestrian leather brand. You write compelling, accurate article titles — the kind a real editor writes, NOT the keyword repeated back. Keep the keyword's search intent, be specific and inviting, Title Case, ~40–65 characters, no clickbait or fabricated numbers. Examples: "girl horse names" → "Girl Horse Names: 200+ Ideas for Your Mare"; "equestrian meaning" → "What Does \\"Equestrian\\" Actually Mean?"; "how to clean a silicone phone case" → "How to Clean a Silicone Phone Case (Without Wrecking It)".`;
+  const user = `Cluster: ${cluster ? cluster.name : 'General'}.\nWrite ONE title for each keyword below. Return ONLY a JSON array of {"keyword","title"} objects, same order, no prose:\n${list}`;
+  try {
+    const txt = await callClaude(system, user, { maxTokens: 1800, temperature: 0.7 });
+    const arr = JSON.parse(txt.slice(txt.indexOf('['), txt.lastIndexOf(']') + 1));
+    const map = {};
+    for (const r of arr) if (r && r.keyword && r.title) map[String(r.keyword).toLowerCase()] = String(r.title).trim();
+    return map;
+  } catch {
+    return {};
+  }
+}
+
 module.exports = {
-  isConfigured, MODEL, generate, validateArticle, parseDraft, assembleMarkdown, buildSystemPrompt,
+  isConfigured, MODEL, generate, suggestTitles, validateArticle, parseDraft, assembleMarkdown, buildSystemPrompt,
   BANNED_PHRASES,
 };

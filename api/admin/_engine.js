@@ -75,19 +75,28 @@ async function research({ cluster, seeds, country = 'us' }) {
 
   const out = top.map((idea) => {
     const en = intentMap.get(idea.keyword.toLowerCase());
-    const articleTitle = titleCase(idea.keyword);
     return {
       targetKeyword: idea.keyword,
       volume: idea.volume || 0,
       kd: idea.kd,
       intent: en ? en.intent : (c && c.id === 'iphone-case-guides' ? 'commercial' : 'informational'),
-      articleTitle,
+      articleTitle: titleCase(idea.keyword), // editorial title applied below if Claude is available
       cluster,
-      dup: planTitles.some((t) => jaccard(t, articleTitle.toLowerCase()) >= 0.6),
     };
-  }).filter((x) => !x.dup);
+  });
 
-  return { cluster, seeds: seedList, candidates: out, log };
+  // Personalised, editorial titles (not just the keyword title-cased) — one
+  // batched Claude call; falls back to the title-cased keyword if unavailable.
+  const titleMap = await require('./_content-agent').suggestTitles(out, c);
+  for (const o of out) {
+    const t = titleMap[o.targetKeyword.toLowerCase()];
+    if (t) o.articleTitle = t;
+  }
+
+  // Drop near-duplicate titles vs the existing plan (now that titles are final).
+  const final = out.filter((o) => !planTitles.some((t) => jaccard(t, o.articleTitle.toLowerCase()) >= 0.6));
+
+  return { cluster, seeds: seedList, candidates: final, log };
 }
 
 /* ─────────────────────────── plan ─────────────────────────── */
@@ -166,7 +175,7 @@ async function generate({ id, publish }) {
 
     if (!publish) {
       await store.updateJob(jobId, { stage: 'validate', status: 'done', progress: 100, gate: result.gate, note: 'preview generated (not published)' });
-      return { status: 200, body: { jobId, slug: id, gate: result.gate, markdown: result.markdown, published: false } };
+      return { status: 200, body: { jobId, slug: id, title: item.title, gate: result.gate, markdown: result.markdown, parsed: result.parsed, published: false } };
     }
 
     // publish — commit content/posts/<slug>.md (Vercel deploy rebuilds the blog).

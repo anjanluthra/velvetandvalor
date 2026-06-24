@@ -14,7 +14,10 @@ const handlers = {
   users: require('./_users'),
   'set-password': require('./_set-password'),
   submissions: require('./_submissions'),
+  flows: require('./_flows'),
   catalog: require('./_catalog'),
+  publish: require('./_publish'),
+  engine: require('./_engine'),
 };
 
 module.exports = async (req, res) => {
@@ -23,3 +26,7 @@ module.exports = async (req, res) => {
   if (!handler) return res.status(404).json({ error: 'Not found' });
   return handler(req, res);
 };
+
+// Content-engine generation (drafts + judge) needs longer than the 10s default.
+// 60s is the Vercel Hobby ceiling; Pro allows up to 300s for larger batches.
+module.exports.config = { maxDuration: 60 };

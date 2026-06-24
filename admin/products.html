@@ -88,12 +88,13 @@
       <h1>Products</h1>
       <div class="actions">
         <span class="dirty-dot" id="dirtyDot" style="display:none">● Unsaved</span>
-        <button class="btn btn-primary" id="saveBtn" disabled>Save changes</button>
+        <button class="btn btn-ghost" id="saveBtn" disabled>Save changes</button>
+        <button class="btn btn-primary" id="publishBtn">Publish to website</button>
       </div>
     </div>
 
     <div class="banner">
-      Edits here are saved to your <b>catalog</b> (instant). Pushing them to the live website is the next step — a <b>Publish</b> button that rebuilds your SEO pages. For now, changes are stored safely and ready to publish.
+      <b>Save</b> stores edits to your catalog instantly. <b>Publish to website</b> rebuilds your live SEO pages with the latest photos — it takes about a minute to appear on velvet-valor.com.
     </div>
 
     <div class="col-tabs" id="colTabs"></div>
@@ -147,7 +148,7 @@
     const imgSrc = (ref) => !ref ? '' : (/^https?:\/\//.test(ref) ? ref : '/images/' + ref.replace(/ /g, '%20'));
     const photosOf = (cw) => (cw.images && cw.images.length) ? cw.images : (cw.image ? [cw.image] : []);
 
-    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400); }
+    function toast(msg, ms) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), ms || 2400); }
     function markDirty() { DIRTY = true; document.getElementById('saveBtn').disabled = false; document.getElementById('dirtyDot').style.display = ''; }
 
     async function load() {
@@ -287,6 +288,28 @@
         setTimeout(() => { btn.textContent = 'Save changes'; btn.disabled = true; }, 1500);
         toast('Catalog saved');
       } catch { toast('Network error'); btn.disabled = false; btn.textContent = 'Save changes'; }
+    });
+
+    async function saveCatalog() {
+      CATALOG.forEach((c) => (c.colourways || []).forEach((w) => { w.images = photosOf(w); w.image = w.images[0] || ''; }));
+      const r = await fetch('/api/admin/catalog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collections: CATALOG }) });
+      if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error((d && d.error) || 'save failed'); }
+      DIRTY = false; document.getElementById('dirtyDot').style.display = 'none';
+      document.getElementById('saveBtn').disabled = true;
+    }
+
+    document.getElementById('publishBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('publishBtn');
+      btn.disabled = true; btn.textContent = 'Publishing…';
+      try {
+        if (DIRTY) { await saveCatalog(); }
+        const r = await fetch('/api/admin/publish', { method: 'POST' });
+        const d = await r.json().catch(() => ({}));
+        if (r.ok && d.ok) { toast('Publishing… your site updates in ~1–2 minutes', 5000); }
+        else if (d.notConfigured) { toast('Saved. Publishing isn’t set up yet — add a Vercel Deploy Hook.', 6000); }
+        else { toast('Publish failed: ' + esc((d && (d.error || d.message)) || 'error'), 5000); }
+      } catch (e) { toast('Could not publish: ' + esc(e.message), 5000); }
+      btn.disabled = false; btn.textContent = 'Publish to website';
     });
 
     window.addEventListener('beforeunload', (e) => { if (DIRTY) { e.preventDefault(); e.returnValue = ''; } });

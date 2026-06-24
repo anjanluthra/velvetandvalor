@@ -1,0 +1,58 @@
+name: Build Journal
+
+# Regenerates the static blog (/blog + sitemap.xml) from Markdown whenever a post
+# or the blog config/generator changes. This replaces the Vercel build step (which
+# broke /api function bundling) — Vercel keeps serving committed static files, and
+# this Action keeps that committed HTML in sync with content/posts/*.md.
+#
+# Flow: content engine commits content/posts/<slug>.md  →  this Action runs
+# build:blog  →  commits the regenerated HTML back  →  Vercel deploys statically.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/posts/**'
+      - 'content/blog.config.js'
+      - 'content/clusters.js'
+      - 'content/gifts.js'
+      - 'content/iphone-models.js'
+      - 'scripts/build-blog.js'
+  workflow_dispatch: {}   # allow manual runs from the Actions tab
+
+# Trigger paths above intentionally exclude blog/** and sitemap.xml, so this
+# Action's own regenerated commit does NOT re-trigger it (no infinite loop).
+
+concurrency:
+  group: build-journal
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build the Journal
+        run: npm run build:blog
+
+      - name: Commit regenerated Journal
+        run: |
+          git config user.name "vv-content-bot"
+          git config user.email "bot@velvet-valor.com"
+          git add blog sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(blog): regenerate Journal from markdown [skip ci]"
+            git push
+          fi

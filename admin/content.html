@@ -193,20 +193,25 @@
             <td><span class="st ${esc(p.status)}">${esc(p.status)}</span>${p.publishedDate ? '<br><span class="kw">' + esc(p.publishedDate) + '</span>' : ''}</td>
             <td style="white-space:nowrap;">
               ${canGen ? `<button class="mini" data-preview="${esc(p.id)}">Preview</button> <button class="mini" data-publish="${esc(p.id)}">Generate&nbsp;&amp;&nbsp;Publish</button>` : `<a class="mini" href="/blog/${esc(p.id)}" target="_blank">View</a>`}
-              ${p.status === 'Outstanding' ? ` <button class="mini danger" data-cancel="${esc(p.id)}">Cancel</button>` : ''}
+              ${p.status === 'Outstanding' ? ` <button class="mini" data-cancel="${esc(p.id)}">Cancel</button>` : ''}
+              <button class="mini danger" data-delete="${esc(p.id)}" title="Remove from plan">Delete</button>
             </td></tr>`;
         }).join('') + '</tbody></table>';
     }
     async function loadPlan() { const d = await api.get('plan'); PLAN = d.plan || []; renderPlan(); }
 
     document.getElementById('planList').addEventListener('click', async (e) => {
-      const prev = e.target.closest('[data-preview]'), pub = e.target.closest('[data-publish]'), can = e.target.closest('[data-cancel]');
+      const prev = e.target.closest('[data-preview]'), pub = e.target.closest('[data-publish]'),
+            can = e.target.closest('[data-cancel]'), del = e.target.closest('[data-delete]');
       if (prev) return generate(prev.dataset.preview, false, prev);
       if (pub) { if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
         if (!confirm('Generate and publish this article to the live Journal?')) return; return generate(pub.dataset.publish, true, pub); }
-      if (can) { if (!confirm('Cancel this article?')) return;
+      if (can) { if (!confirm('Cancel this article? It stays in the plan, marked Cancelled.')) return;
         const r = await api.post({ op: 'plan-update', id: can.dataset.cancel, patch: { status: 'Cancelled' } });
         if (r.ok) { toast('Cancelled'); loadPlan(); } else toast(r.data.error || 'Failed'); }
+      if (del) { if (!confirm('Delete this article from the plan permanently? (Does not affect anything already published.)')) return;
+        const r = await api.post({ op: 'plan-delete', id: del.dataset.delete });
+        if (r.ok) { toast('Deleted from plan'); loadPlan(); } else toast(r.data.error || 'Failed'); }
     });
 
     async function generate(id, publish, btn) {

@@ -1,6 +1,4 @@
 {
-  "buildCommand": "node scripts/build-all.js",
-  "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [

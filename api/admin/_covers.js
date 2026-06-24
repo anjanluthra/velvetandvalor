@@ -15,6 +15,10 @@ const config = require('../../content/blog.config.js');
 
 const API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const MODEL = process.env.GEMINI_IMAGE_MODEL || 'gemini-3-pro-image-preview';
+// Cheaper image model to fall back to when the primary (Pro) returns 429/quota —
+// free-tier keys typically can't call Nano Banana Pro but CAN call this one.
+// Set to '' to disable the fallback. Skipped if it equals the primary model.
+const FALLBACK_MODEL = process.env.GEMINI_IMAGE_FALLBACK_MODEL || 'gemini-2.5-flash-image';
 const ASPECT = '4:3'; // matches the split hero panel
 // Hard ceiling so a slow image gen can't push the publish function past Hobby's
 // 60s limit — on timeout we fall back to publishing with no cover.
@@ -91,33 +95,38 @@ async function generateCover({ title, excerpt, category }) {
     if (ref) parts.push(ref);
     parts.push({ text: buildPrompt({ title, excerpt, category }) });
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
     const body = JSON.stringify({
       contents: [{ role: 'user', parts }],
       generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: ASPECT } },
     });
-    // One shared deadline across both attempts so a retry can never push us past
-    // the 60s function budget. Retry only on a transient failure (non-ok response
-    // or network error) — never after a timeout/abort, which means we're out of time.
+    const attempt = (model) => fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, signal: ctrl.signal }
+    );
+    // Try the primary (Pro) model first; on a non-ok response (esp. 429/quota) fall
+    // back to the cheaper model, which free-tier keys can usually call. One shared
+    // deadline across all attempts so a retry can never push us past the 60s budget;
+    // never retry after a timeout/abort, which means we're out of time.
+    const models = [MODEL, FALLBACK_MODEL].filter((m, i, a) => m && a.indexOf(m) === i);
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
     let r;
     try {
-      const attempt = () => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, signal: ctrl.signal });
-      try {
-        r = await attempt();
-        if (!r.ok && !ctrl.signal.aborted) {
-          console.warn('covers: Gemini', r.status, (await r.text().catch(() => '')).slice(0, 200), '— retrying');
-          r = await attempt();
+      for (let i = 0; i < models.length; i++) {
+        try {
+          r = await attempt(models[i]);
+        } catch (err) {
+          if (ctrl.signal.aborted) throw err; // timed out — no budget to keep trying
+          console.warn('covers: Gemini fetch error', models[i], err && err.message);
+          continue;
         }
-      } catch (err) {
-        if (ctrl.signal.aborted) throw err; // timed out — no budget to retry
-        console.warn('covers: Gemini fetch error', err && err.message, '— retrying');
-        r = await attempt();
+        if (r.ok || ctrl.signal.aborted) break;
+        console.warn('covers: Gemini', models[i], r.status, (await r.clone().text().catch(() => '')).slice(0, 160), i < models.length - 1 ? '— falling back' : '');
       }
     } finally {
       clearTimeout(timer);
     }
+    if (!r) return { error: 'no response from Gemini (network error or timeout)' };
     if (!r.ok) {
       const bodyText = (await r.text().catch(() => '')).slice(0, 300);
       console.warn('covers: Gemini', r.status, bodyText);

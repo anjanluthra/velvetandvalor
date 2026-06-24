@@ -41,69 +41,9 @@
   "blogPost": [
     {
       "@type": "BlogPosting",
-      "headline": "How to Care for Your Full-Grain Leather Case: A Complete Guide",
-      "url": "https://www.velvet-valor.com/blog/how-to-care-for-your-full-grain-leather-case",
-      "datePublished": "2026-06-10",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "Why We Source Leather from the Same Florentine Tannery",
-      "url": "https://www.velvet-valor.com/blog/why-we-source-leather-from-the-same-florentine-tannery",
-      "datePublished": "2026-05-20",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "The Art of the Personalised Gift: Engraving at V&V",
-      "url": "https://www.velvet-valor.com/blog/the-art-of-the-personalised-gift-engraving-at-vv",
-      "datePublished": "2026-05-02",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "The Discerning Rider's Gift Guide for the Season",
-      "url": "https://www.velvet-valor.com/blog/the-discerning-riders-gift-guide-for-the-season",
-      "datePublished": "2026-04-15",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "24K Gold Hardware: Why We Never Compromise on Fittings",
-      "url": "https://www.velvet-valor.com/blog/24k-gold-hardware-why-we-never-compromise-on-fittings",
-      "datePublished": "2026-03-28",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "From the Tack Room to the Show Ring: A Day in the Life",
-      "url": "https://www.velvet-valor.com/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life",
-      "datePublished": "2026-03-10",
-      "author": {
-        "@type": "Person",
-        "name": "Kate Luthra"
-      }
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "Named for Those Who Ride First: The Story Behind Noble Steed",
-      "url": "https://www.velvet-valor.com/blog/named-for-those-who-ride-first-the-story-behind-noble-steed",
-      "datePublished": "2026-02-18",
+      "headline": "Equestrian Terms: The Complete Glossary",
+      "url": "https://www.velvet-valor.com/blog/equestrian-terms-glossary",
+      "datePublished": "2026-06-24",
       "author": {
         "@type": "Person",
         "name": "Kate Luthra"
@@ -121,6 +61,7 @@
   <!-- Cookie consent + conditional analytics -->
   <script src="/js/consent.js"></script>
   <script src="/js/in-app-browser.js" defer></script>
+  <script src="/js/blog.js" defer></script>
 </head>
 <body>
 
@@ -153,226 +94,97 @@
     </div>
   </nav>
 
-  <main>
+  <main class="journal">
 
-    <section class="blog-hero">
+    <section class="journal-hero">
       <div class="container">
-        <p class="blog-hero-eyebrow">Est. MMXXVI &mdash; Atelier</p>
-        <h1 class="blog-hero-title">The Equestrian Journal</h1>
-        <p class="blog-hero-subtitle">
+        <h1 class="journal-hero-title">The Equestrian Journal</h1>
+        <p class="journal-hero-subtitle">
           Stories from the saddle and the atelier — gift guides for horse lovers,
           equestrian life, craft heritage, and the art of enduring luxury.
         </p>
+        <div class="journal-search">
+          <svg class="journal-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="journalSearch" class="journal-search-input" placeholder="Search the Journal&hellip;" aria-label="Search the Journal" autocomplete="off" />
+        </div>
       </div>
     </section>
 
-    <div class="container">
-      <nav class="blog-filter" aria-label="Filter by category">
-        <a href="/blog" class="blog-filter-btn active">All Articles</a>
-        <a href="/blog/category/care-and-craft" class="blog-filter-btn">Care &amp; Craft</a>
-        <a href="/blog/category/the-atelier" class="blog-filter-btn">The Atelier</a>
-        <a href="/blog/category/equestrian-life" class="blog-filter-btn">Equestrian Life</a>
-        <a href="/blog/category/gift-guides" class="blog-filter-btn">Gift Guides</a>
+    <div class="journal-paper">
+      <div class="container">
+
+      <nav class="journal-filter" data-hide-on-search aria-label="Filter by category">
+        <a href="/blog" class="journal-filter-btn active">All Articles</a>
+        <a href="/blog/category/care-and-craft" class="journal-filter-btn">Care &amp; Craft</a>
+        <a href="/blog/category/the-atelier" class="journal-filter-btn">The Atelier</a>
+        <a href="/blog/category/equestrian-life" class="journal-filter-btn">Equestrian Life</a>
+        <a href="/blog/category/gift-guides" class="journal-filter-btn">Gift Guides</a>
+        <a href="/blog/category/performance-mindset" class="journal-filter-btn">Performance &amp; Mindset</a>
+        <a href="/blog/category/iphone-case-guides" class="journal-filter-btn">iPhone Case Guides</a>
       </nav>
+
+        <p class="journal-search-empty" id="journalSearchEmpty" hidden>No stories match your search. Try another term.</p>
+
+        <section class="journal-featured" data-hide-on-search aria-label="Featured article">
+          <a href="/blog/equestrian-terms-glossary" class="journal-featured-card" data-search="equestrian terms: the complete glossary from aids and impulsion to turnout and going, equestrian terms can feel like a language unto themselves. this definitive glossary decodes the vocabulary every rider, spectator, and horse enthusiast needs to know. equestrian life">
+            <div class="journal-featured-media">
+              <span class="journal-card-icon" aria-hidden="true">&#10022;</span>
+              <span class="journal-featured-flag">&#9733; Featured</span>
+            </div>
+            <div class="journal-featured-body">
+              <p class="journal-featured-meta">Equestrian Life <span class="dot">&middot;</span> <time datetime="2026-06-24">24 June 2026</time> <span class="dot">&middot;</span> 13 min read</p>
+              <h2 class="journal-featured-title">Equestrian Terms: The Complete Glossary</h2>
+              <p class="journal-featured-excerpt">From aids and impulsion to turnout and going, equestrian terms can feel like a language unto themselves. This definitive glossary decodes the vocabulary every rider, spectator, and horse enthusiast needs to know.</p>
+              <div class="journal-featured-author">
+                <span class="journal-featured-avatar"><img src="/images/kate-luthra.jpg" alt="Kate Luthra" loading="lazy" /></span>
+                <span class="journal-featured-author-info">
+                  <span class="journal-featured-author-name">Kate Luthra</span>
+                  <span class="journal-featured-author-role">Creative Director &amp; Founder</span>
+                </span>
+              </div>
+              <span class="journal-featured-read">Read Article
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+        </section>
+
+        <section class="journal-grid-section">
+          <div class="journal-section-head" data-hide-on-search>
+            <div>
+              <p class="journal-section-eyebrow">From The Atelier</p>
+              <h2 class="journal-section-title">Recent Articles</h2>
+            </div>
+            <span class="journal-section-count">1 story</span>
+          </div>
+          <div class="journal-grid" id="journalGrid">
+
+          </div>
+        </section>
+
+      <section class="journal-hubs" data-hide-on-search aria-label="Explore by topic">
+        <p class="journal-section-eyebrow">Browse</p>
+        <h2 class="journal-hubs-title">Explore by Topic</h2>
+        <div class="journal-hubs-grid">
+          <a href="/blog/category/equestrian-life" class="journal-hub">
+            <span class="journal-hub-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/></svg></span>
+            <span class="journal-hub-name">Equestrian Life</span>
+            <span class="journal-hub-count">1 article</span>
+          </a>
+        </div>
+      </section>
+
+      </div>
     </div>
 
-    <section class="blog-featured container reveal" aria-label="Featured article">
-      <a href="/blog/how-to-care-for-your-full-grain-leather-case" class="blog-featured-card">
-        <div class="blog-featured-image">
-          <div class="blog-featured-image-placeholder">
-            <span class="blog-image-icon">&#10022;</span>
-            <span class="blog-image-label">How to Care for Your Full-Grain Leather Case: A Complete Guide</span>
-          </div>
-          <span class="blog-featured-tag">Featured</span>
-        </div>
-        <div class="blog-featured-body">
-          <p class="blog-featured-meta">
-            <span>Care &amp; Craft</span>
-            <span class="dot">&middot;</span>
-            <time datetime="2026-06-10">10 June 2026</time>
-            <span class="dot">&middot;</span>
-            <span>3 min read</span>
-          </p>
-          <h2 class="blog-featured-title">How to Care for Your Full-Grain Leather Case: A Complete Guide</h2>
-          <p class="blog-featured-excerpt">Your Noble Steed Case is built to last a lifetime — but like all fine leather goods, it rewards a little attention. Kate Luthra walks you through everything you need to keep your case supple, protected, and looking impeccable for years to come.</p>
-          <div class="blog-featured-author">
-            <div class="blog-featured-avatar">KL</div>
-            <div class="blog-featured-author-info">
-              <span class="blog-featured-author-name">Kate Luthra</span>
-              <span class="blog-featured-author-role">Creative Director &amp; Founder</span>
-            </div>
-          </div>
-          <span class="blog-featured-read">Read Article
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </span>
-        </div>
-      </a>
-    </section>
-
-    <section class="blog-grid-section container">
-      <div class="blog-grid-header reveal">
-        <div>
-          <div class="section-label left">From The Atelier</div>
-          <h2 class="section-heading">Recent Articles</h2>
-        </div>
-      </div>
-      <div class="blog-grid">
-        <article class="blog-card reveal reveal-delay-1">
-          <a href="/blog/why-we-source-leather-from-the-same-florentine-tannery" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">The Atelier</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">The Atelier</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-05-20">20 May 2026</time>
-              </p>
-              <h3 class="blog-card-title">Why We Source Leather from the Same Florentine Tannery</h3>
-              <p class="blog-card-excerpt">Kate Luthra on the decades-old relationship behind every Velvet &amp; Valor case — and why provenance matters in luxury craft.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <article class="blog-card reveal reveal-delay-2">
-          <a href="/blog/the-art-of-the-personalised-gift-engraving-at-vv" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">Equestrian Life</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">Equestrian Life</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-05-02">2 May 2026</time>
-              </p>
-              <h3 class="blog-card-title">The Art of the Personalised Gift: Engraving at V&amp;V</h3>
-              <p class="blog-card-excerpt">From initials to yard mottos — discover how our bespoke engraving service transforms a case into a keepsake worth passing down.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <article class="blog-card reveal reveal-delay-3">
-          <a href="/blog/the-discerning-riders-gift-guide-for-the-season" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">Gift Guides</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">Gift Guides</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-04-15">15 Apr 2026</time>
-              </p>
-              <h3 class="blog-card-title">The Discerning Rider's Gift Guide for the Season</h3>
-              <p class="blog-card-excerpt">Whether you're shopping for a competition rider or a weekend hacker, our curated selection of gifts reflects the equestrian lifestyle at its finest.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <article class="blog-card reveal reveal-delay-1">
-          <a href="/blog/24k-gold-hardware-why-we-never-compromise-on-fittings" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">Care &amp; Craft</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">Care &amp; Craft</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-03-28">28 Mar 2026</time>
-              </p>
-              <h3 class="blog-card-title">24K Gold Hardware: Why We Never Compromise on Fittings</h3>
-              <p class="blog-card-excerpt">The hardware on your Noble Steed Case isn't merely decorative. A closer look at how gold hardware outlasts the alternatives — and why it matters.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <article class="blog-card reveal reveal-delay-2">
-          <a href="/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">Equestrian Life</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">Equestrian Life</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-03-10">10 Mar 2026</time>
-              </p>
-              <h3 class="blog-card-title">From the Tack Room to the Show Ring: A Day in the Life</h3>
-              <p class="blog-card-excerpt">We spent a morning at a yard in the Cotswolds with three of our customers — riders who carry their Noble Steed Cases from early hacks to evening stables.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <article class="blog-card reveal reveal-delay-3">
-          <a href="/blog/named-for-those-who-ride-first-the-story-behind-noble-steed" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">The Atelier</span>
-            </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">The Atelier</span>
-                <span class="dot">&middot;</span>
-                <time datetime="2026-02-18">18 Feb 2026</time>
-              </p>
-              <h3 class="blog-card-title">Named for Those Who Ride First: The Story Behind Noble Steed</h3>
-              <p class="blog-card-excerpt">How a love of equestrian heritage and a frustration with generic accessories became the founding philosophy of Velvet &amp; Valor's debut collection.</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">KL</div>
-                  <span class="blog-card-author-name">Kate Luthra</span>
-                </div>
-                <span class="blog-card-arrow">Read
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
-        </article>
+    <section class="article-newsletter" aria-label="Newsletter signup">
+      <div class="container">
+        <h2 class="article-newsletter-title">Be the first to read every new story</h2>
+        <p class="article-newsletter-sub">Care guides, early access &amp; 10% off your first order — straight from the atelier.</p>
+        <form class="article-newsletter-form" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" aria-label="Email address" />
+          <button type="submit">Subscribe</button>
+        </form>
       </div>
     </section>
 

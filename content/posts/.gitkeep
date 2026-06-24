@@ -1,0 +1,2 @@
+# Blog posts (Markdown) live here. The content engine publishes new posts as
+# content/posts/<slug>.md; build:blog renders them into /blog.

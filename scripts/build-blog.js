@@ -20,6 +20,8 @@ const ROOT = path.join(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'content', 'posts');
 const BLOG_DIR = path.join(ROOT, 'blog');
 const { site, categories, authors, featuredProduct, corePages } = config;
+const categoryIntros = config.categoryIntros || {};
+const categoryIcons = config.categoryIcons || {};
 const BASE = site.baseUrl;
 
 /* ─────────────────────────── helpers ─────────────────────────── */
@@ -48,6 +50,12 @@ const toISODate = (v) => (v instanceof Date) ? v.toISOString().slice(0, 10) : St
 const catName = (slug) => categories[slug] || slug;
 const author = (slug) => authors[slug] || authors[Object.keys(authors)[0]];
 
+// Avatar contents for a circular container the caller styles: photo <img> if the
+// author has one, else their initials. Container needs overflow:hidden for the img.
+const avatarInner = (a) => a.photo
+  ? `<img src="${a.photo}" alt="${esc(a.name)}" loading="lazy" />`
+  : esc(a.initials);
+
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function write(file, html) {
   ensureDir(path.dirname(file));
@@ -59,6 +67,9 @@ function write(file, html) {
 
 function renderBody(md) {
   let html = marked.parse(md, { mangle: false, headerIds: false });
+  // Drop horizontal rules — the model likes to insert `---` between sections,
+  // which renders as a stray divider line in the reading area. We don't want any.
+  html = html.replace(/<hr\s*\/?>/gi, '');
   const toc = [];
   html = html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
     const text = inner.replace(/<[^>]+>/g, '').trim();
@@ -112,6 +123,7 @@ ${ld}
   <!-- Cookie consent + conditional analytics -->
   <script src="/js/consent.js"></script>
   <script src="/js/in-app-browser.js" defer></script>
+  <script src="/js/blog.js" defer></script>
 </head>
 <body>
 
@@ -147,47 +159,68 @@ ${ld}
 }
 
 function footer() {
-  const catLinks = Object.keys(categories)
-    .map(s => `            <li><a href="/blog/category/${s}" class="footer-link">${esc(catName(s))}</a></li>`).join('\n');
+  // Mirrors the site footer from index.html exactly so the Journal shares the
+  // same footer as the home page. All classes live in css/style.css (loaded here).
   return `
   <footer class="footer" aria-label="Site footer">
     <div class="container">
+
       <div class="footer-grid">
+
+        <!-- Brand column -->
         <div class="footer-brand">
           <p class="footer-logo">VELVET <span class="amp">&amp;</span> VALOR</p>
+          <p class="footer-tagline">Artist-led luxury cases for those who carry their horse everywhere they go.</p>
           <nav class="footer-social" aria-label="Social media">
             <a href="https://www.instagram.com/velvetvalorstore" target="_blank" rel="noopener" class="footer-social-link" aria-label="Velvet &amp; Valor on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor"/></svg><span>@velvetvalorstore</span></a>
           </nav>
         </div>
+
+        <!-- Shop -->
         <div>
           <p class="footer-col-title">Shop</p>
           <ul class="footer-links">
             <li><a href="/collections/iphone-cases" class="footer-link">iPhone Cases</a></li>
+            <li><a href="/collections/iphone-cases#noble-steed-collection" class="footer-link">Noble Steed</a></li>
+            <li><a href="/riders-motto" class="footer-link">The Rider&rsquo;s Motto</a></li>
             <li><a href="/custom" class="footer-link">Custom Portrait</a></li>
           </ul>
         </div>
+
+        <!-- Explore -->
         <div>
-          <p class="footer-col-title">Journal</p>
+          <p class="footer-col-title">Explore</p>
           <ul class="footer-links">
-${catLinks}
+            <li><a href="/our-story" class="footer-link">Our Story</a></li>
+            <li><a href="/blog" class="footer-link">Blog</a></li>
           </ul>
         </div>
+
+        <!-- Support -->
         <div>
-          <p class="footer-col-title">Help</p>
+          <p class="footer-col-title">Support</p>
           <ul class="footer-links">
             <li><a href="/shipping" class="footer-link">Shipping &amp; Returns</a></li>
-            <li><a href="/contact" class="footer-link">Contact</a></li>
+            <li><a href="/contact"  class="footer-link">Contact</a></li>
           </ul>
         </div>
+
       </div>
-      <hr class="gold-rule" />
-      <div class="footer-bottom">
-        <p class="footer-copy">&copy; 2026 Braveheart FZ-LLC. All rights reserved. Designs, artwork &amp; trademarks protected by copyright and applicable IP law.</p>
-        <nav class="footer-legal" aria-label="Legal links">
-          <a href="/privacy" class="footer-link">Privacy Policy</a><a href="/cookies" class="footer-link">Cookie Policy</a>
-          <a href="#" class="footer-link" onclick="event.preventDefault(); window.vvOpenCookieSettings &amp;&amp; window.vvOpenCookieSettings();">Cookie Preferences</a>
-        </nav>
+
+      <!-- Trust + payment row -->
+      <div class="footer-trust">
+        <div class="footer-trust-items">
+          <span class="footer-trust-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secure checkout</span>
+          <span class="footer-trust-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>Worldwide shipping</span>
+          <span class="footer-trust-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 17l-5.4 2.8 1.2-6L3.3 9.4l6.1-.8z"/></svg>Five-star reviewed</span>
+        </div>
       </div>
+
+      <nav class="footer-legal-slim" aria-label="Legal links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/cookies">Cookie Policy</a>
+      </nav>
+
     </div>
   </footer>
 
@@ -240,6 +273,20 @@ function postSchema(p) {
   return out;
 }
 
+// Inject a block of HTML into the rendered body just before the 2nd <h2> so the
+// in-content product CTA lands mid-read; fall back to appending if the post is short.
+function injectMidContent(html, block) {
+  const positions = [];
+  const re = /<h2\b/g;
+  let m;
+  while ((m = re.exec(html))) positions.push(m.index);
+  if (positions.length >= 2) {
+    const at = positions[1];
+    return html.slice(0, at) + block + html.slice(at);
+  }
+  return html + block;
+}
+
 function renderPost(p, posts) {
   const a = author(p.author);
   const related = posts.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 3);
@@ -248,32 +295,59 @@ function renderPost(p, posts) {
   const prev = posts[idx + 1]; // older
   const next = posts[idx - 1]; // newer
 
-  const toc = p.toc.length ? `
-        <div class="sidebar-widget">
-          <p class="sidebar-widget-title">In This Article</p>
-          <nav class="sidebar-toc" aria-label="Table of contents">
-${p.toc.map((t, i) => `            <a href="#${t.id}" class="sidebar-toc-item${i === 0 ? ' active' : ''}">${esc(t.text)}</a>`).join('\n')}
-          </nav>
-        </div>` : '';
+  const shareUrl = encodeURIComponent(p.url);
+  const shareTitle = encodeURIComponent(p.title);
 
-  const cover = p.cover ? `
-      <div class="post-cover">
-        <img src="${p.cover}" alt="${esc(p.coverAlt || p.title)}" loading="eager" />
-      </div>` : `
-      <div class="post-cover">
-        <span class="post-cover-icon">&#10022;</span>
-        <span class="post-cover-label">${esc(p.title)}</span>
-      </div>`;
+  const takeaways = (Array.isArray(p.keyTakeaways) && p.keyTakeaways.length) ? `
+        <aside class="article-takeaways" aria-label="Key takeaways">
+          <p class="article-takeaways-title">Key Takeaways</p>
+          <ul>
+${p.keyTakeaways.map(t => `            <li>${esc(t)}</li>`).join('\n')}
+          </ul>
+        </aside>` : '';
+
+  // In-content product CTA, injected mid-article.
+  const inlineCta = `
+        <aside class="article-cta" aria-label="Shop ${esc(featuredProduct.name)}">
+          <div class="article-cta-media" aria-hidden="true">&#128241;</div>
+          <div class="article-cta-text">
+            <p class="article-cta-name">${esc(featuredProduct.name)}</p>
+            <p class="article-cta-blurb">${esc(featuredProduct.blurb)} &middot; ${esc(featuredProduct.price)}</p>
+          </div>
+          <a href="${featuredProduct.url}" class="article-cta-btn">Shop Now
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </aside>`;
+  const body = injectMidContent(p.html, inlineCta);
 
   const faqBlock = (Array.isArray(p.faq) && p.faq.length) ? `
+        <section class="article-faq" aria-label="Frequently asked questions">
+          <h2 id="faq">Frequently Asked Questions</h2>
+${p.faq.map(f => `          <details class="article-faq-item">
+            <summary>${esc(f.q)}<span class="article-faq-icon" aria-hidden="true"></span></summary>
+            <div class="article-faq-answer"><p>${f.a}</p></div>
+          </details>`).join('\n')}
+        </section>` : '';
 
-        <h2 id="faq">Frequently Asked Questions</h2>
-${p.faq.map(f => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join('\n')}` : '';
+  const credentials = (a.credentials || []).map(c =>
+    `            <span class="article-cred">${esc(c)}</span>`).join('\n');
 
-  // Tags are labels, not links — we don't generate tag archives, so linking them
-  // would create soft-404s. Category navigation lives in the breadcrumb + filter.
-  const tags = (p.tags || []).map(t =>
-    `          <span class="post-tag">${esc(t)}</span>`).join('\n');
+  const toc = p.toc.length ? `
+          <nav class="article-toc" aria-label="Table of contents">
+            <p class="article-aside-title">In This Article</p>
+${p.toc.map((t, i) => `            <a href="#${t.id}" class="article-toc-item${i === 0 ? ' active' : ''}">${esc(t.text)}</a>`).join('\n')}
+          </nav>` : '';
+
+  const heroMedia = p.cover ? `
+          <figure class="article-hero-media">
+            <img src="${p.cover}" alt="${esc(p.coverAlt || p.title)}" loading="eager" />
+          </figure>` : `
+          <figure class="article-hero-media article-hero-media--placeholder" aria-hidden="true">
+            <span class="article-hero-media-icon">&#10022;</span>
+          </figure>`;
+
+  const updatedMeta = (p.updated && p.updated !== p.date)
+    ? `\n          <span class="article-meta-sep" aria-hidden="true"></span>\n          <span class="article-meta-item">Updated ${fmtDateShort(p.updated)}</span>` : '';
 
   return head({
     title: `${p.title} — ${site.blogName} | ${site.brand}`,
@@ -283,93 +357,142 @@ ${p.faq.map(f => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join('\n
     ogImage: p.ogImageAbs,
     jsonld: postSchema(p),
   }) + `
-  <main>
+  <div class="reading-progress" aria-hidden="true"><span id="readingProgressBar"></span></div>
 
-    <header class="post-hero">
+  <main class="article">
+
+    <header class="article-hero">
       <div class="container">
-        <nav class="post-breadcrumb" aria-label="Breadcrumb">
-          <a href="/blog">Journal</a>
-          <span class="post-breadcrumb-sep">&#47;</span>
-          <a href="/blog/category/${p.category}">${esc(catName(p.category))}</a>
-          <span class="post-breadcrumb-sep">&#47;</span>
-          <span>${esc(p.title)}</span>
-        </nav>
+        <div class="article-hero-grid">
+          <div class="article-hero-text">
+            <nav class="article-breadcrumb" aria-label="Breadcrumb">
+              <a href="/blog">Journal</a>
+              <span class="article-breadcrumb-sep">&#47;</span>
+              <a href="/blog/category/${p.category}">${esc(catName(p.category))}</a>
+            </nav>
 
-        <span class="post-category-badge">${esc(catName(p.category))}</span>
+            <span class="article-badge">${esc(catName(p.category))}</span>
 
-        <h1 class="post-title">${esc(p.title)}</h1>
+            <h1 class="article-title">${esc(p.title)}</h1>
 
-        <p class="post-subtitle">${esc(p.excerpt)}</p>
+            <p class="article-dek">${esc(p.excerpt)}</p>
 
-        <div class="post-meta-bar">
-          <div class="post-meta-author post-meta-item">
-            <a href="/blog/author/${p.author}" style="display: flex; align-items: center; gap: 10px;">
-              <div class="post-meta-avatar">${esc(a.initials)}</div>
-              <span class="post-meta-author-name">${esc(a.name)}</span>
-            </a>
+            <div class="article-meta">
+              <a href="/blog/author/${p.author}" class="article-meta-author">
+                <span class="article-meta-avatar">${avatarInner(a)}</span>
+                <span class="article-meta-name">${esc(a.name)}</span>
+              </a>
+              <span class="article-meta-sep" aria-hidden="true"></span>
+              <span class="article-meta-item"><time datetime="${p.date}">${fmtDate(p.date)}</time></span>
+              <span class="article-meta-sep" aria-hidden="true"></span>
+              <span class="article-meta-item">${p.readingTime} min read</span>${updatedMeta}
+            </div>
           </div>
-          <span class="post-meta-sep" aria-hidden="true"></span>
-          <div class="post-meta-item"><time datetime="${p.date}">${fmtDate(p.date)}</time></div>
-          <span class="post-meta-sep" aria-hidden="true"></span>
-          <div class="post-meta-item">${p.readingTime} min read</div>
+${heroMedia}
         </div>
       </div>
     </header>
 
-    <div class="container">${cover}
+    <div class="article-paper">
+      <div class="article-shell">
+
+        <div class="article-share" aria-label="Share this article">
+          <span class="article-share-label">Share</span>
+          <a href="https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}" target="_blank" rel="noopener" class="article-share-btn" aria-label="Share on X">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener" class="article-share-btn" aria-label="Share on Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.08 24 18.09 24 12.07z"/></svg>
+          </a>
+          <a href="https://pinterest.com/pin/create/button/?url=${shareUrl}&description=${shareTitle}" target="_blank" rel="noopener" class="article-share-btn" aria-label="Save to Pinterest">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.16 9.42 7.62 11.17-.1-.95-.2-2.4.04-3.44.22-.93 1.4-5.96 1.4-5.96s-.36-.72-.36-1.78c0-1.66.97-2.9 2.17-2.9 1.02 0 1.52.77 1.52 1.69 0 1.03-.66 2.57-1 4-.28 1.2.6 2.17 1.78 2.17 2.14 0 3.78-2.25 3.78-5.5 0-2.88-2.07-4.89-5.02-4.89-3.42 0-5.43 2.56-5.43 5.21 0 1.03.4 2.14.89 2.74.1.12.11.22.08.34l-.33 1.37c-.05.22-.18.27-.4.16-1.5-.7-2.44-2.89-2.44-4.65 0-3.78 2.75-7.26 7.92-7.26 4.16 0 7.39 2.96 7.39 6.92 0 4.13-2.6 7.45-6.22 7.45-1.21 0-2.35-.63-2.74-1.38l-.75 2.84c-.27 1.04-1 2.35-1.49 3.15C9.57 23.81 10.76 24 12 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/></svg>
+          </a>
+          <a href="mailto:?subject=${shareTitle}&body=${shareUrl}" class="article-share-btn" aria-label="Share by email">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </a>
+          <button type="button" class="article-share-btn" data-copy-link aria-label="Copy link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          </button>
+        </div>
+
+        <article class="article-main">
+${takeaways}
+          <div class="article-body">
+${body}
+          </div>
+${faqBlock}
+
+          <aside class="article-author" aria-label="About the author">
+            <a href="/blog/author/${p.author}" class="article-author-avatar">${avatarInner(a)}</a>
+            <div class="article-author-info">
+              <p class="article-author-name">About ${esc(a.name)}</p>
+              <p class="article-author-bio">${esc(a.shortBio || a.bio)}</p>
+              <div class="article-creds">
+${credentials}
+              </div>
+              <a href="/blog/author/${p.author}" class="article-author-link">View all articles
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </aside>
+        </article>
+
+        <aside class="article-aside">
+${toc}
+          <div class="article-product">
+            <p class="article-aside-title light">Featured In</p>
+            <a href="${featuredProduct.url}" class="article-product-media">
+              ${featuredProduct.image ? `<img src="${featuredProduct.image}" alt="${esc(featuredProduct.imageAlt || featuredProduct.name)}" loading="lazy" />` : '<span aria-hidden="true">&#128241;</span>'}
+            </a>
+            <p class="article-product-name">${esc(featuredProduct.name)}</p>
+            <p class="article-product-price">${esc(featuredProduct.price)}</p>
+            <a href="${featuredProduct.url}" class="article-product-btn">Shop Now
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </aside>
+
+      </div>
     </div>
 
-    <div class="post-layout">
+    <section class="article-newsletter" aria-label="Newsletter signup">
+      <div class="container">
+        <h2 class="article-newsletter-title">Join the list for new stories &amp; 10% off</h2>
+        <p class="article-newsletter-sub">Care guides, early access, and a little inspiration from the saddle and the atelier.</p>
+        <form class="article-newsletter-form" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" aria-label="Email address" />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
 
-      <article class="post-content">
-${p.html}${faqBlock}
-
-        <div class="post-tags">
-          <span class="post-tags-label">Tags</span>
-${tags}
-        </div>
-      </article>
-
-      <aside class="post-sidebar">
-${toc}
-        <div class="sidebar-widget sidebar-product">
-          <p class="sidebar-widget-title">Featured In</p>
-          <div class="sidebar-product-image" aria-hidden="true">&#128241;</div>
-          <p class="sidebar-product-name">${esc(featuredProduct.name)}</p>
-          <p class="sidebar-product-price">${esc(featuredProduct.price)}</p>
-          <a href="${featuredProduct.url}" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.6875rem; padding: 12px 20px;">
-            Shop Now
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-
-        <div class="sidebar-widget">
-          <p class="sidebar-widget-title">Related Articles</p>
-          <div class="sidebar-related">
-${pool.map(r => `            <a href="${r.path}" class="sidebar-related-item">
-              <div class="sidebar-related-thumb" aria-hidden="true">&#10022;</div>
-              <span class="sidebar-related-title">${esc(r.title)}</span>
-            </a>`).join('\n')}
+    <section class="article-related container" aria-label="Continue reading">
+      <p class="article-related-eyebrow">Continue Reading</p>
+      <div class="article-related-grid">
+${pool.map(r => `        <a href="${r.path}" class="article-related-card">
+          <div class="article-related-thumb" aria-hidden="true"><span>&#10022;</span></div>
+          <div class="article-related-body">
+            <span class="article-related-cat">${esc(catName(r.category))}</span>
+            <h3 class="article-related-title">${esc(r.title)}</h3>
           </div>
-        </div>
-      </aside>
+        </a>`).join('\n')}
+      </div>
+    </section>
 
-    </div><!-- /post-layout -->
-
-    <nav class="post-nav" aria-label="Article navigation">
-${prev ? `      <a href="${prev.path}" class="post-nav-item prev">
-        <span class="post-nav-direction">
+    <nav class="article-pager container" aria-label="Article navigation">
+${prev ? `      <a href="${prev.path}" class="article-pager-item prev">
+        <span class="article-pager-dir">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          Previous Article
+          Previous
         </span>
-        <span class="post-nav-title">${esc(prev.title)}</span>
+        <span class="article-pager-title">${esc(prev.title)}</span>
       </a>` : '<span></span>'}
-${next ? `      <a href="${next.path}" class="post-nav-item next">
-        <span class="post-nav-direction">
-          Next Article
+${next ? `      <a href="${next.path}" class="article-pager-item next">
+        <span class="article-pager-dir">
+          Next
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </span>
-        <span class="post-nav-title">${esc(next.title)}</span>
+        <span class="article-pager-title">${esc(next.title)}</span>
       </a>` : '<span></span>'}
     </nav>
 
@@ -379,27 +502,26 @@ ${next ? `      <a href="${next.path}" class="post-nav-item next">
 
 /* ─────────────────────────── card + listing ─────────────────────────── */
 
-function card(p, delay = 1) {
-  return `        <article class="blog-card reveal reveal-delay-${delay}">
-          <a href="${p.path}" class="blog-card-link">
-            <div class="blog-card-image">
-              <div class="blog-card-image-placeholder"><span class="blog-card-image-icon">&#10022;</span></div>
-              <span class="blog-card-category-badge">${esc(catName(p.category))}</span>
+// Light "paper" article card used across the homepage, category, and author grids.
+// data-search powers the homepage client-side search (title + excerpt + category).
+function journalCard(p) {
+  const a = author(p.author);
+  const media = p.cover
+    ? `<img src="${p.cover}" alt="${esc(p.coverAlt || p.title)}" loading="lazy" />`
+    : '<span class="journal-card-icon" aria-hidden="true">&#10022;</span>';
+  return `        <article class="journal-card" data-search="${esc(`${p.title} ${p.excerpt} ${catName(p.category)} ${(p.tags || []).join(' ')}`.toLowerCase())}">
+          <a href="${p.path}" class="journal-card-link">
+            <div class="journal-card-media">
+              ${media}
+              <span class="journal-card-badge">${esc(catName(p.category))}</span>
             </div>
-            <div class="blog-card-body">
-              <p class="blog-card-meta">
-                <span class="blog-card-category">${esc(catName(p.category))}</span>
-                <span class="dot">&middot;</span>
-                <time datetime="${p.date}">${fmtDateShort(p.date)}</time>
-              </p>
-              <h3 class="blog-card-title">${esc(p.title)}</h3>
-              <p class="blog-card-excerpt">${esc(p.excerpt)}</p>
-              <div class="blog-card-footer">
-                <div class="blog-card-author">
-                  <div class="blog-card-avatar">${esc(author(p.author).initials)}</div>
-                  <span class="blog-card-author-name">${esc(author(p.author).name)}</span>
-                </div>
-                <span class="blog-card-arrow">Read
+            <div class="journal-card-body">
+              <p class="journal-card-meta"><span>${esc(catName(p.category))}</span><span class="dot">&middot;</span><time datetime="${p.date}">${fmtDateShort(p.date)}</time></p>
+              <h3 class="journal-card-title">${esc(p.title)}</h3>
+              <p class="journal-card-excerpt">${esc(p.excerpt)}</p>
+              <div class="journal-card-footer">
+                <span class="journal-card-author"><span class="journal-card-avatar">${avatarInner(a)}</span>${esc(a.name)}</span>
+                <span class="journal-card-read">${p.readingTime} min
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </span>
               </div>
@@ -408,16 +530,90 @@ function card(p, delay = 1) {
         </article>`;
 }
 
-function filterNav(activeSlug) {
-  const items = [`        <a href="/blog" class="blog-filter-btn${!activeSlug ? ' active' : ''}">All Articles</a>`]
+// Category filter pills (light). data-hide-on-search collapses them during search.
+function journalFilter(activeSlug) {
+  const items = [`        <a href="/blog" class="journal-filter-btn${!activeSlug ? ' active' : ''}">All Articles</a>`]
     .concat(Object.keys(categories).map(s =>
-      `        <a href="/blog/category/${s}" class="blog-filter-btn${activeSlug === s ? ' active' : ''}">${esc(catName(s))}</a>`));
-  return `      <nav class="blog-filter" aria-label="Filter by category">
+      `        <a href="/blog/category/${s}" class="journal-filter-btn${activeSlug === s ? ' active' : ''}">${esc(catName(s))}</a>`));
+  return `      <nav class="journal-filter" data-hide-on-search aria-label="Filter by category">
 ${items.join('\n')}
       </nav>`;
 }
 
+// Topic-hub grid — turns the flat feed into crawlable topic clusters (SEO siloing).
+function topicHubs(posts) {
+  const items = Object.keys(categories).map(slug => {
+    const count = posts.filter(p => p.category === slug).length;
+    if (!count) return '';
+    return `          <a href="/blog/category/${slug}" class="journal-hub">
+            <span class="journal-hub-icon" aria-hidden="true">${categoryIcons[slug] || '&#10022;'}</span>
+            <span class="journal-hub-name">${esc(catName(slug))}</span>
+            <span class="journal-hub-count">${count} ${count === 1 ? 'article' : 'articles'}</span>
+          </a>`;
+  }).filter(Boolean).join('\n');
+  return `      <section class="journal-hubs" data-hide-on-search aria-label="Explore by topic">
+        <p class="journal-section-eyebrow">Browse</p>
+        <h2 class="journal-hubs-title">Explore by Topic</h2>
+        <div class="journal-hubs-grid">
+${items}
+        </div>
+      </section>`;
+}
+
+// Shared dark newsletter band (reuses the article newsletter styling).
+function newsletterBand(title = 'Be the first to read every new story') {
+  return `    <section class="article-newsletter" aria-label="Newsletter signup">
+      <div class="container">
+        <h2 class="article-newsletter-title">${esc(title)}</h2>
+        <p class="article-newsletter-sub">Care guides, early access &amp; 10% off your first order — straight from the atelier.</p>
+        <form class="article-newsletter-form" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" aria-label="Email address" />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>`;
+}
+
+// Empty-state index — shown when there are no published posts yet (fresh blog,
+// before the content engine publishes its first article). Avoids referencing a
+// (non-existent) featured post.
+function renderEmptyIndex() {
+  return head({
+    title: `${site.blogName} — ${site.brand} | Horse Lifestyle & Gift Guides`,
+    description: 'The Equestrian Journal by Velvet & Valor: gift guides for horse lovers, equestrian lifestyle, leather care, and the craft behind every case.',
+    canonical: `${BASE}/blog`,
+    jsonld: [{
+      '@context': 'https://schema.org', '@type': 'Blog',
+      name: site.blogName, url: `${BASE}/blog`,
+      publisher: { '@type': 'Organization', name: site.org.name, url: site.org.url },
+    }],
+  }) + `
+  <main class="journal">
+
+    <section class="journal-hero">
+      <div class="container">
+        <h1 class="journal-hero-title">The Equestrian Journal</h1>
+        <p class="journal-hero-subtitle">
+          Stories from the saddle and the atelier — gift guides for horse lovers,
+          equestrian life, craft heritage, and the art of enduring luxury.
+        </p>
+      </div>
+    </section>
+
+    <div class="journal-paper">
+      <div class="container">
+        <p class="journal-search-empty" style="display:block;">New stories are on their way — subscribe below to be the first to read them.</p>
+      </div>
+    </div>
+
+${newsletterBand()}
+
+  </main>
+` + footer();
+}
+
 function renderIndex(posts) {
+  if (!posts.length) return renderEmptyIndex();
   const featured = posts[0];
   const rest = posts.slice(1);
   const a = author(featured.author);
@@ -438,67 +634,72 @@ function renderIndex(posts) {
     canonical: `${BASE}/blog`,
     jsonld: [blogLd],
   }) + `
-  <main>
+  <main class="journal">
 
-    <section class="blog-hero">
+    <section class="journal-hero">
       <div class="container">
-        <p class="blog-hero-eyebrow">Est. MMXXVI &mdash; Atelier</p>
-        <h1 class="blog-hero-title">The Equestrian Journal</h1>
-        <p class="blog-hero-subtitle">
+        <h1 class="journal-hero-title">The Equestrian Journal</h1>
+        <p class="journal-hero-subtitle">
           Stories from the saddle and the atelier — gift guides for horse lovers,
           equestrian life, craft heritage, and the art of enduring luxury.
         </p>
+        <div class="journal-search">
+          <svg class="journal-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="journalSearch" class="journal-search-input" placeholder="Search the Journal&hellip;" aria-label="Search the Journal" autocomplete="off" />
+        </div>
       </div>
     </section>
 
-    <div class="container">
-${filterNav(null)}
+    <div class="journal-paper">
+      <div class="container">
+
+${journalFilter(null)}
+
+        <p class="journal-search-empty" id="journalSearchEmpty" hidden>No stories match your search. Try another term.</p>
+
+        <section class="journal-featured" data-hide-on-search aria-label="Featured article">
+          <a href="${featured.path}" class="journal-featured-card" data-search="${esc(`${featured.title} ${featured.excerpt} ${catName(featured.category)}`.toLowerCase())}">
+            <div class="journal-featured-media">
+              ${featured.cover ? `<img src="${featured.cover}" alt="${esc(featured.coverAlt || featured.title)}" loading="eager" />` : '<span class="journal-card-icon" aria-hidden="true">&#10022;</span>'}
+              <span class="journal-featured-flag">&#9733; Featured</span>
+            </div>
+            <div class="journal-featured-body">
+              <p class="journal-featured-meta">${esc(catName(featured.category))} <span class="dot">&middot;</span> <time datetime="${featured.date}">${fmtDate(featured.date)}</time> <span class="dot">&middot;</span> ${featured.readingTime} min read</p>
+              <h2 class="journal-featured-title">${esc(featured.title)}</h2>
+              <p class="journal-featured-excerpt">${esc(featured.excerpt)}</p>
+              <div class="journal-featured-author">
+                <span class="journal-featured-avatar">${avatarInner(a)}</span>
+                <span class="journal-featured-author-info">
+                  <span class="journal-featured-author-name">${esc(a.name)}</span>
+                  <span class="journal-featured-author-role">${esc(a.role)}</span>
+                </span>
+              </div>
+              <span class="journal-featured-read">Read Article
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+        </section>
+
+        <section class="journal-grid-section">
+          <div class="journal-section-head" data-hide-on-search>
+            <div>
+              <p class="journal-section-eyebrow">From The Atelier</p>
+              <h2 class="journal-section-title">Recent Articles</h2>
+            </div>
+            <span class="journal-section-count">${posts.length} ${posts.length === 1 ? 'story' : 'stories'}</span>
+          </div>
+          <div class="journal-grid" id="journalGrid">
+${rest.map(journalCard).join('\n')}
+          </div>
+        </section>
+
+${topicHubs(posts)}
+
+      </div>
     </div>
 
-    <section class="blog-featured container reveal" aria-label="Featured article">
-      <a href="${featured.path}" class="blog-featured-card">
-        <div class="blog-featured-image">
-          <div class="blog-featured-image-placeholder">
-            <span class="blog-image-icon">&#10022;</span>
-            <span class="blog-image-label">${esc(featured.title)}</span>
-          </div>
-          <span class="blog-featured-tag">Featured</span>
-        </div>
-        <div class="blog-featured-body">
-          <p class="blog-featured-meta">
-            <span>${esc(catName(featured.category))}</span>
-            <span class="dot">&middot;</span>
-            <time datetime="${featured.date}">${fmtDate(featured.date)}</time>
-            <span class="dot">&middot;</span>
-            <span>${featured.readingTime} min read</span>
-          </p>
-          <h2 class="blog-featured-title">${esc(featured.title)}</h2>
-          <p class="blog-featured-excerpt">${esc(featured.excerpt)}</p>
-          <div class="blog-featured-author">
-            <div class="blog-featured-avatar">${esc(a.initials)}</div>
-            <div class="blog-featured-author-info">
-              <span class="blog-featured-author-name">${esc(a.name)}</span>
-              <span class="blog-featured-author-role">${esc(a.role)}</span>
-            </div>
-          </div>
-          <span class="blog-featured-read">Read Article
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </span>
-        </div>
-      </a>
-    </section>
-
-    <section class="blog-grid-section container">
-      <div class="blog-grid-header reveal">
-        <div>
-          <div class="section-label left">From The Atelier</div>
-          <h2 class="section-heading">Recent Articles</h2>
-        </div>
-      </div>
-      <div class="blog-grid">
-${rest.map((p, i) => card(p, (i % 3) + 1)).join('\n')}
-      </div>
-    </section>
+${newsletterBand()}
 
   </main>
 ` + footer();
@@ -523,25 +724,44 @@ function renderCategory(slug, posts) {
         { '@type': 'ListItem', position: 3, name, item: `${BASE}/blog/category/${slug}` },
       ],
     }] }) + `
-  <main>
+  <main class="journal">
 
-    <section class="blog-hero">
+    <section class="journal-hero">
       <div class="container">
-        <p class="blog-hero-eyebrow">The Equestrian Journal</p>
-        <h1 class="blog-hero-title">${esc(name)}</h1>
-        <p class="blog-hero-subtitle">Every ${esc(name)} story from the Velvet &amp; Valor atelier.</p>
+        <nav class="journal-hero-breadcrumb" aria-label="Breadcrumb">
+          <a href="/blog">Journal</a>
+          <span class="journal-hero-breadcrumb-sep">&#47;</span>
+          <span>${esc(name)}</span>
+        </nav>
+        <p class="journal-hero-eyebrow">The Equestrian Journal</p>
+        <h1 class="journal-hero-title">${esc(name)}</h1>
+        <p class="journal-hero-subtitle">Every ${esc(name)} story from the Velvet &amp; Valor atelier.</p>
       </div>
     </section>
 
-    <div class="container">
-${filterNav(slug)}
+    <div class="journal-paper">
+      <div class="container">
+
+${journalFilter(slug)}
+${categoryIntros[slug] ? `
+        <div class="journal-intro">
+          <p>${categoryIntros[slug]} <span class="journal-intro-count">${posts.length} ${posts.length === 1 ? 'article' : 'articles'} &middot; updated regularly.</span></p>
+        </div>` : ''}
+
+        <section class="journal-grid-section">
+          <div class="journal-section-head">
+            <h2 class="journal-section-title">All ${esc(name)} Stories</h2>
+            <span class="journal-section-count">Newest first</span>
+          </div>
+          <div class="journal-grid">
+${posts.map(journalCard).join('\n')}
+          </div>
+        </section>
+
+      </div>
     </div>
 
-    <section class="blog-grid-section container">
-      <div class="blog-grid">
-${posts.map((p, i) => card(p, (i % 3) + 1)).join('\n')}
-      </div>
-    </section>
+${newsletterBand('Never miss a ' + name + ' story')}
 
   </main>
 ` + footer();
@@ -568,25 +788,53 @@ function renderAuthor(slug, posts) {
         { '@type': 'ListItem', position: 2, name: site.blogName, item: `${BASE}/blog` },
         { '@type': 'ListItem', position: 3, name: a.name, item: `${BASE}/blog/author/${slug}` },
       ],
-    }] }) + `
-  <main>
+    }] }) + (() => {
+  const social = a.instagram
+    ? `          <a href="${a.instagram}" target="_blank" rel="noopener" class="journal-author-social"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor"/></svg>${esc(a.instagramHandle || 'Instagram')}</a>` : '';
+  return `
+  <main class="journal">
 
-    <section class="blog-hero">
+    <section class="journal-author-hero">
+      <div class="container journal-author-hero-inner">
+        <div class="journal-author-avatar">${avatarInner(a)}</div>
+        <div class="journal-author-intro">
+          <nav class="journal-hero-breadcrumb" aria-label="Breadcrumb">
+            <a href="/blog">Journal</a>
+            <span class="journal-hero-breadcrumb-sep">&#47;</span>
+            <span>${esc(a.name)}</span>
+          </nav>
+          <h1 class="journal-author-name">${esc(a.name)}</h1>
+          <p class="journal-author-role">${esc(a.role)}</p>
+          <p class="journal-author-bio">${esc(a.bio)}</p>
+          <div class="journal-author-socials">
+${social}
+            <a href="/contact" class="journal-author-social"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Contact</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="journal-paper">
       <div class="container">
-        <p class="blog-hero-eyebrow">Author</p>
-        <h1 class="blog-hero-title">${esc(a.name)}</h1>
-        <p class="blog-hero-subtitle">${esc(a.role)} &mdash; ${esc(a.bio)}</p>
-      </div>
-    </section>
 
-    <section class="blog-grid-section container">
-      <div class="blog-grid">
-${posts.map((p, i) => card(p, (i % 3) + 1)).join('\n')}
+        <section class="journal-grid-section">
+          <div class="journal-section-head">
+            <h2 class="journal-section-title">Articles by ${esc(a.name.split(' ')[0])}</h2>
+            <span class="journal-section-count">${posts.length} ${posts.length === 1 ? 'story' : 'stories'}</span>
+          </div>
+          <div class="journal-grid">
+${posts.map(journalCard).join('\n')}
+          </div>
+        </section>
+
       </div>
-    </section>
+    </div>
+
+${newsletterBand('Read more from the atelier')}
 
   </main>
 ` + footer();
+})();
 }
 
 /* ─────────────────────────── sitemap + rss ─────────────────────────── */
@@ -598,8 +846,10 @@ function buildSitemap(posts, today) {
 
   corePages.forEach(p => add(p.loc, today, p.changefreq, p.priority));
   add('/blog', today, 'weekly', '0.7');
-  Object.keys(categories).forEach(s => add(`/blog/category/${s}`, today, 'weekly', '0.5'));
-  Object.keys(authors).forEach(s => add(`/blog/author/${s}`, today, 'monthly', '0.4'));
+  // Only list category/author pages that actually have posts — main() generates
+  // them conditionally, so listing empty ones would put 404s in the sitemap.
+  Object.keys(categories).forEach(s => { if (posts.some(p => p.category === s)) add(`/blog/category/${s}`, today, 'weekly', '0.5'); });
+  Object.keys(authors).forEach(s => { if (posts.some(p => p.author === s)) add(`/blog/author/${s}`, today, 'monthly', '0.4'); });
   posts.forEach(p => add(`/blog/${p.slug}`, p.updated || p.date, 'monthly', '0.6'));
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -635,6 +885,8 @@ ${items}
 /* ─────────────────────────── main ─────────────────────────── */
 
 function loadPosts() {
+  // No posts dir yet (fresh blog before the content engine publishes anything).
+  if (!fs.existsSync(POSTS_DIR)) return [];
   const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
   const posts = files.map(file => {
     const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
@@ -664,6 +916,7 @@ function loadPosts() {
       ogImageAbs,
       featured: !!data.featured,
       faq: data.faq || null,
+      keyTakeaways: Array.isArray(data.keyTakeaways) ? data.keyTakeaways : null,
       readingTime: Math.max(1, Math.round(words / 200)),
       wordCount: words,
       html, toc,

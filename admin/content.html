@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Content Engine — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <style>
+    body { padding: 0; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px; }
+    .lede { color: var(--cream-muted); font-size: 0.9rem; margin-bottom: 20px; }
+
+    .caps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .cap { padding: 5px 12px; border-radius: 999px; font-size: 0.74rem; letter-spacing: 0.03em; border: 1px solid var(--gold-subtle); color: var(--cream-muted); }
+    .cap.on { border-color: rgba(34,170,170,0.5); color: var(--gold-pale); }
+    .cap.off { border-color: rgba(255,154,154,0.4); color: #ff9a9a; }
+    .cap b { font-weight: 600; }
+
+    .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--gold-subtle); margin-bottom: 22px; flex-wrap: wrap; }
+    .tab { padding: 10px 18px; color: var(--cream-muted); font-size: 0.9rem; border-bottom: 2px solid transparent; cursor: pointer; }
+    .tab.active { color: var(--cream); border-bottom-color: var(--gold-bright); }
+    .panel { display: none; } .panel.active { display: block; }
+
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .row .grow { flex: 1; min-width: 160px; }
+    select, input[type=text], input[type=number] {
+      padding: 9px 12px; background: var(--obsidian-mid); border: 1px solid var(--gold-muted);
+      border-radius: 8px; color: var(--cream); font-size: 0.88rem;
+    }
+    .btn { padding: 9px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--gold-muted); color: var(--cream-mid); background: transparent; transition: 0.2s var(--ease-out); }
+    .btn:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .btn.primary { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); font-weight: 600; }
+    .btn.primary:hover { background: var(--gold-bright); }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; color: var(--cream-muted); font-weight: 500; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 10px; border-bottom: 1px solid var(--gold-subtle); }
+    td { padding: 10px; border-bottom: 1px solid var(--gold-subtle); color: var(--cream-mid); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+    .ttl { color: var(--cream); font-weight: 500; }
+    .kw { color: var(--gold-pale); font-size: 0.8rem; }
+    .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; }
+    .pill.A { background: rgba(255,207,139,0.16); color: #ffcf8b; }
+    .pill.B { background: rgba(160,160,255,0.16); color: #b9b9ff; }
+    .pill.C { background: rgba(34,170,170,0.18); color: #7fd8d8; }
+    .pill.D { background: rgba(180,230,160,0.16); color: #b6e6a0; }
+    .st { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; }
+    .st.Outstanding { background: rgba(255,207,139,0.12); color: #ffcf8b; }
+    .st.Live { background: rgba(120,220,120,0.14); color: #9be29b; }
+    .st.Cancelled { background: rgba(160,160,160,0.12); color: var(--cream-muted); }
+    .num { font-variant-numeric: tabular-nums; }
+    .mini { padding: 5px 10px; border: 1px solid var(--gold-muted); border-radius: 7px; color: var(--cream-mid); font-size: 0.76rem; cursor: pointer; background: transparent; }
+    .mini:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .mini.danger:hover { border-color: #ff9a9a; color: #ff9a9a; }
+
+    .state { padding: 48px; text-align: center; color: var(--cream-muted); background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--obsidian-surface); border: 1px solid var(--gold-muted); color: var(--cream); padding: 12px 22px; border-radius: 10px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: 0.3s var(--ease-out); z-index: 50; max-width: 90vw; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .bar { height: 7px; background: var(--obsidian-surface); border-radius: 999px; overflow: hidden; min-width: 120px; }
+    .bar > i { display: block; height: 100%; background: var(--gold); transition: width 0.4s var(--ease-out); }
+    .stat { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 20px; }
+    .stat .c { background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 10px; padding: 14px 20px; }
+    .stat .c b { display: block; font-family: var(--font-serif); font-size: 1.5rem; color: var(--cream); }
+    .stat .c span { font-size: 0.75rem; color: var(--cream-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 60; padding: 24px; }
+    .modal-bg.show { display: flex; }
+    .modal { background: var(--obsidian-mid); border: 1px solid var(--gold-muted); border-radius: 14px; max-width: 760px; width: 100%; max-height: 86vh; overflow: auto; padding: 24px; }
+    .modal h3 { font-family: var(--font-serif); color: var(--cream); margin-bottom: 8px; }
+    .modal pre { white-space: pre-wrap; word-break: break-word; background: var(--obsidian-deep); border: 1px solid var(--gold-subtle); border-radius: 8px; padding: 14px; font-size: 0.8rem; color: var(--cream-mid); line-height: 1.55; }
+    @media (max-width: 720px) { .wrap { padding: 18px; } th.hide, td.hide { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+  <aside id="adminSidebar"></aside>
+  <main class="admin-main">
+  <div class="wrap">
+    <div class="page-head"><h1>Content Engine</h1></div>
+    <div class="lede">Research winnable keywords with Ahrefs, queue articles by cluster, and generate SEO-structured posts that publish straight into the Journal.</div>
+
+    <div class="caps" id="caps"></div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="plan">Content Plan</div>
+      <div class="tab" data-tab="research">Research</div>
+      <div class="tab" data-tab="pipeline">Pipeline</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <!-- PLAN -->
+    <section class="panel active" id="panel-plan">
+      <div class="stat" id="planStats"></div>
+      <div class="row">
+        <select id="fCluster" class="grow"><option value="">All clusters</option></select>
+        <select id="fStatus">
+          <option value="">All statuses</option>
+          <option>Outstanding</option><option>Live</option><option>Cancelled</option>
+        </select>
+        <button class="btn" id="btnSeed">Import plan seed</button>
+        <button class="btn" id="btnReloadPlan">Refresh</button>
+      </div>
+      <div id="planList"><div class="state">Loading plan…</div></div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="panel" id="panel-research">
+      <div class="row">
+        <select id="rCluster" class="grow"></select>
+        <input type="text" id="rSeeds" class="grow" placeholder="Optional seed keywords (comma-separated) — leave blank to derive from the cluster" />
+        <button class="btn primary" id="btnResearch">Research</button>
+      </div>
+      <div class="lede" id="rNote" style="margin:0 0 14px;"></div>
+      <div id="researchList"></div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="panel" id="panel-pipeline">
+      <div class="row"><button class="btn" id="btnReloadJobs">Refresh</button><span class="lede" style="margin:0;">Generation jobs, newest first. Auto-refreshes while this tab is open.</span></div>
+      <div id="jobsList"><div class="state">No generation jobs yet.</div></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="panel-settings">
+      <div class="row"><label style="color:var(--cream-mid);min-width:160px;">Auto-publish cron</label>
+        <select id="sPaused"><option value="true">Paused</option><option value="false">Active</option></select></div>
+      <div class="row"><label style="color:var(--cream-mid);min-width:160px;">Batch size / day</label>
+        <input type="number" id="sBatch" min="0" max="10" style="width:90px;" /></div>
+      <div class="row"><label style="color:var(--cream-mid);min-width:160px;">Cadence (posts/day)</label>
+        <input type="number" id="sCadence" min="1" max="6" style="width:90px;" /></div>
+      <div class="row"><button class="btn primary" id="btnSaveSettings">Save settings</button></div>
+      <div class="lede">The unattended cron is a later phase — these settings are stored and ready. Use “Generate” on a plan row to create an article now.</div>
+    </section>
+  </div>
+  </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+  <script>
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    let CFG = { clusters: [], settings: {}, capabilities: {} };
+    let PLAN = [];
+    const clusterCode = (id) => (CFG.clusters.find((c) => c.id === id) || {}).code || '';
+    const clusterName = (id) => (CFG.clusters.find((c) => c.id === id) || {}).name || id;
+
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000); }
+    const api = {
+      get: (op) => fetch('/api/admin/engine?op=' + op).then((r) => r.json()),
+      post: (body) => fetch('/api/admin/engine', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(async (r) => ({ ok: r.ok, status: r.status, data: await r.json().catch(() => ({})) })),
+    };
+
+    async function guard() {
+      try { const r = await fetch('/api/admin/me'); if (r.status === 401) { location.href = '/admin/login'; return false; }
+        const me = await r.json(); if (me.role === 'staff') { location.href = '/admin/dashboard'; return false; } return true;
+      } catch { location.href = '/admin/login'; return false; }
+    }
+
+    function renderCaps() {
+      const c = CFG.capabilities || {};
+      const items = [['KV store', c.kv], ['Ahrefs', c.ahrefs], ['Claude (generation)', c.anthropic], ['GitHub (publish)', c.github]];
+      document.getElementById('caps').innerHTML = items.map(([label, on]) =>
+        `<span class="cap ${on ? 'on' : 'off'}"><b>${esc(label)}</b> · ${on ? 'connected' : 'not set'}</span>`).join('');
+    }
+
+    /* ── Plan ── */
+    function planStats() {
+      const out = PLAN.filter((p) => p.status === 'Outstanding').length;
+      const live = PLAN.filter((p) => p.status === 'Live').length;
+      document.getElementById('planStats').innerHTML =
+        `<div class="c"><b>${PLAN.length}</b><span>Total</span></div>` +
+        `<div class="c"><b>${out}</b><span>Outstanding</span></div>` +
+        `<div class="c"><b>${live}</b><span>Live</span></div>`;
+    }
+    function renderPlan() {
+      planStats();
+      const fc = document.getElementById('fCluster').value, fs = document.getElementById('fStatus').value;
+      const rows = PLAN.filter((p) => (!fc || p.cluster === fc) && (!fs || p.status === fs));
+      const el = document.getElementById('planList');
+      if (!rows.length) { el.innerHTML = '<div class="state">No plan items. Use “Import plan seed” to load the researched plan.</div>'; return; }
+      el.innerHTML =
+        `<div class="bulkbar" id="bulkbar" style="display:none; gap:12px; align-items:center; margin-bottom:14px; padding:10px 14px; background:var(--obsidian-mid); border:1px solid var(--gold-subtle); border-radius:10px;">
+           <span id="bulkCount" class="kw"></span>
+           <button class="btn" id="bulkGen">Generate &amp; Publish selected</button>
+           <button class="btn" id="bulkDel" style="border-color:rgba(255,154,154,0.45); color:#ff9a9a;">Delete selected</button>
+           <button class="mini" id="bulkClear">Clear selection</button>
+         </div>` +
+        '<table><thead><tr><th style="width:26px;"><input type="checkbox" id="planSelAll" title="Select all"></th><th>Cluster</th><th>Article</th><th class="hide">Keyword</th><th class="num">Vol</th><th class="num hide">KD</th><th>Status</th><th></th></tr></thead><tbody>' +
+        rows.map((p) => {
+          const code = clusterCode(p.cluster);
+          const canGen = p.status !== 'Live';
+          return `<tr>
+            <td><input type="checkbox" class="planSel" data-id="${esc(p.id)}" data-live="${p.status === 'Live' ? '1' : '0'}"></td>
+            <td><span class="pill ${code}">${esc(clusterName(p.cluster))}</span></td>
+            <td><div class="ttl">${esc(p.title)}</div><div class="kw">${esc(p.priority || '')}${p.optional ? ' · optional' : ''}${p.brandPiece ? ' · brand' : ''}</div></td>
+            <td class="hide"><span class="kw">${esc(p.targetKeyword || '—')}</span></td>
+            <td class="num">${p.volume ? p.volume.toLocaleString() : '—'}</td>
+            <td class="num hide">${p.kd == null ? '—' : p.kd}</td>
+            <td><span class="st ${esc(p.status)}">${esc(p.status)}</span>${p.publishedDate ? '<br><span class="kw">' + esc(p.publishedDate) + '</span>' : ''}</td>
+            <td style="white-space:nowrap;">
+              ${canGen ? `<button class="mini" data-publish="${esc(p.id)}">Generate&nbsp;&amp;&nbsp;Publish</button>` : `<a class="mini" href="/blog/${esc(p.id)}" target="_blank">View</a> <button class="mini" data-regen="${esc(p.id)}" title="Re-run generation and overwrite the published article">Regenerate</button>`}
+              <button class="mini danger" data-delete="${esc(p.id)}" title="Remove from plan">Delete</button>
+            </td></tr>`;
+        }).join('') + '</tbody></table>';
+      const selAll = document.getElementById('planSelAll');
+      selAll.onchange = () => { document.querySelectorAll('.planSel').forEach((c) => { c.checked = selAll.checked; }); updateBulk(); };
+      document.getElementById('bulkClear').onclick = () => { document.querySelectorAll('.planSel').forEach((c) => { c.checked = false; }); selAll.checked = false; updateBulk(); };
+      document.getElementById('bulkDel').onclick = bulkDelete;
+      document.getElementById('bulkGen').onclick = bulkGenerate;
+      updateBulk();
+    }
+    function selectedIds() { return [...document.querySelectorAll('.planSel:checked')].map((c) => c.dataset.id); }
+    function updateBulk() {
+      const bar = document.getElementById('bulkbar'); if (!bar) return;
+      const n = document.querySelectorAll('.planSel:checked').length;
+      bar.style.display = n ? 'flex' : 'none';
+      const c = document.getElementById('bulkCount'); if (c) c.textContent = n + ' selected';
+    }
+    async function bulkDelete() {
+      const ids = selectedIds(); if (!ids.length) return;
+      if (!confirm(`Delete ${ids.length} item(s) from the plan permanently? (Does not affect anything already published.)`)) return;
+      const r = await api.post({ op: 'plan-delete', ids });
+      if (r.ok) { toast(`Deleted ${r.data.deleted} from plan`); loadPlan(); } else toast(r.data.error || 'Failed');
+    }
+    async function bulkGenerate() {
+      if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+      const ids = [...document.querySelectorAll('.planSel:checked')].filter((b) => b.dataset.live !== '1').map((b) => b.dataset.id);
+      if (!ids.length) return toast('Select at least one not-yet-published article.');
+      if (!confirm(`Generate & publish ${ids.length} article(s)? They run one at a time and can take ~1 min each.`)) return;
+      const gen = document.getElementById('bulkGen'), del = document.getElementById('bulkDel');
+      gen.disabled = del.disabled = true; let ok = 0, fail = 0;
+      for (let i = 0; i < ids.length; i++) {
+        gen.textContent = `Publishing ${i + 1}/${ids.length}…`;
+        const r = await api.post({ op: 'generate', id: ids[i], publish: true });
+        if (r.ok) ok++; else fail++;
+      }
+      gen.disabled = del.disabled = false; gen.textContent = 'Generate & Publish selected';
+      toast(`Done: ${ok} published${fail ? `, ${fail} failed` : ''}`); loadPlan(); loadJobs();
+    }
+    async function loadPlan() { const d = await api.get('plan'); PLAN = d.plan || []; renderPlan(); }
+
+    document.getElementById('planList').addEventListener('click', async (e) => {
+      const pub = e.target.closest('[data-publish]'), regen = e.target.closest('[data-regen]'), del = e.target.closest('[data-delete]');
+      if (pub) { if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+        if (!confirm('Generate and publish this article to the live Journal?')) return; return generate(pub.dataset.publish, true, pub); }
+      if (regen) { if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+        if (!confirm('Regenerate this article from scratch and OVERWRITE the published version? (New body, links, and cover image.)')) return; return generate(regen.dataset.regen, true, regen); }
+      if (del) { if (!confirm('Delete this article from the plan permanently? (Does not affect anything already published.)')) return;
+        const r = await api.post({ op: 'plan-delete', id: del.dataset.delete });
+        if (r.ok) { toast('Deleted from plan'); loadPlan(); } else toast(r.data.error || 'Failed'); }
+    });
+    document.getElementById('planList').addEventListener('change', (e) => { if (e.target.classList && e.target.classList.contains('planSel')) updateBulk(); });
+
+    async function generate(id, publish, btn) {
+      if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+      const old = btn.textContent; btn.disabled = true; btn.textContent = 'Publishing…';
+      toast('Generating + publishing — this can take up to a minute…');
+      const r = await api.post({ op: 'generate', id, publish: true });
+      btn.disabled = false; btn.textContent = old;
+      if (!r.ok) return toast(r.data.error || 'Generation failed');
+      const g = r.data.gate || {};
+      toast('Published ✓ ' + (g.ok ? '(passed quality gate)' : '(shipped with gate warnings)')); loadPlan(); loadJobs();
+    }
+    document.getElementById('modalBg').addEventListener('click', (e) => { if (e.target.id === 'modalBg') e.currentTarget.classList.remove('show'); });
+
+    document.getElementById('btnSeed').onclick = async () => {
+      const r = await api.post({ op: 'seed' });
+      if (r.ok) { toast(`Seed imported: ${r.data.added} added, ${r.data.skipped} already present`); loadPlan(); } else toast(r.data.error || 'Seed failed');
+    };
+    document.getElementById('btnReloadPlan').onclick = loadPlan;
+    document.getElementById('fCluster').onchange = renderPlan;
+    document.getElementById('fStatus').onchange = renderPlan;
+
+    /* ── Research ── */
+    document.getElementById('btnResearch').onclick = async () => {
+      if (!CFG.capabilities.ahrefs) return toast('Ahrefs not configured (AHREFS_API_KEY).');
+      const cluster = document.getElementById('rCluster').value;
+      const seeds = document.getElementById('rSeeds').value.split(',').map((s) => s.trim()).filter(Boolean);
+      const btn = document.getElementById('btnResearch'); btn.disabled = true; btn.textContent = 'Researching…';
+      document.getElementById('researchList').innerHTML = '<div class="state">Querying Ahrefs…</div>';
+      const r = await api.post({ op: 'research', cluster, seeds });
+      btn.disabled = false; btn.textContent = 'Research';
+      if (!r.ok) { document.getElementById('researchList').innerHTML = '<div class="state">' + esc(r.data.error || 'Research failed') + '</div>'; return; }
+      renderResearch(r.data);
+    };
+    let CANDS = [];
+    function renderResearch(d) {
+      CANDS = d.candidates || [];
+      document.getElementById('rNote').textContent = `Seeds: ${(d.seeds || []).join(', ') || '—'} · ${CANDS.length} new candidates (already-planned keywords removed).`;
+      const el = document.getElementById('researchList');
+      if (!CANDS.length) { el.innerHTML = '<div class="state">No new candidates — this cluster may already be well covered.</div>'; return; }
+      el.innerHTML = '<div class="row"><button class="btn primary" id="btnAddSel">Add selected to plan</button></div>' +
+        '<table><thead><tr><th><input type="checkbox" id="selAll"></th><th>Suggested title</th><th>Keyword</th><th class="num">Vol</th><th class="num">KD</th><th class="hide">Intent</th></tr></thead><tbody>' +
+        CANDS.map((c, i) => `<tr>
+          <td><input type="checkbox" class="selBox" data-i="${i}"></td>
+          <td><input type="text" class="rTitle" data-i="${i}" value="${esc(c.articleTitle)}" style="width:100%;"></td>
+          <td><span class="kw">${esc(c.targetKeyword)}</span></td>
+          <td class="num">${(c.volume || 0).toLocaleString()}</td>
+          <td class="num">${c.kd == null ? '—' : c.kd}</td>
+          <td class="hide">${esc(c.intent || '')}</td></tr>`).join('') + '</tbody></table>';
+      document.getElementById('selAll').onchange = (e) => document.querySelectorAll('.selBox').forEach((b) => { b.checked = e.target.checked; });
+      document.getElementById('btnAddSel').onclick = addSelected;
+    }
+    async function addSelected() {
+      const picks = [...document.querySelectorAll('.selBox:checked')].map((b) => {
+        const i = +b.dataset.i; const c = CANDS[i];
+        const title = (document.querySelector(`.rTitle[data-i="${i}"]`) || {}).value || c.articleTitle;
+        return { title, cluster: c.cluster, targetKeyword: c.targetKeyword, volume: c.volume, kd: c.kd, intent: c.intent };
+      });
+      if (!picks.length) return toast('Select at least one keyword.');
+      const r = await api.post({ op: 'plan-add', items: picks });
+      if (r.ok) { toast(`Added ${r.data.added} to the plan`); loadPlan(); document.getElementById('btnReloadPlan').click(); } else toast(r.data.error || 'Failed');
+    }
+
+    /* ── Pipeline ── */
+    let jobsTimer = null;
+    function renderJobs(jobs) {
+      const el = document.getElementById('jobsList');
+      if (!jobs.length) { el.innerHTML = '<div class="state">No generation jobs yet.</div>'; return; }
+      el.innerHTML = '<table><thead><tr><th>Article</th><th>Stage</th><th>Progress</th><th>Status</th><th class="hide">When</th></tr></thead><tbody>' +
+        jobs.map((j) => `<tr>
+          <td><div class="ttl">${esc(j.title || j.slug)}</div>${j.commit ? `<a class="kw" href="${esc(j.commit)}" target="_blank">commit ↗</a>` : ''}${j.error ? `<div class="kw" style="color:#ff9a9a">${esc(j.error)}</div>` : ''}</td>
+          <td>${esc(j.stage || '')}</td>
+          <td><div class="bar"><i style="width:${j.progress || 0}%"></i></div></td>
+          <td><span class="st ${j.status === 'done' ? 'Live' : j.status === 'failed' ? 'Cancelled' : 'Outstanding'}">${esc(j.status || '')}</span></td>
+          <td class="hide kw">${j.startedAt ? new Date(j.startedAt).toLocaleString() : ''}</td></tr>`).join('') + '</tbody></table>';
+    }
+    async function loadJobs() { const d = await api.get('jobs'); renderJobs(d.jobs || []); }
+
+    /* ── Settings ── */
+    function fillSettings() {
+      const s = CFG.settings || {};
+      document.getElementById('sPaused').value = String(s.paused !== false);
+      document.getElementById('sBatch').value = s.batchSize != null ? s.batchSize : 1;
+      document.getElementById('sCadence').value = s.cadencePerDay || 2;
+    }
+    document.getElementById('btnSaveSettings').onclick = async () => {
+      const patch = { paused: document.getElementById('sPaused').value === 'true', batchSize: +document.getElementById('sBatch').value, cadencePerDay: +document.getElementById('sCadence').value };
+      const r = await api.post({ op: 'settings', patch });
+      if (r.ok) { CFG.settings = r.data; toast('Settings saved'); } else toast(r.data.error || 'Failed');
+    };
+    document.getElementById('btnReloadJobs').onclick = loadJobs;
+
+    /* ── Tabs ── */
+    document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
+      document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach((x) => x.classList.remove('active'));
+      t.classList.add('active'); document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+      if (t.dataset.tab === 'pipeline') { loadJobs(); clearInterval(jobsTimer); jobsTimer = setInterval(loadJobs, 4000); }
+      else { clearInterval(jobsTimer); }
+    });
+
+    /* ── Boot ── */
+    (async () => {
+      if (!(await guard())) return;
+      CFG = await api.get('config');
+      renderCaps(); fillSettings();
+      const opts = CFG.clusters.map((c) => `<option value="${c.id}">${esc(c.code)} · ${esc(c.name)}</option>`).join('');
+      document.getElementById('fCluster').insertAdjacentHTML('beforeend', opts);
+      document.getElementById('rCluster').innerHTML = opts;
+      loadPlan();
+    })();
+  </script>
+  <script src="/js/admin-nav.js"></script>
+</body>
+</html>

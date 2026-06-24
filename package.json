@@ -2,7 +2,6 @@
   "name": "velvet-and-valor",
   "private": true,
   "scripts": {
-    "build": "node scripts/build-all.js",
     "build:blog": "node scripts/build-blog.js",
     "build:models": "node scripts/build-models.js",
     "build:collections": "node scripts/build-collections.js",

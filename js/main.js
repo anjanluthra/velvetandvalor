@@ -205,57 +205,151 @@ window.addEventListener('unhandledrejection', function (e) {
 })();
 
 
-/* ── Mega-menu for iPhone Cases ────────────────────────────────── */
-(function initMegaMenu() {
+/* ── Header dropdowns: iPhone Cases mega-menu + Gifts dropdown ──── */
+(function initNavDropdowns() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
-  const trigger = nav.querySelector('.nav-links a[href*="iphone-cases"], .nav-links a[href*="collections"]');
-  if (!trigger) return;
-  const li = trigger.closest('li') || trigger.parentElement;
-  li.classList.add('has-mega');
 
-  const series = [
-    { label: 'iPhone 17', q: 'iphone-17' },
-    { label: 'iPhone 16', q: 'iphone-16' },
-    { label: 'iPhone 15', q: 'iphone-15' },
-    { label: 'iPhone 14', q: 'iphone-14' },
+  const SERIES = [
+    { name: 'iPhone 17', models: [['iPhone 17', 'iphone-17'], ['iPhone 17 Air', 'iphone-17-air'], ['iPhone 17 Pro', 'iphone-17-pro'], ['iPhone 17 Pro Max', 'iphone-17-pro-max']] },
+    { name: 'iPhone 16', models: [['iPhone 16', 'iphone-16'], ['iPhone 16 Pro', 'iphone-16-pro'], ['iPhone 16 Pro Max', 'iphone-16-pro-max'], ['iPhone 16 Plus', 'iphone-16-plus']] },
+    { name: 'iPhone 15', models: [['iPhone 15', 'iphone-15'], ['iPhone 15 Pro', 'iphone-15-pro'], ['iPhone 15 Pro Max', 'iphone-15-pro-max'], ['iPhone 15 Plus', 'iphone-15-plus']] },
+    { name: 'iPhone 14', models: [['iPhone 14', 'iphone-14'], ['iPhone 14 Pro', 'iphone-14-pro'], ['iPhone 14 Pro Max', 'iphone-14-pro-max'], ['iPhone 14 Plus', 'iphone-14-plus']] },
+    { name: 'iPhone 13', models: [['iPhone 13', 'iphone-13'], ['iPhone 13 mini', 'iphone-13-mini'], ['iPhone 13 Pro', 'iphone-13-pro'], ['iPhone 13 Pro Max', 'iphone-13-pro-max']] },
+    { name: 'iPhone 12', models: [['iPhone 12', 'iphone-12'], ['iPhone 12 mini', 'iphone-12-mini'], ['iPhone 12 Pro', 'iphone-12-pro'], ['iPhone 12 Pro Max', 'iphone-12-pro-max']] },
   ];
-  const collections = [
-    { name: 'Noble Steed', sub: 'Artist equestrian cases', href: '/collections/iphone-cases#noble-steed-collection' },
-    { name: "The Rider's Motto", sub: 'Quote editions', href: '/collections/iphone-cases#riders-motto-heading' },
+  const GIFTS = [
+    ['Gifts for Horse Lovers', '/gifts/horse-lovers'],
+    ['Horse Gifts for Girls', '/gifts/horse-gifts-for-girls'],
+    ['Equestrian Gifts', '/gifts/equestrian-gifts'],
+    ['Luxury Equestrian Gifts', '/gifts/luxury-equestrian-gifts'],
+    ['Personalized Horse Gifts', '/gifts/personalized-horse-gifts'],
+    ['Year of the Horse 2026', '/gifts/year-of-the-horse'],
   ];
-  const panel = document.createElement('div');
-  panel.className = 'mega-menu';
-  panel.setAttribute('role', 'region');
-  panel.setAttribute('aria-label', 'iPhone cases menu');
-  panel.innerHTML = `
-    <div class="mega-inner">
-      <div class="mega-col">
-        <p class="mega-head">Shop by model</p>
-        ${series.map(s => `<a class="mega-link" href="/collections/iphone-cases?model=${s.q}">${s.label}</a>`).join('')}
+
+  function attach(trigger, variant, html, label) {
+    if (!trigger) return;
+    const li = trigger.closest('li') || trigger.parentElement;
+    li.classList.add('has-mega');
+    const panel = document.createElement('div');
+    panel.className = 'mega-menu ' + variant;
+    panel.setAttribute('role', 'region');
+    panel.setAttribute('aria-label', label);
+    panel.innerHTML = html;
+    li.appendChild(panel);
+
+    // Mous-style left rail: hovering a rail item swaps the right panel.
+    const railItems = panel.querySelectorAll('.mega-rail-item');
+    if (railItems.length) {
+      const subPanels = panel.querySelectorAll('.mega-panel');
+      railItems.forEach((item) => {
+        const activate = () => {
+          railItems.forEach((r) => r.classList.toggle('active', r === item));
+          subPanels.forEach((p) => p.classList.toggle('active', p.dataset.panel === item.dataset.panel));
+        };
+        item.addEventListener('mouseenter', activate);
+        item.addEventListener('focus', activate);
+      });
+    }
+
+    const isFixed = variant === 'mega-menu-cases';
+    let hideT;
+    const open = () => {
+      clearTimeout(hideT);
+      if (!li.dataset.imgsLoaded) {
+        panel.querySelectorAll('img[data-src]').forEach(function (im) { im.src = im.getAttribute('data-src'); });
+        li.dataset.imgsLoaded = '1';
+      }
+      if (isFixed) panel.style.top = (nav.getBoundingClientRect().bottom + 10) + 'px';
+      li.classList.add('mega-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => { hideT = setTimeout(() => { li.classList.remove('mega-open'); trigger.setAttribute('aria-expanded', 'false'); }, 120); };
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+    li.addEventListener('mouseenter', open);
+    li.addEventListener('mouseleave', close);
+    trigger.addEventListener('focus', open);
+    li.addEventListener('focusout', (e) => { if (!li.contains(e.relatedTarget)) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') li.classList.remove('mega-open'); });
+  }
+
+  const phoneIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></svg>';
+  const collIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>';
+  const customIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 13.8 10.2 21 12 13.8 13.8 12 21 10.2 13.8 3 12 10.2 10.2Z"/></svg>';
+  const casesTrigger = nav.querySelector('.nav-links a[href*="iphone-cases"]');
+  attach(casesTrigger, 'mega-menu-cases', `
+    <div class="mega-inner mega-cases">
+      <div class="mega-rail">
+        <button class="mega-rail-item active" data-panel="iphone" type="button">
+          <span class="mega-rail-ico">${phoneIco}</span><span class="mega-rail-label">Shop by iPhone</span><span class="mega-rail-arrow">&rsaquo;</span>
+        </button>
+        <button class="mega-rail-item" data-panel="collection" type="button">
+          <span class="mega-rail-ico">${collIco}</span><span class="mega-rail-label">Shop by Collection</span><span class="mega-rail-arrow">&rsaquo;</span>
+        </button>
+        <button class="mega-rail-item" data-panel="custom" type="button">
+          <span class="mega-rail-ico">${customIco}</span><span class="mega-rail-label">Custom Portrait</span><span class="mega-rail-arrow">&rsaquo;</span>
+        </button>
       </div>
-      <div class="mega-col">
-        <p class="mega-head">Shop by collection</p>
-        ${collections.map(c => `<a class="mega-collection" href="${c.href}"><span class="mega-collection-name">${c.name}</span><span class="mega-collection-sub">${c.sub}</span></a>`).join('')}
+      <div class="mega-panels">
+        <div class="mega-panel active" data-panel="iphone">
+          <div class="mega-series-grid">
+            ${SERIES.map(s => `<div class="mega-series">
+              <p class="mega-series-name">${s.name}</p>
+              ${s.models.map(m => `<a class="mega-link" href="/collections/${m[1]}-cases">${m[0]}</a>`).join('')}
+            </div>`).join('')}
+          </div>
+          <a class="mega-seeall" href="/collections/iphone-cases">See all iPhone cases &rarr;</a>
+        </div>
+        <div class="mega-panel" data-panel="collection">
+          <div class="mega-split">
+            <div class="mega-coll-stack">
+              <a class="mega-coll-card" href="/collections/noble-steed">
+                <span class="mega-coll-name">Noble Steed</span>
+                <span class="mega-coll-sub">Artist equestrian portraits &middot; 10 colourways</span>
+              </a>
+              <a class="mega-coll-card" href="/collections/riders-motto">
+                <span class="mega-coll-name">The Rider&rsquo;s Motto</span>
+                <span class="mega-coll-sub">Quote editions &middot; 7 colourways</span>
+              </a>
+            </div>
+            <a class="mega-img-fill" href="/collections/iphone-cases" aria-label="Shop all iPhone cases">
+              <img data-src="/images/cavalry-lifestyle.jpg" alt="Velvet &amp; Valor equestrian lifestyle" />
+            </a>
+          </div>
+        </div>
+        <div class="mega-panel" data-panel="custom">
+          <div class="mega-split">
+            <a class="mega-custom" href="/custom">
+              <span class="mega-coll-kicker">Most popular &middot; Bespoke</span>
+              <span class="mega-custom-title">Your Horse. Your Custom Case.</span>
+              <span class="mega-custom-text">Send us a photo and our artists turn your own horse into a one-of-one portrait case, made to order for any iPhone.</span>
+              <span class="mega-custom-cta">Create your custom case &rarr;</span>
+            </a>
+            <a class="mega-img-fill" href="/custom" aria-label="Create your custom case">
+              <img data-src="/images/custom-case-prompt.jpg" alt="Custom horse portrait phone case with monogram" />
+            </a>
+          </div>
+        </div>
       </div>
-      <a class="mega-feature" href="/custom">
-        <span class="mega-feature-kicker">Make it yours</span>
-        <span class="mega-feature-title">Custom horse portrait</span>
-        <span class="mega-feature-cta">Start a portrait →</span>
+    </div>`, 'iPhone cases menu');
+
+  const giftsTrigger = nav.querySelector('.nav-links a[href$="/gifts"]');
+  attach(giftsTrigger, 'mega-menu-gifts', `
+    <div class="mega-inner mega-gifts">
+      <div class="mega-gifts-list">
+        <p class="mega-head">Gift guides</p>
+        ${GIFTS.map(g => `<a class="mega-link" href="${g[1]}">${g[0]}</a>`).join('')}
+        <a class="mega-link mega-link-all" href="/gifts">All gifts &rarr;</a>
+      </div>
+      <a class="mega-img-fill mega-gifts-img" href="/gifts/year-of-the-horse" aria-label="Year of the Horse 2026 gift edit">
+        <img data-src="/images/cavalry-hero.jpg" alt="Velvet &amp; Valor horse iPhone case, gift-ready" />
+        <span class="mega-img-cap">
+          <span class="mega-img-cap-kicker">2026 &middot; Fire Horse</span>
+          <span class="mega-img-cap-title">Year of the Horse edit &rarr;</span>
+        </span>
       </a>
-    </div>`;
-  li.appendChild(panel);
-
-  let hideT;
-  const open = () => { clearTimeout(hideT); li.classList.add('mega-open'); trigger.setAttribute('aria-expanded', 'true'); };
-  const close = () => { hideT = setTimeout(() => { li.classList.remove('mega-open'); trigger.setAttribute('aria-expanded', 'false'); }, 120); };
-  trigger.setAttribute('aria-haspopup', 'true');
-  trigger.setAttribute('aria-expanded', 'false');
-  li.addEventListener('mouseenter', open);
-  li.addEventListener('mouseleave', close);
-  trigger.addEventListener('focus', open);
-  li.addEventListener('focusout', (e) => { if (!li.contains(e.relatedTarget)) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { li.classList.remove('mega-open'); } });
+    </div>`, 'Gifts menu');
 })();
 
 

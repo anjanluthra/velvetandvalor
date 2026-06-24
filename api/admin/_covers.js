@@ -84,7 +84,7 @@ function patchFrontmatter(raw, coverPath, alt) {
  * (never throws — publishing must proceed even if image generation fails).
  */
 async function generateCover({ title, excerpt, category }) {
-  if (!isConfigured()) return null;
+  if (!isConfigured()) return { error: 'GEMINI_API_KEY not set' };
   try {
     const parts = [];
     const ref = referencePart();
@@ -119,20 +119,27 @@ async function generateCover({ title, excerpt, category }) {
       clearTimeout(timer);
     }
     if (!r.ok) {
-      console.warn('covers: Gemini', r.status, (await r.text().catch(() => '')).slice(0, 200));
-      return null;
+      const bodyText = (await r.text().catch(() => '')).slice(0, 300);
+      console.warn('covers: Gemini', r.status, bodyText);
+      return { error: `Gemini HTTP ${r.status}${bodyText ? ': ' + bodyText : ''}` };
     }
     const data = await r.json();
     const out = (((data.candidates || [])[0] || {}).content || {}).parts || [];
     const img = out.find((p) => (p.inlineData && p.inlineData.data) || (p.inline_data && p.inline_data.data));
-    if (!img) return null;
+    if (!img) {
+      // No image part — usually a safety block or a text-only response. Surface why.
+      const finish = ((data.candidates || [])[0] || {}).finishReason;
+      const block = (data.promptFeedback || {}).blockReason;
+      return { error: `Gemini returned no image${finish ? ` (finishReason=${finish})` : ''}${block ? ` (blocked=${block})` : ''}` };
+    }
     const inline = img.inlineData || img.inline_data;
     const mimeType = inline.mimeType || inline.mime_type || 'image/png';
     const ext = mimeType.split('/')[1].replace('jpeg', 'jpg');
     return { data: inline.data, ext, mimeType };
   } catch (e) {
-    console.warn('covers: error', e && e.message);
-    return null;
+    const reason = (e && e.name === 'AbortError') ? `timed out after ${TIMEOUT_MS}ms` : (e && e.message) || 'unknown error';
+    console.warn('covers: error', reason);
+    return { error: reason };
   }
 }
 

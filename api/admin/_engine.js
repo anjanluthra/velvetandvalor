@@ -187,7 +187,8 @@ async function generate({ id, publish }) {
       ? `An editorial cover for an article about "${item.targetKeyword}".`
       : undefined;
     const coverPromise = (publish && covers.isConfigured())
-      ? covers.generateCover({ title: item.title, excerpt: coverTheme, category: coverCategory }).catch(() => null)
+      ? covers.generateCover({ title: item.title, excerpt: coverTheme, category: coverCategory })
+          .catch((e) => ({ error: (e && e.message) || 'cover generation crashed' }))
       : Promise.resolve(null);
 
     const result = await agent.generate({ item, cluster, enrichment, relatedLinks, dateISO: isoToday(), onStage });
@@ -202,7 +203,8 @@ async function generate({ id, publish }) {
     let markdown = result.markdown;
     const files = [];
     const cover = await coverPromise;
-    if (cover) {
+    const coverOk = !!(cover && cover.data);
+    if (coverOk) {
       const coverPath = `/images/blog/${id}.${cover.ext}`;
       markdown = covers.patchFrontmatter(markdown, coverPath, covers.coverAltFor(item.title, coverCategory));
       files.push({ path: `images/blog/${id}.${cover.ext}`, content: cover.data, encoding: 'base64' });
@@ -212,19 +214,20 @@ async function generate({ id, publish }) {
     // publish — commit post (+ cover) atomically; Vercel deploy rebuilds the blog.
     const commit = await github.commitFiles(
       files,
-      `Content engine: publish "${item.title}"${cover ? ' (+ cover)' : ''}`
+      `Content engine: publish "${item.title}"${coverOk ? ' (+ cover)' : ''}`
     );
     await store.patchPlanItem(id, { status: 'Live', publishedDate: isoToday() });
     // Surface a missing cover so it doesn't slip through silently: if Gemini is
     // configured but returned no image, the article still publishes (fail-soft) —
-    // but the job note flags it so an admin can Regenerate to backfill the cover.
-    const coverNote = cover
+    // but the job note carries the exact Gemini error so it's diagnosable in-UI.
+    const coverErr = cover && cover.error;
+    const coverNote = coverOk
       ? 'published (+ cover)'
       : (covers.isConfigured()
-        ? 'published — NO COVER (image generation failed; Regenerate to retry)'
+        ? `published — NO COVER: ${coverErr || 'image generation failed'}`
         : 'published — no cover (GEMINI_API_KEY not set)');
-    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, cover: !!cover, note: coverNote });
-    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, cover: !!cover, commit: commit.url } };
+    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, cover: coverOk, note: coverNote });
+    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, cover: coverOk, commit: commit.url } };
   } catch (e) {
     await store.updateJob(jobId, { status: 'failed', error: e.message, note: `error: ${e.message}` }).catch(() => {});
     return { status: 500, body: { error: e.message, jobId } };

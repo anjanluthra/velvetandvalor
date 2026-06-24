@@ -239,9 +239,10 @@ module.exports = async (req, res) => {
           return res.status(next ? 200 : 404).json(next || { error: 'not found' });
         }
         case 'plan-delete': {
-          if (!body.id) return res.status(400).json({ error: 'id required' });
-          await store.deletePlanItem(body.id);
-          return res.status(200).json({ ok: true, id: body.id });
+          const ids = Array.isArray(body.ids) ? body.ids : (body.id ? [body.id] : []);
+          if (!ids.length) return res.status(400).json({ error: 'id or ids required' });
+          for (const id of ids) await store.deletePlanItem(id);
+          return res.status(200).json({ ok: true, deleted: ids.length });
         }
         case 'settings':
           return res.status(200).json(await store.putSettings(body.patch || {}));

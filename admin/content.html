@@ -180,11 +180,19 @@
       const rows = PLAN.filter((p) => (!fc || p.cluster === fc) && (!fs || p.status === fs));
       const el = document.getElementById('planList');
       if (!rows.length) { el.innerHTML = '<div class="state">No plan items. Use “Import plan seed” to load the researched plan.</div>'; return; }
-      el.innerHTML = '<table><thead><tr><th>Cluster</th><th>Article</th><th class="hide">Keyword</th><th class="num">Vol</th><th class="num hide">KD</th><th>Status</th><th></th></tr></thead><tbody>' +
+      el.innerHTML =
+        `<div class="bulkbar" id="bulkbar" style="display:none; gap:12px; align-items:center; margin-bottom:14px; padding:10px 14px; background:var(--obsidian-mid); border:1px solid var(--gold-subtle); border-radius:10px;">
+           <span id="bulkCount" class="kw"></span>
+           <button class="btn" id="bulkGen">Generate &amp; Publish selected</button>
+           <button class="btn" id="bulkDel" style="border-color:rgba(255,154,154,0.45); color:#ff9a9a;">Delete selected</button>
+           <button class="mini" id="bulkClear">Clear selection</button>
+         </div>` +
+        '<table><thead><tr><th style="width:26px;"><input type="checkbox" id="planSelAll" title="Select all"></th><th>Cluster</th><th>Article</th><th class="hide">Keyword</th><th class="num">Vol</th><th class="num hide">KD</th><th>Status</th><th></th></tr></thead><tbody>' +
         rows.map((p) => {
           const code = clusterCode(p.cluster);
           const canGen = p.status !== 'Live';
           return `<tr>
+            <td><input type="checkbox" class="planSel" data-id="${esc(p.id)}" data-live="${p.status === 'Live' ? '1' : '0'}"></td>
             <td><span class="pill ${code}">${esc(clusterName(p.cluster))}</span></td>
             <td><div class="ttl">${esc(p.title)}</div><div class="kw">${esc(p.priority || '')}${p.optional ? ' · optional' : ''}${p.brandPiece ? ' · brand' : ''}</div></td>
             <td class="hide"><span class="kw">${esc(p.targetKeyword || '—')}</span></td>
@@ -197,6 +205,40 @@
               <button class="mini danger" data-delete="${esc(p.id)}" title="Remove from plan">Delete</button>
             </td></tr>`;
         }).join('') + '</tbody></table>';
+      const selAll = document.getElementById('planSelAll');
+      selAll.onchange = () => { document.querySelectorAll('.planSel').forEach((c) => { c.checked = selAll.checked; }); updateBulk(); };
+      document.getElementById('bulkClear').onclick = () => { document.querySelectorAll('.planSel').forEach((c) => { c.checked = false; }); selAll.checked = false; updateBulk(); };
+      document.getElementById('bulkDel').onclick = bulkDelete;
+      document.getElementById('bulkGen').onclick = bulkGenerate;
+      updateBulk();
+    }
+    function selectedIds() { return [...document.querySelectorAll('.planSel:checked')].map((c) => c.dataset.id); }
+    function updateBulk() {
+      const bar = document.getElementById('bulkbar'); if (!bar) return;
+      const n = document.querySelectorAll('.planSel:checked').length;
+      bar.style.display = n ? 'flex' : 'none';
+      const c = document.getElementById('bulkCount'); if (c) c.textContent = n + ' selected';
+    }
+    async function bulkDelete() {
+      const ids = selectedIds(); if (!ids.length) return;
+      if (!confirm(`Delete ${ids.length} item(s) from the plan permanently? (Does not affect anything already published.)`)) return;
+      const r = await api.post({ op: 'plan-delete', ids });
+      if (r.ok) { toast(`Deleted ${r.data.deleted} from plan`); loadPlan(); } else toast(r.data.error || 'Failed');
+    }
+    async function bulkGenerate() {
+      if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+      const ids = [...document.querySelectorAll('.planSel:checked')].filter((b) => b.dataset.live !== '1').map((b) => b.dataset.id);
+      if (!ids.length) return toast('Select at least one not-yet-published article.');
+      if (!confirm(`Generate & publish ${ids.length} article(s)? They run one at a time and can take ~1 min each.`)) return;
+      const gen = document.getElementById('bulkGen'), del = document.getElementById('bulkDel');
+      gen.disabled = del.disabled = true; let ok = 0, fail = 0;
+      for (let i = 0; i < ids.length; i++) {
+        gen.textContent = `Publishing ${i + 1}/${ids.length}…`;
+        const r = await api.post({ op: 'generate', id: ids[i], publish: true });
+        if (r.ok) ok++; else fail++;
+      }
+      gen.disabled = del.disabled = false; gen.textContent = 'Generate & Publish selected';
+      toast(`Done: ${ok} published${fail ? `, ${fail} failed` : ''}`); loadPlan(); loadJobs();
     }
     async function loadPlan() { const d = await api.get('plan'); PLAN = d.plan || []; renderPlan(); }
 
@@ -213,6 +255,7 @@
         const r = await api.post({ op: 'plan-delete', id: del.dataset.delete });
         if (r.ok) { toast('Deleted from plan'); loadPlan(); } else toast(r.data.error || 'Failed'); }
     });
+    document.getElementById('planList').addEventListener('change', (e) => { if (e.target.classList && e.target.classList.contains('planSel')) updateBulk(); });
 
     async function generate(id, publish, btn) {
       if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Email Flows — V&amp;V Admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <style>
+    body { padding: 0; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px; }
+    .lede { color: var(--cream-muted); font-size: 0.9rem; margin-bottom: 22px; max-width: 640px; }
+
+    .flow-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+    .flow-tab {
+      padding: 9px 18px; border: 1px solid var(--gold-muted); border-radius: 999px;
+      font-size: 0.85rem; color: var(--cream-mid); display: flex; align-items: center; gap: 9px;
+    }
+    .flow-tab:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .flow-tab.active { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); font-weight: 600; }
+    .flow-tab .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .dot.live { background: #5fd0a8; }
+    .dot.partial { background: #ffcf8b; }
+
+    .flow-head {
+      background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 14px;
+      padding: 20px 22px; margin-bottom: 20px;
+    }
+    .flow-head h2 { font-family: var(--font-serif); font-weight: 500; color: var(--cream); font-size: 1.3rem; margin: 0 0 10px; }
+    .flow-head .row { display: flex; gap: 10px; font-size: 0.86rem; color: var(--cream-mid); margin: 6px 0; line-height: 1.5; }
+    .flow-head .row .k { color: var(--gold-pale); min-width: 64px; flex-shrink: 0; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.08em; padding-top: 2px; }
+    .flow-head .exit { margin-top: 12px; padding: 10px 14px; background: rgba(95,208,168,0.08); border: 1px solid rgba(95,208,168,0.25); border-radius: 9px; font-size: 0.84rem; color: #aee6cf; }
+    .flow-head .planned { margin-top: 12px; padding: 10px 14px; background: rgba(255,207,139,0.08); border: 1px solid rgba(255,207,139,0.28); border-radius: 9px; font-size: 0.84rem; color: #ffcf8b; }
+
+    .flow-body { display: grid; grid-template-columns: 1fr 1.15fr; gap: 22px; align-items: start; }
+
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+    .step {
+      background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px;
+      padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; transition: 0.16s var(--ease-out);
+    }
+    .step:hover { border-color: var(--gold-muted); }
+    .step.active { border-color: var(--gold-bright); background: var(--obsidian-surface); }
+    .step .num {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center;
+      background: var(--obsidian-deep); border: 1px solid var(--gold-muted); color: var(--gold-pale);
+      font-size: 0.85rem; font-weight: 600;
+    }
+    .step.active .num { background: var(--gold); color: var(--obsidian-deep); border-color: var(--gold); }
+    .step-main { flex: 1; min-width: 0; }
+    .step-timing { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gold-pale); margin-bottom: 3px; }
+    .step-subject { color: var(--cream); font-size: 0.94rem; font-weight: 600; line-height: 1.35; }
+    .step-goal { color: var(--cream-muted); font-size: 0.82rem; margin-top: 4px; line-height: 1.5; }
+
+    .preview { position: sticky; top: 20px; border: 1px solid var(--gold-subtle); border-radius: 14px; overflow: hidden; background: var(--obsidian-mid); }
+    .preview-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--gold-subtle); }
+    .preview-bar .label { flex: 1; min-width: 0; color: var(--cream-mid); font-size: 0.82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mini { padding: 6px 11px; border: 1px solid var(--gold-muted); border-radius: 7px; color: var(--cream-mid); font-size: 0.78rem; white-space: nowrap; }
+    .mini:hover { border-color: var(--gold-bright); color: var(--cream); }
+    .preview iframe { width: 100%; height: 620px; border: 0; background: #EFEAE1; display: block; }
+    .preview .frame-load { padding: 60px; text-align: center; color: var(--cream-muted); font-size: 0.85rem; }
+
+    .state { padding: 56px; text-align: center; color: var(--cream-muted); background: var(--obsidian-mid); border: 1px solid var(--gold-subtle); border-radius: 12px; }
+
+    @media (max-width: 900px) {
+      .flow-body { grid-template-columns: 1fr; }
+      .preview { position: static; }
+      .preview iframe { height: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+  <aside id="adminSidebar"></aside>
+  <main class="admin-main">
+  <div class="wrap">
+    <div class="page-head"><h1>Email Flows</h1></div>
+    <div class="lede">These are the automated emails subscribers receive. This view is read-only — the wording lives in the code and is rendered here exactly as it sends.</div>
+
+    <div id="root"><div class="state">Loading…</div></div>
+  </div>
+  </main>
+  </div>
+
+  <script>
+    let FLOWS = [];
+    let ACTIVE = null;     // active flow key
+    let ACTIVE_N = null;   // active step number
+    const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    async function guard() {
+      try {
+        const r = await fetch('/api/admin/me');
+        if (r.status === 401) { location.href = '/admin/login'; return false; }
+        const me = await r.json();
+        if (me.role === 'staff') { location.href = '/admin/dashboard'; return false; }
+        return true;
+      } catch { location.href = '/admin/login'; return false; }
+    }
+
+    async function load() {
+      try {
+        const r = await fetch('/api/admin/flows');
+        if (r.status === 401) { location.href = '/admin/login'; return; }
+        if (r.status === 403) { location.href = '/admin/dashboard'; return; }
+        if (!r.ok) { document.getElementById('root').innerHTML = '<div class="state">Could not load flows.</div>'; return; }
+        const d = await r.json();
+        FLOWS = d.flows || [];
+        if (!FLOWS.length) { document.getElementById('root').innerHTML = '<div class="state">No flows configured.</div>'; return; }
+        renderShell();
+        selectFlow(FLOWS[0].key);
+      } catch {
+        document.getElementById('root').innerHTML = '<div class="state">Could not load flows.</div>';
+      }
+    }
+
+    function renderShell() {
+      const tabs = FLOWS.map((f) =>
+        `<button class="flow-tab" data-flow="${esc(f.key)}"><span class="dot ${esc(f.status)}"></span>${esc(f.title)}</button>`
+      ).join('');
+      document.getElementById('root').innerHTML = `
+        <div class="flow-tabs" id="flowTabs">${tabs}</div>
+        <div class="flow-head" id="flowHead"></div>
+        <div class="flow-body">
+          <div class="steps" id="steps"></div>
+          <div class="preview">
+            <div class="preview-bar"><span class="label" id="previewLabel">Preview</span><button class="mini" id="previewOpen">Open full ↗</button></div>
+            <div id="frameWrap"><div class="frame-load">Select an email to preview.</div></div>
+          </div>
+        </div>`;
+      document.getElementById('flowTabs').addEventListener('click', (e) => {
+        const t = e.target.closest('[data-flow]'); if (t) selectFlow(t.dataset.flow);
+      });
+      document.getElementById('steps').addEventListener('click', (e) => {
+        const s = e.target.closest('[data-n]'); if (s) selectStep(Number(s.dataset.n));
+      });
+      document.getElementById('previewOpen').addEventListener('click', openFull);
+    }
+
+    function flow() { return FLOWS.find((f) => f.key === ACTIVE); }
+
+    function selectFlow(key) {
+      ACTIVE = key; ACTIVE_N = null;
+      document.querySelectorAll('.flow-tab').forEach((b) => b.classList.toggle('active', b.dataset.flow === key));
+      const f = flow();
+      const rows = [
+        ['Trigger', f.trigger],
+        ['Sequence', f.summary],
+      ].map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span>${esc(v)}</span></div>`).join('');
+      const exit = f.exit ? `<div class="exit">⊘ ${esc(f.exit)}</div>` : '';
+      const planned = f.status === 'partial' ? `<div class="planned">More emails for this flow are planned — only the confirmation is live today.</div>` : '';
+      document.getElementById('flowHead').innerHTML = `<h2>${esc(f.title)}</h2>${rows}${exit}${planned}`;
+
+      document.getElementById('steps').innerHTML = f.steps.map((s) => `
+        <div class="step" data-n="${s.n}">
+          <div class="num">${s.n}</div>
+          <div class="step-main">
+            <div class="step-timing">${esc(s.timing)}</div>
+            <div class="step-subject">${esc(s.subject)}</div>
+            <div class="step-goal">${esc(s.goal)}</div>
+          </div>
+        </div>`).join('');
+      if (f.steps.length) selectStep(f.steps[0].n);
+    }
+
+    async function selectStep(n) {
+      ACTIVE_N = n;
+      document.querySelectorAll('.step').forEach((el) => el.classList.toggle('active', Number(el.dataset.n) === n));
+      const f = flow();
+      const step = f.steps.find((s) => s.n === n);
+      document.getElementById('previewLabel').textContent = step ? step.subject : 'Preview';
+      const wrap = document.getElementById('frameWrap');
+      wrap.innerHTML = '<div class="frame-load">Loading preview…</div>';
+      try {
+        const r = await fetch(`/api/admin/flows?flow=${encodeURIComponent(ACTIVE)}&n=${n}`);
+        if (!r.ok) { wrap.innerHTML = '<div class="frame-load">Could not load this preview.</div>'; return; }
+        const d = await r.json();
+        const frame = document.createElement('iframe');
+        frame.title = 'Email preview';
+        frame.srcdoc = d.html || '';
+        wrap.innerHTML = '';
+        wrap.appendChild(frame);
+      } catch {
+        wrap.innerHTML = '<div class="frame-load">Could not load this preview.</div>';
+      }
+    }
+
+    async function openFull() {
+      if (!ACTIVE || ACTIVE_N == null) return;
+      try {
+        const r = await fetch(`/api/admin/flows?flow=${encodeURIComponent(ACTIVE)}&n=${ACTIVE_N}`);
+        const d = await r.json();
+        const w = window.open('', '_blank');
+        if (w) { w.document.open(); w.document.write(d.html || ''); w.document.close(); }
+      } catch {}
+    }
+
+    (async () => { if (await guard()) load(); })();
+  </script>
+  <script src="/js/admin-nav.js"></script>
+</body>
+</html>

@@ -166,8 +166,12 @@ async function generate({ id, publish }) {
     const log = [];
     let enrichment = { searchVolume: item.volume, kd: item.kd, secondaryKeywords: [], competitors: [] };
     if (item.targetKeyword) {
-      enrichment.secondaryKeywords = await ahrefs.matchingTerms(item.targetKeyword, 'us', { limit: 15, maxKd: 60 }, log);
-      enrichment.competitors = await ahrefs.serpOverview(item.targetKeyword, 'us', 8, log);
+      const [sk, comp] = await Promise.all([
+        ahrefs.matchingTerms(item.targetKeyword, 'us', { limit: 15, maxKd: 60 }, log),
+        ahrefs.serpOverview(item.targetKeyword, 'us', 8, log),
+      ]);
+      enrichment.secondaryKeywords = sk;
+      enrichment.competitors = comp;
     }
 
     const relatedLinks = await relatedLinksFor(item, plan);
@@ -216,7 +220,7 @@ module.exports = async (req, res) => {
           (a.priority || 'P9').localeCompare(b.priority || 'P9') || (b.volume || 0) - (a.volume || 0));
         return res.status(200).json({ plan });
       }
-      if (op === 'jobs') return res.status(200).json({ jobs: await store.listJobs() });
+      if (op === 'jobs') { await store.reapStaleJobs(); return res.status(200).json({ jobs: await store.listJobs() }); }
       return res.status(400).json({ error: `unknown op "${op}"` });
     }
 

@@ -147,13 +147,14 @@ async function listJobs() {
   return jobs.sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0));
 }
 
-/** Flip stale `running` jobs (older than maxAgeMs) to failed — UI hygiene. */
-async function reapStaleJobs(maxAgeMs = 20 * 60 * 1000) {
+/** Flip stale `running` jobs (older than maxAgeMs) to failed — UI hygiene.
+ *  6 min covers the longest a function can run (Hobby 60s, Pro up to 300s). */
+async function reapStaleJobs(maxAgeMs = 6 * 60 * 1000) {
   const now = Date.now();
   const jobs = await listJobs();
   for (const j of jobs) {
     if (j.status === 'running' && now - (j.startedAt || 0) > maxAgeMs) {
-      await updateJob(j.id, { status: 'failed', error: 'timed out (stale)', stage: j.stage });
+      await updateJob(j.id, { status: 'failed', error: 'timed out', stage: j.stage });
     }
   }
 }

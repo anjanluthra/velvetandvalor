@@ -15,6 +15,13 @@ const API_KEY = process.env.ANTHROPIC_API_KEY;
 const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
 const AUTHOR_SLUG = 'kate-luthra';
 
+// Pipeline cost knobs — defaults are tuned to fit Vercel Hobby's 60s function
+// ceiling (one draft, no judge, no auto-fix). On Vercel Pro (maxDuration 300s)
+// set CONTENT_DRAFTS=3, CONTENT_JUDGE=1, CONTENT_FIX=1 for the full quality path.
+const DRAFT_COUNT = Math.min(3, Math.max(1, parseInt(process.env.CONTENT_DRAFTS || '1', 10)));
+const USE_JUDGE = process.env.CONTENT_JUDGE === '1';
+const USE_FIX = process.env.CONTENT_FIX === '1';
+
 function isConfigured() {
   return Boolean(API_KEY);
 }
@@ -225,36 +232,43 @@ async function generate(ctx) {
   const onStage = ctx.onStage || (() => {});
   const system = buildSystemPrompt({ item, cluster, enrichment, relatedLinks });
 
-  // draft — 3 angles in parallel
-  onStage('draft', `drafting 3 angles with ${MODEL}`);
-  const drafts = (await Promise.all(ANGLES.map((a) =>
+  // draft — N angles in parallel (N = DRAFT_COUNT)
+  const angles = ANGLES.slice(0, DRAFT_COUNT);
+  onStage('draft', `drafting ${angles.length} ${angles.length > 1 ? 'angles' : 'draft'} with ${MODEL}`);
+  const drafts = (await Promise.all(angles.map((a) =>
     callClaude(system, `Write the article now with a ${a.label} angle. ${a.note}`, { maxTokens: 5000, temperature: 0.8 })
-      .then((t) => ({ angle: a.key, text: t }))
+      .then((t) => ({ angle: a.key, text: t, parsed: parseDraft(t) }))
       .catch(() => null)
   ))).filter(Boolean);
   if (!drafts.length) throw new Error('all drafts failed');
 
-  // synthesize — judge writes one superior article
-  let finalText;
+  // choose the final draft
+  let parsed;
   if (drafts.length === 1) {
-    finalText = drafts[0].text;
-  } else {
+    parsed = drafts[0].parsed;
+  } else if (USE_JUDGE) {
+    // judge writes ONE superior article from all drafts (an extra full-length call)
     onStage('synthesize', `judging + synthesising ${drafts.length} drafts`);
     const judgeUser = `Below are ${drafts.length} independent drafts of the same article. Write ONE superior final article that takes the strongest material, structure, and insight from each. Keep the exact output format (META/EXCERPT/TAGS/KEYTAKEAWAYS/FAQ/===ARTICLE===).\n\n` +
       drafts.map((d, i) => `=== DRAFT ${i + 1} (${d.angle}) ===\n${d.text}`).join('\n\n');
-    finalText = await callClaude(system, judgeUser, { maxTokens: 5000, temperature: 0.6 });
+    parsed = parseDraft(await callClaude(system, judgeUser, { maxTokens: 5000, temperature: 0.6 }));
+  } else {
+    // no judge — pick the best draft locally (fewest gate failures, then closest
+    // to target length). Free: no extra Claude call, so it fits the time budget.
+    onStage('synthesize', `selecting best of ${drafts.length}`);
+    const scored = drafts.map((d) => ({ d, g: validateArticle(item, d.parsed) }));
+    scored.sort((a, b) => (a.g.failures.length - b.g.failures.length)
+      || Math.abs((a.g.wordCount || 0) - item.wordCount) - Math.abs((b.g.wordCount || 0) - item.wordCount));
+    parsed = scored[0].d.parsed;
   }
 
-  let parsed = parseDraft(finalText);
-
-  // validate + one fix pass
+  // validate (+ one fix pass only when CONTENT_FIX=1, since it's another full call)
   onStage('validate', 'quality gate');
   let gate = validateArticle(item, parsed);
-  if (!gate.ok) {
-    const fixUser = `Your article failed these mechanical checks:\n- ${gate.failures.join('\n- ')}\n\nRewrite the FULL article fixing every issue, keeping the exact output format. Here is your draft:\n\n${finalText}`;
+  if (!gate.ok && USE_FIX) {
+    const fixUser = `Your article failed these mechanical checks:\n- ${gate.failures.join('\n- ')}\n\nRewrite the FULL article fixing every issue, keeping the exact output format. Here is your draft:\n\n${assembleMarkdown(item, cluster, parsed, dateISO)}`;
     try {
-      const fixed = await callClaude(system, fixUser, { maxTokens: 5000, temperature: 0.5 });
-      const reparsed = parseDraft(fixed);
+      const reparsed = parseDraft(await callClaude(system, fixUser, { maxTokens: 5000, temperature: 0.5 }));
       const regate = validateArticle(item, reparsed);
       if (regate.failures.length <= gate.failures.length) { parsed = reparsed; gate = regate; }
     } catch { /* keep original */ }

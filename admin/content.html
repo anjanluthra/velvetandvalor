@@ -185,7 +185,7 @@
           const code = clusterCode(p.cluster);
           const canGen = p.status !== 'Live';
           return `<tr>
-            <td><span class="pill ${code}">${code || '—'}</span></td>
+            <td><span class="pill ${code}">${esc(clusterName(p.cluster))}</span></td>
             <td><div class="ttl">${esc(p.title)}</div><div class="kw">${esc(p.priority || '')}${p.optional ? ' · optional' : ''}${p.brandPiece ? ' · brand' : ''}</div></td>
             <td class="hide"><span class="kw">${esc(p.targetKeyword || '—')}</span></td>
             <td class="num">${p.volume ? p.volume.toLocaleString() : '—'}</td>
@@ -220,13 +220,56 @@
       if (publish) { toast('Published ✓ ' + (g.ok ? '(passed quality gate)' : '(shipped with gate warnings)')); loadPlan(); loadJobs(); }
       else showPreview(id, r.data);
     }
+    // Minimal Markdown → HTML for the preview (headings, bold/italic, links,
+    // lists, blockquotes, paragraphs) — enough to read the article as it'll render.
+    function mdToHtml(md) {
+      const e = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      const inline = (s) => e(s)
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      let html = '', list = null;
+      const close = () => { if (list) { html += `</${list}>`; list = null; } };
+      for (const raw of String(md || '').split('\n')) {
+        const line = raw.replace(/\s+$/, '');
+        if (/^###\s+/.test(line)) { close(); html += `<h5>${inline(line.replace(/^###\s+/, ''))}</h5>`; }
+        else if (/^##\s+/.test(line)) { close(); html += `<h4>${inline(line.replace(/^##\s+/, ''))}</h4>`; }
+        else if (/^>\s?/.test(line)) { close(); html += `<blockquote>${inline(line.replace(/^>\s?/, ''))}</blockquote>`; }
+        else if (/^[-*]\s+/.test(line)) { if (list !== 'ul') { close(); html += '<ul>'; list = 'ul'; } html += `<li>${inline(line.replace(/^[-*]\s+/, ''))}</li>`; }
+        else if (/^\d+\.\s+/.test(line)) { if (list !== 'ol') { close(); html += '<ol>'; list = 'ol'; } html += `<li>${inline(line.replace(/^\d+\.\s+/, ''))}</li>`; }
+        else if (line.trim() === '') { close(); }
+        else { close(); html += `<p>${inline(line)}</p>`; }
+      }
+      close();
+      return html;
+    }
     function showPreview(id, data) {
-      const g = data.gate || {};
+      const g = data.gate || {}, p = data.parsed || {};
+      const body = p.body ? mdToHtml(p.body) : esc(data.markdown || '');
+      const takeaways = (p.keyTakeaways || []).map((k) => `<li>${esc(k)}</li>`).join('');
+      const faqs = (p.faq || []).map((f) => `<div class="pv-faq"><b>${esc(f.q)}</b><p>${esc(f.a)}</p></div>`).join('');
       document.getElementById('modal').innerHTML =
-        `<h3>Preview — ${esc(id)}</h3>` +
+        `<style>
+           .pv { color: var(--cream-mid); line-height: 1.7; font-size: 0.92rem; }
+           .pv h4 { font-family: var(--font-serif); color: var(--cream); font-size: 1.15rem; margin: 22px 0 8px; }
+           .pv h5 { color: var(--cream); font-size: 1rem; margin: 16px 0 6px; }
+           .pv p { margin: 0 0 12px; } .pv ul, .pv ol { margin: 0 0 12px 20px; } .pv li { margin: 4px 0; }
+           .pv a { color: var(--gold-pale); } .pv strong { color: var(--cream); }
+           .pv blockquote { border-left: 2px solid var(--gold-muted); padding-left: 14px; margin: 14px 0; font-style: italic; color: var(--cream-muted); }
+           .pv-meta { color: var(--cream-muted); font-style: italic; margin-bottom: 16px; }
+           .pv-sec { font-family: var(--font-serif); color: var(--cream); font-size: 1.1rem; margin: 26px 0 8px; border-top: 1px solid var(--gold-subtle); padding-top: 18px; }
+           .pv-faq { margin-bottom: 14px; } .pv-faq b { color: var(--cream); display: block; margin-bottom: 4px; }
+           .pv-tags span { display: inline-block; font-size: 0.7rem; color: var(--cream-muted); border: 1px solid var(--gold-subtle); border-radius: 999px; padding: 2px 9px; margin: 0 6px 6px 0; }
+         </style>` +
+        `<h3>${esc(data.title || id)}</h3>` +
         `<div class="lede">Quality gate: <b style="color:${g.ok ? '#9be29b' : '#ffcf8b'}">${g.ok ? 'passed' : 'warnings'}</b>${g.wordCount ? ' · ' + g.wordCount + ' words' : ''}${(g.failures && g.failures.length) ? '<br>' + g.failures.map(esc).join('<br>') : ''}</div>` +
-        `<pre>${esc((data.markdown || '').slice(0, 6000))}</pre>` +
-        `<div class="row" style="margin-top:16px;"><button class="btn" id="mClose">Close</button></div>`;
+        (p.meta ? `<div class="pv-meta">${esc(p.meta)}</div>` : '') +
+        `<div class="pv">${body}</div>` +
+        (takeaways ? `<div class="pv-sec">Key Takeaways</div><ul class="pv">${takeaways}</ul>` : '') +
+        (faqs ? `<div class="pv-sec">FAQ</div><div class="pv">${faqs}</div>` : '') +
+        ((p.tags && p.tags.length) ? `<div class="pv-tags" style="margin-top:14px;">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : '') +
+        `<div class="row" style="margin-top:18px;"><button class="btn" id="mClose">Close</button></div>`;
       document.getElementById('modalBg').classList.add('show');
       document.getElementById('mClose').onclick = () => document.getElementById('modalBg').classList.remove('show');
     }

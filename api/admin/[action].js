@@ -7,29 +7,33 @@
 // Load each handler defensively: if one module fails to load (e.g. a require
 // that Vercel didn't bundle), only THAT route degrades to a 500 — the rest of
 // the admin panel keeps working instead of the whole dispatcher crashing.
-function load(name) {
+// IMPORTANT: keep require() calls STATIC literals (inside a thunk) so Vercel's
+// bundler still traces and includes every handler. A dynamic require(variable)
+// silently breaks bundling for ALL handlers. The thunk is wrapped in try/catch
+// so a single handler that fails to load degrades only its own route.
+function safe(thunk) {
   try {
-    return require(name);
+    return thunk();
   } catch (e) {
-    console.error('[admin] handler failed to load: ' + name + ' — ' + (e && e.message));
+    console.error('[admin] handler failed to load — ' + (e && e.message));
     return (req, res) => res.status(500).json({ error: 'This admin feature is temporarily unavailable.' });
   }
 }
 
 const handlers = {
-  login: load('./_login'),
-  logout: load('./_logout'),
-  me: load('./_me'),
-  orders: load('./_orders'),
-  ship: load('./_ship'),
-  user: load('./_user'),
-  users: load('./_users'),
-  'set-password': load('./_set-password'),
-  submissions: load('./_submissions'),
-  flows: load('./_flows'),
-  catalog: load('./_catalog'),
-  publish: load('./_publish'),
-  engine: load('./_engine'),
+  login: safe(() => require('./_login')),
+  logout: safe(() => require('./_logout')),
+  me: safe(() => require('./_me')),
+  orders: safe(() => require('./_orders')),
+  ship: safe(() => require('./_ship')),
+  user: safe(() => require('./_user')),
+  users: safe(() => require('./_users')),
+  'set-password': safe(() => require('./_set-password')),
+  submissions: safe(() => require('./_submissions')),
+  flows: safe(() => require('./_flows')),
+  catalog: safe(() => require('./_catalog')),
+  publish: safe(() => require('./_publish')),
+  engine: safe(() => require('./_engine')),
 };
 
 module.exports = async (req, res) => {

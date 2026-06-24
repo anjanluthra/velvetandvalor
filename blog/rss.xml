@@ -6,6 +6,13 @@
     <description>Gift guides for horse lovers, equestrian lifestyle, and craft heritage from Velvet &amp; Valor.</description>
     <language>en</language>
     <atom:link href="https://www.velvet-valor.com/blog/rss.xml" rel="self" type="application/rss+xml" />
-
+    <item>
+      <title>Equestrian Terms: The Complete Glossary</title>
+      <link>https://www.velvet-valor.com/blog/equestrian-terms-glossary</link>
+      <guid isPermaLink="true">https://www.velvet-valor.com/blog/equestrian-terms-glossary</guid>
+      <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+      <category>Equestrian Life</category>
+      <description>From aids and impulsion to flying changes and collection, this definitive glossary decodes every equestrian term you'll encounter in the saddle, at the yard, and beyond.</description>
+    </item>
   </channel>
 </rss>

@@ -67,6 +67,9 @@ function write(file, html) {
 
 function renderBody(md) {
   let html = marked.parse(md, { mangle: false, headerIds: false });
+  // Drop horizontal rules — the model likes to insert `---` between sections,
+  // which renders as a stray divider line in the reading area. We don't want any.
+  html = html.replace(/<hr\s*\/?>/gi, '');
   const toc = [];
   html = html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
     const text = inner.replace(/<[^>]+>/g, '').trim();
@@ -326,9 +329,6 @@ ${p.faq.map(f => `          <details class="article-faq-item">
           </details>`).join('\n')}
         </section>` : '';
 
-  const tags = (p.tags || []).map(t =>
-    `            <span class="article-tag">${esc(t)}</span>`).join('\n');
-
   const credentials = (a.credentials || []).map(c =>
     `            <span class="article-cred">${esc(c)}</span>`).join('\n');
 
@@ -379,7 +379,7 @@ ${p.toc.map((t, i) => `            <a href="#${t.id}" class="article-toc-item${i
 
             <div class="article-meta">
               <a href="/blog/author/${p.author}" class="article-meta-author">
-                <span class="article-meta-avatar">${esc(a.initials)}</span>
+                <span class="article-meta-avatar">${avatarInner(a)}</span>
                 <span class="article-meta-name">${esc(a.name)}</span>
               </a>
               <span class="article-meta-sep" aria-hidden="true"></span>
@@ -422,11 +422,6 @@ ${body}
           </div>
 ${faqBlock}
 
-          <div class="article-tags">
-            <span class="article-tags-label">Tags</span>
-${tags}
-          </div>
-
           <aside class="article-author" aria-label="About the author">
             <a href="/blog/author/${p.author}" class="article-author-avatar">${avatarInner(a)}</a>
             <div class="article-author-info">
@@ -462,7 +457,6 @@ ${toc}
 
     <section class="article-newsletter" aria-label="Newsletter signup">
       <div class="container">
-        <p class="article-newsletter-eyebrow">The Atelier List</p>
         <h2 class="article-newsletter-title">Join the list for new stories &amp; 10% off</h2>
         <p class="article-newsletter-sub">Care guides, early access, and a little inspiration from the saddle and the atelier.</p>
         <form class="article-newsletter-form" onsubmit="return false;">
@@ -526,7 +520,7 @@ function journalCard(p) {
               <h3 class="journal-card-title">${esc(p.title)}</h3>
               <p class="journal-card-excerpt">${esc(p.excerpt)}</p>
               <div class="journal-card-footer">
-                <span class="journal-card-author"><span class="journal-card-avatar">${esc(a.initials)}</span>${esc(a.name)}</span>
+                <span class="journal-card-author"><span class="journal-card-avatar">${avatarInner(a)}</span>${esc(a.name)}</span>
                 <span class="journal-card-read">${p.readingTime} min
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </span>
@@ -570,7 +564,6 @@ ${items}
 function newsletterBand(title = 'Be the first to read every new story') {
   return `    <section class="article-newsletter" aria-label="Newsletter signup">
       <div class="container">
-        <p class="article-newsletter-eyebrow">The Atelier List</p>
         <h2 class="article-newsletter-title">${esc(title)}</h2>
         <p class="article-newsletter-sub">Care guides, early access &amp; 10% off your first order — straight from the atelier.</p>
         <form class="article-newsletter-form" onsubmit="return false;">
@@ -599,7 +592,6 @@ function renderEmptyIndex() {
 
     <section class="journal-hero">
       <div class="container">
-        <p class="journal-hero-eyebrow">Est. MMXXVI &mdash; The Atelier</p>
         <h1 class="journal-hero-title">The Equestrian Journal</h1>
         <p class="journal-hero-subtitle">
           Stories from the saddle and the atelier — gift guides for horse lovers,
@@ -646,7 +638,6 @@ function renderIndex(posts) {
 
     <section class="journal-hero">
       <div class="container">
-        <p class="journal-hero-eyebrow">Est. MMXXVI &mdash; The Atelier</p>
         <h1 class="journal-hero-title">The Equestrian Journal</h1>
         <p class="journal-hero-subtitle">
           Stories from the saddle and the atelier — gift guides for horse lovers,
@@ -677,7 +668,7 @@ ${journalFilter(null)}
               <h2 class="journal-featured-title">${esc(featured.title)}</h2>
               <p class="journal-featured-excerpt">${esc(featured.excerpt)}</p>
               <div class="journal-featured-author">
-                <span class="journal-featured-avatar">${esc(a.initials)}</span>
+                <span class="journal-featured-avatar">${avatarInner(a)}</span>
                 <span class="journal-featured-author-info">
                   <span class="journal-featured-author-name">${esc(a.name)}</span>
                   <span class="journal-featured-author-role">${esc(a.role)}</span>
@@ -798,16 +789,6 @@ function renderAuthor(slug, posts) {
         { '@type': 'ListItem', position: 3, name: a.name, item: `${BASE}/blog/author/${slug}` },
       ],
     }] }) + (() => {
-  const topics = new Set(posts.map(p => p.category));
-  const expertise = (a.credentials || []).map(c =>
-    `          <span class="journal-expertise-chip">${esc(c)}</span>`).join('\n');
-  const stats = [
-    { v: String(posts.length), l: posts.length === 1 ? 'Article' : 'Articles' },
-    a.yearsExperience ? { v: esc(a.yearsExperience), l: 'Years in Leather' } : null,
-    { v: String(topics.size), l: topics.size === 1 ? 'Topic Covered' : 'Topics Covered' },
-    a.base ? { v: esc(a.base), l: 'Sourcing Base' } : null,
-  ].filter(Boolean).map(s =>
-    `          <div class="journal-stat"><span class="journal-stat-value">${s.v}</span><span class="journal-stat-label">${s.l}</span></div>`).join('\n');
   const social = a.instagram
     ? `          <a href="${a.instagram}" target="_blank" rel="noopener" class="journal-author-social"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor"/></svg>${esc(a.instagramHandle || 'Instagram')}</a>` : '';
   return `
@@ -835,17 +816,6 @@ ${social}
 
     <div class="journal-paper">
       <div class="container">
-
-        <div class="journal-stats" aria-label="About ${esc(a.name)}">
-${stats}
-        </div>
-${expertise ? `
-        <div class="journal-expertise">
-          <p class="journal-expertise-label">Areas of Expertise</p>
-          <div class="journal-expertise-chips">
-${expertise}
-          </div>
-        </div>` : ''}
 
         <section class="journal-grid-section">
           <div class="journal-section-head">

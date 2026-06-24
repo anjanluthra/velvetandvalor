@@ -94,16 +94,19 @@ ${isBrand ? '- This is a BRAND/STORYTELLING piece with minimal search demand —
 ${secondary.length ? `- Secondary/semantic keywords to weave in naturally: ${secondary.join(', ')}` : ''}
 ${competitors ? `- Page-1 competitors (do better, find the gap they miss):\n${competitors}` : ''}
 
-INTERNAL LINKING (use EXACT URLs, never invent one)
-- Link ONCE to the money page with a natural anchor in the first half: ${item.moneyPage}
-${related ? `- Link to 2–3 related Journal articles where relevant:\n${related}` : ''}
-- Where a horse-bond / personalisation angle fits, link to /custom.
+LINKING — MANDATORY (an article with no links will be rejected). Use Markdown link syntax [anchor text](url). Use EXACT internal URLs, never invent one.
+- You MUST link at least once to the product/money page, with a natural in-sentence anchor, in the FIRST HALF of the article: ${item.moneyPage}
+- You MUST link to /custom once, where a personalisation / horse-bond angle fits naturally.
+${related ? `- Link to 2–3 of these related Journal articles where genuinely relevant:\n${related}` : '- Where it helps the reader, link to the Journal index /blog for further reading.'}
+- Add 1–3 EXTERNAL links to genuinely authoritative organisations (e.g. a national equestrian federation, recognised breed society, or veterinary/welfare body) ONLY where it backs up a specific claim — and ONLY using a real, well-known URL you are confident exists. Prefer the organisation's main domain (e.g. https://www.bhs.org.uk); NEVER fabricate a deep link or attach a real org to a made-up page.
+- Spread links through the body; never dump them in a list at the end.
 
 STRUCTURE (Markdown body)
 - Start with a paragraph — NO H1 (the title is added by the template).
 ${isBrand ? '- 4–6 H2 sections (##).' : `- Answer the keyword's question in the first ~100 words, using the exact phrase "${kw}".`}
 - ${isBrand ? '' : `Put "${kw}" in the title, the opening, and at least one H2.`}
 - 6–8 H2 (##) sections; use ### sub-headings, bullet lists, and **bold** where genuinely useful.
+- NEVER use horizontal rules (---, ***, or ___) between sections — headings already separate them; rule lines are stripped and look broken.
 - End the body with an "## FAQ" section is NOT needed in the body — FAQ goes in the FAQ field below.
 - Concrete, observational opening. Do NOT open with a statistic.
 
@@ -209,7 +212,14 @@ function validateArticle(item, parsed) {
   const wc = wordCount(parsed.body);
   if (wc < item.wordCount * 0.8) failures.push(`too short: ${wc} words (target ~${item.wordCount}, min ${Math.round(item.wordCount * 0.8)})`);
 
+  // Truncation guard — a body cut off mid-sentence (hit max_tokens) ends without
+  // terminal punctuation or a closing markdown token.
+  const tail = parsed.body.trim().slice(-1);
+  if (!/[.!?:"'’”)\]*_]/.test(tail)) failures.push('body appears truncated (no sentence-ending punctuation at the end)');
+
+  // Linking — internal money page + at least some links overall.
   if (item.moneyPage && !parsed.body.includes(item.moneyPage)) failures.push(`money-page link ${item.moneyPage} missing from body`);
+  if (!/\]\([^)]+\)/.test(parsed.body)) failures.push('no links in body (internal or external)');
 
   const hay = (parsed.body + ' ' + parsed.meta).toLowerCase();
   const hitBanned = BANNED_PHRASES.filter((p) => hay.includes(p));
@@ -236,7 +246,7 @@ async function generate(ctx) {
   const angles = ANGLES.slice(0, DRAFT_COUNT);
   onStage('draft', `drafting ${angles.length} ${angles.length > 1 ? 'angles' : 'draft'} with ${MODEL}`);
   const drafts = (await Promise.all(angles.map((a) =>
-    callClaude(system, `Write the article now with a ${a.label} angle. ${a.note}`, { maxTokens: 5000, temperature: 0.8 })
+    callClaude(system, `Write the article now with a ${a.label} angle. ${a.note}`, { maxTokens: 8000, temperature: 0.8 })
       .then((t) => ({ angle: a.key, text: t, parsed: parseDraft(t) }))
       .catch(() => null)
   ))).filter(Boolean);
@@ -251,7 +261,7 @@ async function generate(ctx) {
     onStage('synthesize', `judging + synthesising ${drafts.length} drafts`);
     const judgeUser = `Below are ${drafts.length} independent drafts of the same article. Write ONE superior final article that takes the strongest material, structure, and insight from each. Keep the exact output format (META/EXCERPT/TAGS/KEYTAKEAWAYS/FAQ/===ARTICLE===).\n\n` +
       drafts.map((d, i) => `=== DRAFT ${i + 1} (${d.angle}) ===\n${d.text}`).join('\n\n');
-    parsed = parseDraft(await callClaude(system, judgeUser, { maxTokens: 5000, temperature: 0.6 }));
+    parsed = parseDraft(await callClaude(system, judgeUser, { maxTokens: 8000, temperature: 0.6 }));
   } else {
     // no judge — pick the best draft locally (fewest gate failures, then closest
     // to target length). Free: no extra Claude call, so it fits the time budget.
@@ -268,7 +278,7 @@ async function generate(ctx) {
   if (!gate.ok && USE_FIX) {
     const fixUser = `Your article failed these mechanical checks:\n- ${gate.failures.join('\n- ')}\n\nRewrite the FULL article fixing every issue, keeping the exact output format. Here is your draft:\n\n${assembleMarkdown(item, cluster, parsed, dateISO)}`;
     try {
-      const reparsed = parseDraft(await callClaude(system, fixUser, { maxTokens: 5000, temperature: 0.5 }));
+      const reparsed = parseDraft(await callClaude(system, fixUser, { maxTokens: 8000, temperature: 0.5 }));
       const regate = validateArticle(item, reparsed);
       if (regate.failures.length <= gate.failures.length) { parsed = reparsed; gate = regate; }
     } catch { /* keep original */ }

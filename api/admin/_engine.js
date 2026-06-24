@@ -238,6 +238,11 @@ module.exports = async (req, res) => {
           const next = await store.patchPlanItem(body.id, body.patch || {});
           return res.status(next ? 200 : 404).json(next || { error: 'not found' });
         }
+        case 'plan-delete': {
+          if (!body.id) return res.status(400).json({ error: 'id required' });
+          await store.deletePlanItem(body.id);
+          return res.status(200).json({ ok: true, id: body.id });
+        }
         case 'settings':
           return res.status(200).json(await store.putSettings(body.patch || {}));
         case 'generate': {

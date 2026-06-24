@@ -5,7 +5,11 @@
  * crawlers index every item; css/search-collection.css + js/search-collection.js
  * add the client-side filter/sort layer.
  */
+const fs = require('fs');
+const path = require('path');
+const matter = require('gray-matter');
 const collectionsCfg = require('../../content/collections');
+const blogCfg = require('../../content/blog.config.js');
 
 const baseUrl = collectionsCfg.site.baseUrl;
 const brand = collectionsCfg.site.brand;
@@ -126,22 +130,53 @@ function customPromo() {
         </section>`;
 }
 
-// Blog "Read our guides" rail — links to real Equestrian Journal posts.
-const GUIDES = [
-  { href: '/blog/the-discerning-riders-gift-guide-for-the-season', cat: 'Gift Guides', title: 'The Discerning Rider&rsquo;s Gift Guide', g: 'linear-gradient(135deg,#1A9090,#0C1E3A)' },
-  { href: '/blog/named-for-those-who-ride-first-the-story-behind-noble-steed', cat: 'The Atelier', title: 'The Story Behind Noble Steed', g: 'linear-gradient(135deg,#122448,#1A2E52)' },
-  { href: '/blog/from-the-tack-room-to-the-show-ring-a-day-in-the-life', cat: 'Equestrian Life', title: 'From the Tack Room to the Show Ring', g: 'linear-gradient(135deg,#6e2230,#0C1E3A)' },
-  { href: '/blog/the-art-of-the-personalised-gift-engraving-at-vv', cat: 'Care & Craft', title: 'The Art of the Personalised Gift', g: 'linear-gradient(135deg,#116868,#122448)' },
-];
+// Blog "Read our guides" rail — links to the most recently published Journal
+// posts, read live from content/posts/*.md (same source as the blog generator)
+// so the rail always reflects what's actually live. Per-category gradients keep
+// the card tops on-brand and varied.
+const GUIDE_GRADIENTS = {
+  'gift-guides': 'linear-gradient(135deg,#1A9090,#0C1E3A)',
+  'the-atelier': 'linear-gradient(135deg,#122448,#1A2E52)',
+  'equestrian-life': 'linear-gradient(135deg,#6e2230,#0C1E3A)',
+  'care-and-craft': 'linear-gradient(135deg,#116868,#122448)',
+  'performance-mindset': 'linear-gradient(135deg,#5b4a8a,#0C1E3A)',
+  'iphone-case-guides': 'linear-gradient(135deg,#3f6fa8,#122448)',
+};
+const GUIDE_GRADIENT_FALLBACK = 'linear-gradient(135deg,#1A9090,#0C1E3A)';
+
+// Load the most recently published posts (newest first, capped at `limit`).
+function recentPosts(limit = 4) {
+  const dir = path.join(__dirname, '..', '..', 'content', 'posts');
+  if (!fs.existsSync(dir)) return [];
+  const toISO = v => (v instanceof Date) ? v.toISOString().slice(0, 10) : String(v || '').slice(0, 10);
+  return fs.readdirSync(dir)
+    .filter(f => f.endsWith('.md'))
+    .map(f => {
+      const { data } = matter(fs.readFileSync(path.join(dir, f), 'utf8'));
+      const slug = data.slug || f.replace(/\.md$/, '');
+      return {
+        href: `/blog/${slug}`,
+        title: data.title || slug,
+        cat: blogCfg.categories[data.category] || data.category || '',
+        g: GUIDE_GRADIENTS[data.category] || GUIDE_GRADIENT_FALLBACK,
+        date: toISO(data.date),
+      };
+    })
+    .sort((a, b) => (b.date < a.date ? -1 : b.date > a.date ? 1 : 0))
+    .slice(0, limit);
+}
+
 function guidesModule() {
+  const guides = recentPosts(4);
+  if (!guides.length) return '';
   const ico = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>';
   return `
     <section class="sr-guides"><div class="container">
       <h2>Read our guides</h2>
       <div class="sr-guides-grid">
-        ${GUIDES.map(g => `<a class="sr-guide" href="${g.href}">
+        ${guides.map(g => `<a class="sr-guide" href="${g.href}">
           <div class="sr-guide-top" style="background:${g.g}">${ico}</div>
-          <div class="sr-guide-body"><p class="sr-guide-cat">${g.cat}</p><p class="sr-guide-title">${g.title}</p></div>
+          <div class="sr-guide-body"><p class="sr-guide-cat">${esc(g.cat)}</p><p class="sr-guide-title">${esc(g.title)}</p></div>
         </a>`).join('\n        ')}
       </div>
     </div></section>`;

@@ -653,8 +653,6 @@ function renderIndex(posts) {
     <div class="journal-paper">
       <div class="container">
 
-${journalFilter(null)}
-
         <p class="journal-search-empty" id="journalSearchEmpty" hidden>No stories match your search. Try another term.</p>
 
         <section class="journal-featured" data-hide-on-search aria-label="Featured article">

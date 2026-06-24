@@ -142,13 +142,34 @@ async function generateCover({ title, excerpt, category }) {
       return { error: `Gemini returned no image${finish ? ` (finishReason=${finish})` : ''}${block ? ` (blocked=${block})` : ''}` };
     }
     const inline = img.inlineData || img.inline_data;
-    const mimeType = inline.mimeType || inline.mime_type || 'image/png';
-    const ext = mimeType.split('/')[1].replace('jpeg', 'jpg');
-    return { data: inline.data, ext, mimeType };
+    const srcMime = inline.mimeType || inline.mime_type || 'image/png';
+    // Optimise to a small WebP (resize + compress) so the hero is super light.
+    // Fail-soft: if sharp isn't available we commit the original raster instead.
+    const webp = await toWebp(inline.data);
+    if (webp) return webp;
+    const ext = srcMime.split('/')[1].replace('jpeg', 'jpg');
+    return { data: inline.data, ext, mimeType: srcMime };
   } catch (e) {
     const reason = (e && e.name === 'AbortError') ? `timed out after ${TIMEOUT_MS}ms` : (e && e.message) || 'unknown error';
     console.warn('covers: error', reason);
     return { error: reason };
+  }
+}
+
+// Convert a base64 raster (PNG/JPEG from Gemini) into a small, optimised WebP.
+// Lazy-require sharp so a missing/broken native binary can't crash publishing —
+// returns null on any failure and the caller commits the original instead.
+async function toWebp(base64) {
+  try {
+    const sharp = require('sharp');
+    const out = await sharp(Buffer.from(base64, 'base64'))
+      .resize({ width: 1200, withoutEnlargement: true }) // hero never renders wider than this
+      .webp({ quality: 68, effort: 4 })
+      .toBuffer();
+    return { data: out.toString('base64'), ext: 'webp', mimeType: 'image/webp' };
+  } catch (e) {
+    console.warn('covers: webp conversion unavailable, using original —', e && e.message);
+    return null;
   }
 }
 

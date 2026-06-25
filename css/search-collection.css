@@ -146,8 +146,9 @@
 .sr-guides-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .sr-guide{background:var(--obsidian-mid,#0C1E3A);border:1px solid rgba(255,255,255,.10);border-radius:6px;overflow:hidden;transition:.4s var(--ease,cubic-bezier(.16,1,.3,1));display:block}
 .sr-guide:hover{transform:translateY(-5px);border-color:var(--teal-line,rgba(26,144,144,.30))}
-.sr-guide-top{height:128px;display:grid;place-items:center}
+.sr-guide-top{height:128px;display:grid;place-items:center;overflow:hidden}
 .sr-guide-top svg{width:34px;height:34px;stroke:#fff;opacity:.85}
+.sr-guide-top img{width:100%;height:100%;object-fit:cover;display:block}
 .sr-guide-body{padding:16px 17px 20px}
 .sr-guide-cat{font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-pale,#7FCDCD)}
 .sr-guide-title{font-family:var(--font-serif,'Playfair Display',serif);font-size:1.04rem;color:#fff;margin-top:7px;line-height:1.3}

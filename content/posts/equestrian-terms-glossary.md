@@ -6,6 +6,8 @@ category: equestrian-life
 tags: ["equestrian terms", "horse riding glossary", "equestrian lifestyle", "riding terminology", "horse care"]
 author: kate-luthra
 date: 2026-06-24
+cover: /images/cavalry-lifestyle.jpg
+coverAlt: "A rider and horse in open country — equestrian life"
 featured: false
 keyTakeaways:
   - "Equestrian terminology spans five distinct domains: rider aids and communication, horse movement and gaits, disciplines and competition, tack and equipment, and stable management — mastering all five makes you a more effective and confident horseperson."

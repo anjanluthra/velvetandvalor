@@ -159,6 +159,8 @@ function recentPosts(limit = 4) {
         title: data.title || slug,
         cat: blogCfg.categories[data.category] || data.category || '',
         g: GUIDE_GRADIENTS[data.category] || GUIDE_GRADIENT_FALLBACK,
+        cover: data.cover || null,
+        coverAlt: data.coverAlt || data.title || slug,
         date: toISO(data.date),
       };
     })
@@ -175,7 +177,7 @@ function guidesModule() {
       <h2>Read our guides</h2>
       <div class="sr-guides-grid">
         ${guides.map(g => `<a class="sr-guide" href="${g.href}">
-          <div class="sr-guide-top" style="background:${g.g}">${ico}</div>
+          <div class="sr-guide-top" style="background:${g.g}">${g.cover ? `<img src="${g.cover}" alt="${escAttr(g.coverAlt)}" loading="lazy" />` : ico}</div>
           <div class="sr-guide-body"><p class="sr-guide-cat">${esc(g.cat)}</p><p class="sr-guide-title">${esc(g.title)}</p></div>
         </a>`).join('\n        ')}
       </div>

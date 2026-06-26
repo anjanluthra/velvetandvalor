@@ -251,7 +251,7 @@
     });
     initialsInput.addEventListener('input', () => {
       // Force uppercase A-Z, max 4 chars
-      initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+      initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
     });
   }
 

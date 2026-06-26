@@ -1142,3 +1142,42 @@ select.form-input {
   .custom-preview-testimonial { padding: 18px 18px 14px; border-radius: 14px; }
   .custom-preview-quote { font-size: 0.875rem; }
 }
+
+
+/* ============================================================
+   Quote add-on — preview thumbnail next to the toggle
+   ============================================================ */
+.form-with-preview .initials-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.quote-preview {
+  flex-shrink: 0;
+  width: 84px;
+  height: 108px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gold-muted);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+  background: var(--obsidian-deep, #050f23);
+  display: block;
+}
+.quote-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .form-with-preview .initials-toggle {
+    gap: 12px;
+  }
+  .quote-preview {
+    width: 64px;
+    height: 84px;
+    border-radius: 8px;
+  }
+}

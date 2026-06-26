@@ -216,7 +216,9 @@
   const colourCards = document.querySelectorAll('.colour-swatch-card');
   const colourInput = document.getElementById('cf-colour');
   colourCards.forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      // Ignore clicks on the zoom trigger — let it handle them
+      if (e.target.closest('.swatch-zoom-trigger')) return;
       colourCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       colourInput.value = card.dataset.colour;
@@ -224,6 +226,77 @@
       colourInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
   });
+
+  /* ── Swatch close-up lightbox ──────────────────────────── */
+  (function initSwatchLightbox() {
+    if (!colourCards.length) return;
+
+    // Build the lightbox once and append to body
+    const lightbox = document.createElement('div');
+    lightbox.className = 'swatch-lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Case close-up');
+    lightbox.innerHTML = `
+      <div class="swatch-lightbox-stage">
+        <button type="button" class="swatch-lightbox-close" aria-label="Close close-up view">&times;</button>
+        <img class="swatch-lightbox-img" alt="" />
+        <div class="swatch-lightbox-label"></div>
+      </div>
+    `;
+    document.body.appendChild(lightbox);
+    const lbImg = lightbox.querySelector('.swatch-lightbox-img');
+    const lbLabel = lightbox.querySelector('.swatch-lightbox-label');
+    const lbClose = lightbox.querySelector('.swatch-lightbox-close');
+    const lbStage = lightbox.querySelector('.swatch-lightbox-stage');
+
+    function openLightbox(src, alt, label) {
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbLabel.textContent = label || '';
+      lightbox.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    // Close interactions
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      // Click on the backdrop (anything outside the stage) closes
+      if (!lbStage.contains(e.target)) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+    });
+
+    // Inject a zoom trigger into each swatch + wire the click
+    const ZOOM_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20.5" y1="20.5" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+
+    colourCards.forEach(card => {
+      const trigger = document.createElement('span');
+      trigger.className = 'swatch-zoom-trigger';
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('tabindex', '0');
+      trigger.setAttribute('aria-label', `Close-up of ${card.dataset.colour || 'this colour'}`);
+      trigger.innerHTML = ZOOM_SVG;
+      card.appendChild(trigger);
+
+      const fire = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const img = card.querySelector('.colour-swatch-img img');
+        if (!img) return;
+        openLightbox(img.currentSrc || img.src, img.alt, card.dataset.colour || '');
+      };
+      trigger.addEventListener('click', fire);
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') fire(e);
+      });
+    });
+  })();
 
   /* ── Add-ons (Initials + Custom Quote) ─────────────────── */
   const initialsToggle = document.getElementById('cf-add-initials');

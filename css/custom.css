@@ -1301,6 +1301,8 @@ select.form-input {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
   background: var(--obsidian-deep, #050f23);
   display: block;
+  cursor: zoom-in;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 .quote-preview img {
   width: 100%;
@@ -1308,6 +1310,21 @@ select.form-input {
   object-fit: cover;
   object-position: center top;
   display: block;
+  /* Origin anchored at the spot where "Memories to last a lifetime"
+     sits on the case so a hover-zoom magnifies the handwriting. */
+  transform-origin: 32% 22%;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.form-with-preview:hover .quote-preview,
+.quote-preview:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22);
+}
+.form-with-preview:hover .quote-preview img,
+.quote-preview:hover img,
+.quote-preview:focus-within img {
+  transform: scale(1.9);
 }
 
 @media (max-width: 480px) {

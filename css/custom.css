@@ -511,6 +511,12 @@ select.form-input {
   height: 100%;
   object-fit: contain;
   padding: 6%;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.colour-swatch-card:hover .colour-swatch-img img,
+.colour-swatch-card:focus-visible .colour-swatch-img img {
+  transform: scale(1.08);
 }
 
 /* "Example Custom Portrait" tag */

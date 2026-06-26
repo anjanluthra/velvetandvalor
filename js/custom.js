@@ -212,26 +212,11 @@
 
   setupSlot(1);
 
-  /* ── Colour swatch picker ──────────────────────────────── */
-  const colourCards = document.querySelectorAll('.colour-swatch-card');
-  const colourInput = document.getElementById('cf-colour');
-  colourCards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      // Ignore clicks on the zoom trigger — let it handle them
-      if (e.target.closest('.swatch-zoom-trigger')) return;
-      colourCards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      colourInput.value = card.dataset.colour;
-      // Trigger validation / submit-state refresh
-      colourInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  });
-
-  /* ── Swatch close-up lightbox ──────────────────────────── */
-  (function initSwatchLightbox() {
-    if (!colourCards.length) return;
-
-    // Build the lightbox once and append to body
+  /* ── Shared close-up lightbox (swatches + quote preview) ─ */
+  // Build once at outer scope so both the swatch zoom triggers
+  // AND the Custom Quote preview thumbnail can open it.
+  let openLightbox = function () {}; // no-op default in case build fails
+  (function buildLightbox() {
     const lightbox = document.createElement('div');
     lightbox.className = 'swatch-lightbox';
     lightbox.setAttribute('role', 'dialog');
@@ -250,31 +235,45 @@
     const lbClose = lightbox.querySelector('.swatch-lightbox-close');
     const lbStage = lightbox.querySelector('.swatch-lightbox-stage');
 
-    function openLightbox(src, alt, label) {
+    openLightbox = function (src, alt, label) {
       lbImg.src = src;
       lbImg.alt = alt || '';
       lbLabel.textContent = label || '';
       lightbox.classList.add('is-open');
       document.body.style.overflow = 'hidden';
-    }
+    };
     function closeLightbox() {
       lightbox.classList.remove('is-open');
       document.body.style.overflow = '';
     }
 
-    // Close interactions
     lbClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
-      // Click on the backdrop (anything outside the stage) closes
       if (!lbStage.contains(e.target)) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
     });
+  })();
 
-    // Inject a zoom trigger into each swatch + wire the click
+  /* ── Colour swatch picker ──────────────────────────────── */
+  const colourCards = document.querySelectorAll('.colour-swatch-card');
+  const colourInput = document.getElementById('cf-colour');
+  colourCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Ignore clicks on the zoom trigger — let it handle them
+      if (e.target.closest('.swatch-zoom-trigger')) return;
+      colourCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      colourInput.value = card.dataset.colour;
+      // Trigger validation / submit-state refresh
+      colourInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+
+  /* ── Inject zoom triggers into each swatch ─────────────── */
+  if (colourCards.length) {
     const ZOOM_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20.5" y1="20.5" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
-
     colourCards.forEach(card => {
       const trigger = document.createElement('span');
       trigger.className = 'swatch-zoom-trigger';
@@ -296,7 +295,7 @@
         if (e.key === 'Enter' || e.key === ' ') fire(e);
       });
     });
-  })();
+  }
 
   /* ── Add-ons (Initials + Custom Quote) ─────────────────── */
   const initialsToggle = document.getElementById('cf-add-initials');
@@ -343,13 +342,18 @@
     });
   }
 
-  /* ── Magnifying-glass hover on Custom Quote preview ──────
-     Mouse-tracks the cursor so the 3x zoom acts like a real
-     magnifier moving over the case. Pointer events only (no
-     touch — mobile customers get a flat thumbnail). */
+  /* ── Quote preview: magnifier on desktop + tap-to-zoom on mobile ──
+     Desktop (mouse): 3x scale follows the cursor via transform-origin.
+     Mobile / touch:  tap opens the shared swatch lightbox so the
+                      handwritten quote can be inspected full-screen.
+     Either path: stopPropagation/preventDefault stops the click from
+     bubbling to the surrounding <label> and toggling the Add-Quote
+     checkbox by accident. */
   const quotePreview = document.querySelector('.quote-preview');
   if (quotePreview) {
     const quotePreviewImg = quotePreview.querySelector('img');
+
+    // Desktop magnifier (cursor-tracking 3x zoom via CSS hover)
     if (quotePreviewImg) {
       quotePreview.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'mouse') return;
@@ -359,10 +363,25 @@
         quotePreviewImg.style.transformOrigin = `${x}% ${y}%`;
       });
       quotePreview.addEventListener('pointerleave', () => {
-        // Reset origin so next hover snaps cleanly when zooming in again
         quotePreviewImg.style.transformOrigin = '50% 35%';
       });
     }
+
+    // Tap / click / keyboard activation — open the full-screen lightbox
+    const openQuoteLightbox = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!quotePreviewImg) return;
+      openLightbox(
+        quotePreviewImg.currentSrc || quotePreviewImg.src,
+        quotePreviewImg.alt || 'Handwritten quote on a custom Velvet & Valor case',
+        'Handwritten Quote'
+      );
+    };
+    quotePreview.addEventListener('click', openQuoteLightbox);
+    quotePreview.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') openQuoteLightbox(e);
+    });
   }
 
   /* ── Form validation / enable submit ───────────────────── */

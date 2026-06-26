@@ -1329,8 +1329,28 @@ select.form-input {
     gap: 12px;
   }
   .quote-preview {
-    width: 64px;
-    height: 84px;
+    width: 72px;
+    height: 96px;
     border-radius: 8px;
+    cursor: pointer;
+    /* Tap-state visual feedback for touch (no hover) — taps flash
+       the gold border briefly. */
+    -webkit-tap-highlight-color: transparent;
   }
+  .quote-preview:active {
+    border-color: var(--gold);
+    transform: scale(0.97);
+  }
+  .quote-preview img {
+    /* Don't try to magnify on touch — the lightbox opens instead. */
+    transform: none !important;
+  }
+}
+
+/* Pointer-coarse devices (touch screens) — neutralise the hover
+   3x magnifier rule so taps don't briefly zoom before the lightbox
+   opens. */
+@media (hover: none) and (pointer: coarse) {
+  .quote-preview img { transform: none !important; }
+  .quote-preview { cursor: pointer; }
 }

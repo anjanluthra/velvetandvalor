@@ -225,17 +225,25 @@
     });
   });
 
-  /* ── Initials add-on ───────────────────────────────────── */
+  /* ── Add-ons (Initials + Custom Quote) ─────────────────── */
   const initialsToggle = document.getElementById('cf-add-initials');
   const initialsWrap = document.getElementById('initialsInputWrap');
   const initialsInput = document.getElementById('cf-initials');
+
+  const quoteToggle = document.getElementById('cf-add-quote');
+  const quoteWrap = document.getElementById('quoteInputWrap');
+  const quoteInput = document.getElementById('cf-quote');
+
   const submitPriceEl = document.getElementById('customSubmitPrice');
+
+  const BASE_PRICE = 73;
+  const ADDON_PRICE = 6; // initials + quote each cost the same
 
   function updatePriceDisplay() {
     if (!submitPriceEl) return;
-    const base = 85;
-    const total = base + (initialsToggle && initialsToggle.checked ? 10 : 0);
-    // Re-set data attribute so currency toggle re-reads it
+    let total = BASE_PRICE;
+    if (initialsToggle && initialsToggle.checked) total += ADDON_PRICE;
+    if (quoteToggle && quoteToggle.checked) total += ADDON_PRICE;
     submitPriceEl.setAttribute('data-price-usd', total.toFixed(2));
     submitPriceEl.textContent = `— $${total.toFixed(2)}`;
     // If currency toggle has selected a non-USD currency, re-trigger via change event
@@ -250,8 +258,15 @@
       updatePriceDisplay();
     });
     initialsInput.addEventListener('input', () => {
-      // Force uppercase A-Z, max 4 chars
       initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    });
+  }
+
+  if (quoteToggle && quoteWrap && quoteInput) {
+    quoteToggle.addEventListener('change', () => {
+      quoteWrap.hidden = !quoteToggle.checked;
+      if (!quoteToggle.checked) quoteInput.value = '';
+      updatePriceDisplay();
     });
   }
 
@@ -303,6 +318,8 @@
       photo_url_1: photos[1],
       add_initials: !!(initialsToggle && initialsToggle.checked && initialsInput && initialsInput.value.trim()),
       initials: initialsInput ? initialsInput.value.trim() : '',
+      add_quote: !!(quoteToggle && quoteToggle.checked && quoteInput && quoteInput.value.trim()),
+      custom_quote: quoteInput ? quoteInput.value.trim() : '',
     };
 
     try {

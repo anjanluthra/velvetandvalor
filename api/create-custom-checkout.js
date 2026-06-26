@@ -25,6 +25,8 @@ module.exports = async (req, res) => {
     notes = '',
     add_initials = false,
     initials = '',
+    add_quote = false,
+    custom_quote = '',
   } = req.body || {};
 
   if (!photo_url_1) {
@@ -38,7 +40,15 @@ module.exports = async (req, res) => {
   const cleanInitials = (initials || '').toString().toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
   const wantsInitials = !!add_initials && cleanInitials.length > 0;
 
-  const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}${wantsInitials ? ` + Initials "${cleanInitials}"` : ''}`;
+  // Normalise custom handwritten quote — strip control chars, cap length
+  const cleanQuote = (custom_quote || '').toString().replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 48);
+  const wantsQuote = !!add_quote && cleanQuote.length > 0;
+
+  const addOnSuffix = [
+    wantsInitials ? ` + Initials "${cleanInitials}"` : '',
+    wantsQuote ? ` + Quote "${cleanQuote}"` : '',
+  ].join('');
+  const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}${addOnSuffix}`;
 
   const orderMetadata = {
     order_type: 'custom_portrait',
@@ -51,6 +61,7 @@ module.exports = async (req, res) => {
     photo_url_2: (photo_url_2 || '').slice(0, 500),
     notes: (notes || '').slice(0, 400),
     initials: wantsInitials ? cleanInitials : '',
+    custom_quote: wantsQuote ? cleanQuote : '',
   };
 
   try {
@@ -84,6 +95,17 @@ module.exports = async (req, res) => {
             product_data: {
               name: `Custom Initials — "${cleanInitials}"`,
               description: 'Monogrammed initials added to your bespoke phone case.',
+            },
+            unit_amount: 600, // $6.00 (~ £5 GBP)
+          },
+          quantity: 1,
+        }] : []),
+        ...(wantsQuote ? [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Custom Quote — "${cleanQuote}"`,
+              description: 'A short personal phrase handwritten by the artist on your bespoke phone case.',
             },
             unit_amount: 600, // $6.00 (~ £5 GBP)
           },

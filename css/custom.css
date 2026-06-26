@@ -1310,21 +1310,18 @@ select.form-input {
   object-fit: cover;
   object-position: center top;
   display: block;
-  /* Origin anchored at the spot where "Memories to last a lifetime"
-     sits on the case so a hover-zoom magnifies the handwriting. */
-  transform-origin: 32% 22%;
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  /* JS updates transform-origin live as cursor moves over the
+     thumbnail so the zoom acts like a magnifying glass tracking
+     the customer's pointer. Fallback origin if JS hasn't fired yet. */
+  transform-origin: 50% 35%;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, transform-origin;
 }
-.form-with-preview:hover .quote-preview,
-.quote-preview:focus-within {
-  border-color: var(--gold);
-  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22);
-}
-.form-with-preview:hover .quote-preview img,
+.quote-preview:hover { border-color: var(--gold); box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22); }
 .quote-preview:hover img,
 .quote-preview:focus-within img {
-  transform: scale(1.9);
+  transform: scale(3);
+  transition-duration: 0.18s;
 }
 
 @media (max-width: 480px) {

@@ -343,6 +343,28 @@
     });
   }
 
+  /* ── Magnifying-glass hover on Custom Quote preview ──────
+     Mouse-tracks the cursor so the 3x zoom acts like a real
+     magnifier moving over the case. Pointer events only (no
+     touch — mobile customers get a flat thumbnail). */
+  const quotePreview = document.querySelector('.quote-preview');
+  if (quotePreview) {
+    const quotePreviewImg = quotePreview.querySelector('img');
+    if (quotePreviewImg) {
+      quotePreview.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const rect = quotePreview.getBoundingClientRect();
+        const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+        quotePreviewImg.style.transformOrigin = `${x}% ${y}%`;
+      });
+      quotePreview.addEventListener('pointerleave', () => {
+        // Reset origin so next hover snaps cleanly when zooming in again
+        quotePreviewImg.style.transformOrigin = '50% 35%';
+      });
+    }
+  }
+
   /* ── Form validation / enable submit ───────────────────── */
   function isFormValid() {
     if (!photos[1]) return false; // photo 1 required

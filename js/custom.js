@@ -212,11 +212,57 @@
 
   setupSlot(1);
 
+  /* ── Shared close-up lightbox (swatches + quote preview) ─ */
+  // Build once at outer scope so both the swatch zoom triggers
+  // AND the Custom Quote preview thumbnail can open it.
+  let openLightbox = function () {}; // no-op default in case build fails
+  (function buildLightbox() {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'swatch-lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Case close-up');
+    lightbox.innerHTML = `
+      <div class="swatch-lightbox-stage">
+        <button type="button" class="swatch-lightbox-close" aria-label="Close close-up view">&times;</button>
+        <img class="swatch-lightbox-img" alt="" />
+        <div class="swatch-lightbox-label"></div>
+      </div>
+    `;
+    document.body.appendChild(lightbox);
+    const lbImg = lightbox.querySelector('.swatch-lightbox-img');
+    const lbLabel = lightbox.querySelector('.swatch-lightbox-label');
+    const lbClose = lightbox.querySelector('.swatch-lightbox-close');
+    const lbStage = lightbox.querySelector('.swatch-lightbox-stage');
+
+    openLightbox = function (src, alt, label) {
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbLabel.textContent = label || '';
+      lightbox.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    };
+    function closeLightbox() {
+      lightbox.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (!lbStage.contains(e.target)) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+    });
+  })();
+
   /* ── Colour swatch picker ──────────────────────────────── */
   const colourCards = document.querySelectorAll('.colour-swatch-card');
   const colourInput = document.getElementById('cf-colour');
   colourCards.forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      // Ignore clicks on the zoom trigger — let it handle them
+      if (e.target.closest('.swatch-zoom-trigger')) return;
       colourCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       colourInput.value = card.dataset.colour;
@@ -225,17 +271,51 @@
     });
   });
 
-  /* ── Initials add-on ───────────────────────────────────── */
+  /* ── Inject zoom triggers into each swatch ─────────────── */
+  if (colourCards.length) {
+    const ZOOM_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20.5" y1="20.5" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+    colourCards.forEach(card => {
+      const trigger = document.createElement('span');
+      trigger.className = 'swatch-zoom-trigger';
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('tabindex', '0');
+      trigger.setAttribute('aria-label', `Close-up of ${card.dataset.colour || 'this colour'}`);
+      trigger.innerHTML = ZOOM_SVG;
+      card.appendChild(trigger);
+
+      const fire = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const img = card.querySelector('.colour-swatch-img img');
+        if (!img) return;
+        openLightbox(img.currentSrc || img.src, img.alt, card.dataset.colour || '');
+      };
+      trigger.addEventListener('click', fire);
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') fire(e);
+      });
+    });
+  }
+
+  /* ── Add-ons (Initials + Custom Quote) ─────────────────── */
   const initialsToggle = document.getElementById('cf-add-initials');
   const initialsWrap = document.getElementById('initialsInputWrap');
   const initialsInput = document.getElementById('cf-initials');
+
+  const quoteToggle = document.getElementById('cf-add-quote');
+  const quoteWrap = document.getElementById('quoteInputWrap');
+  const quoteInput = document.getElementById('cf-quote');
+
   const submitPriceEl = document.getElementById('customSubmitPrice');
+
+  const BASE_PRICE = 73;
+  const ADDON_PRICE = 6; // initials + quote each cost the same
 
   function updatePriceDisplay() {
     if (!submitPriceEl) return;
-    const base = 85;
-    const total = base + (initialsToggle && initialsToggle.checked ? 10 : 0);
-    // Re-set data attribute so currency toggle re-reads it
+    let total = BASE_PRICE;
+    if (initialsToggle && initialsToggle.checked) total += ADDON_PRICE;
+    if (quoteToggle && quoteToggle.checked) total += ADDON_PRICE;
     submitPriceEl.setAttribute('data-price-usd', total.toFixed(2));
     submitPriceEl.textContent = `— $${total.toFixed(2)}`;
     // If currency toggle has selected a non-USD currency, re-trigger via change event
@@ -250,8 +330,57 @@
       updatePriceDisplay();
     });
     initialsInput.addEventListener('input', () => {
-      // Force uppercase A-Z, max 4 chars
-      initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+      initialsInput.value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    });
+  }
+
+  if (quoteToggle && quoteWrap && quoteInput) {
+    quoteToggle.addEventListener('change', () => {
+      quoteWrap.hidden = !quoteToggle.checked;
+      if (!quoteToggle.checked) quoteInput.value = '';
+      updatePriceDisplay();
+    });
+  }
+
+  /* ── Quote preview: magnifier on desktop + tap-to-zoom on mobile ──
+     Desktop (mouse): 3x scale follows the cursor via transform-origin.
+     Mobile / touch:  tap opens the shared swatch lightbox so the
+                      handwritten quote can be inspected full-screen.
+     Either path: stopPropagation/preventDefault stops the click from
+     bubbling to the surrounding <label> and toggling the Add-Quote
+     checkbox by accident. */
+  const quotePreview = document.querySelector('.quote-preview');
+  if (quotePreview) {
+    const quotePreviewImg = quotePreview.querySelector('img');
+
+    // Desktop magnifier (cursor-tracking 3x zoom via CSS hover)
+    if (quotePreviewImg) {
+      quotePreview.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const rect = quotePreview.getBoundingClientRect();
+        const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+        quotePreviewImg.style.transformOrigin = `${x}% ${y}%`;
+      });
+      quotePreview.addEventListener('pointerleave', () => {
+        quotePreviewImg.style.transformOrigin = '50% 35%';
+      });
+    }
+
+    // Tap / click / keyboard activation — open the full-screen lightbox
+    const openQuoteLightbox = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!quotePreviewImg) return;
+      openLightbox(
+        quotePreviewImg.currentSrc || quotePreviewImg.src,
+        quotePreviewImg.alt || 'Handwritten quote on a custom Velvet & Valor case',
+        'Handwritten Quote'
+      );
+    };
+    quotePreview.addEventListener('click', openQuoteLightbox);
+    quotePreview.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') openQuoteLightbox(e);
     });
   }
 
@@ -303,6 +432,8 @@
       photo_url_1: photos[1],
       add_initials: !!(initialsToggle && initialsToggle.checked && initialsInput && initialsInput.value.trim()),
       initials: initialsInput ? initialsInput.value.trim() : '',
+      add_quote: !!(quoteToggle && quoteToggle.checked && quoteInput && quoteInput.value.trim()),
+      custom_quote: quoteInput ? quoteInput.value.trim() : '',
     };
 
     try {

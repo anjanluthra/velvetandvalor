@@ -12,6 +12,7 @@
  *   Events: checkout.session.completed, checkout.session.expired
  */
 const Stripe = require('stripe');
+const store = require('./admin/_store');
 const { sendFounderWelcomeEmail, sendCartRecoveryEmail, sendPurchaseNotification } = require('./admin/_email');
 
 /** Format a Stripe minor-unit amount (e.g. 4800, "usd") as "$48.00". */
@@ -87,6 +88,11 @@ async function handleCompleted(stripe, sessionId) {
   }
 
   if (!to) return { skipped: 'no customer email', notified: true };
+
+  // Exit the newsletter welcome flow immediately on purchase — don't keep
+  // sending "buy now" emails to someone who just bought. (The daily cron also
+  // enforces this; doing it here closes the same-day gap.)
+  try { await store.removeNewsletterFlow(to); } catch (e) { console.warn('stripe-webhook: flow exit failed:', e && e.message); }
 
   await sendFounderWelcomeEmail({ to, name: details.name || '', product });
   console.log('stripe-webhook: welcome sent to', to, 'for', session.id);

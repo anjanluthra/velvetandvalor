@@ -511,6 +511,145 @@ select.form-input {
   height: 100%;
   object-fit: contain;
   padding: 6%;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.colour-swatch-card:hover .colour-swatch-img img,
+.colour-swatch-card:focus-visible .colour-swatch-img img {
+  transform: scale(1.5);
+}
+
+/* Zoom trigger — top-left magnifier icon, opens full-screen lightbox */
+.swatch-zoom-trigger {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(7, 20, 40, 0.78);
+  color: var(--cream);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s, opacity 0.25s;
+  opacity: 0.85;
+}
+.swatch-zoom-trigger:hover,
+.colour-swatch-card:hover .swatch-zoom-trigger {
+  background: var(--gold);
+  color: var(--obsidian);
+  opacity: 1;
+  transform: scale(1.08);
+}
+.swatch-zoom-trigger svg { display: block; }
+
+/* ============================================================
+   Swatch zoom lightbox — full-screen close-up view
+   ============================================================ */
+.swatch-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(4, 13, 28, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out;
+}
+.swatch-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.swatch-lightbox-stage {
+  position: relative;
+  max-width: 560px;
+  max-height: 85vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  transform: scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.swatch-lightbox.is-open .swatch-lightbox-stage {
+  transform: scale(1);
+}
+
+.swatch-lightbox-img {
+  max-width: 100%;
+  max-height: 75vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  background: #fff;
+}
+
+.swatch-lightbox-label {
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+}
+
+.swatch-lightbox-close {
+  position: absolute;
+  top: -52px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gold-muted);
+  border-radius: 50%;
+  background: rgba(7, 20, 40, 0.6);
+  color: var(--cream);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+.swatch-lightbox-close:hover {
+  background: var(--gold);
+  color: var(--obsidian);
+  border-color: var(--gold);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 640px) {
+  .swatch-lightbox { padding: 20px; }
+  .swatch-lightbox-stage { max-width: 100%; gap: 14px; }
+  .swatch-lightbox-img { border-radius: 14px; }
+  .swatch-lightbox-close {
+    top: auto;
+    bottom: -56px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .swatch-lightbox-close:hover { transform: translateX(50%) rotate(90deg); }
+  .swatch-zoom-trigger {
+    width: 32px;
+    height: 32px;
+    opacity: 1;
+  }
 }
 
 /* "Example Custom Portrait" tag */
@@ -1141,4 +1280,77 @@ select.form-input {
   }
   .custom-preview-testimonial { padding: 18px 18px 14px; border-radius: 14px; }
   .custom-preview-quote { font-size: 0.875rem; }
+}
+
+
+/* ============================================================
+   Quote add-on — preview thumbnail next to the toggle
+   ============================================================ */
+.form-with-preview .initials-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.quote-preview {
+  flex-shrink: 0;
+  width: 84px;
+  height: 108px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gold-muted);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+  background: var(--obsidian-deep, #050f23);
+  display: block;
+  cursor: zoom-in;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.quote-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  /* JS updates transform-origin live as cursor moves over the
+     thumbnail so the zoom acts like a magnifying glass tracking
+     the customer's pointer. Fallback origin if JS hasn't fired yet. */
+  transform-origin: 50% 35%;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, transform-origin;
+}
+.quote-preview:hover { border-color: var(--gold); box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22); }
+.quote-preview:hover img,
+.quote-preview:focus-within img {
+  transform: scale(3);
+  transition-duration: 0.18s;
+}
+
+@media (max-width: 480px) {
+  .form-with-preview .initials-toggle {
+    gap: 12px;
+  }
+  .quote-preview {
+    width: 72px;
+    height: 96px;
+    border-radius: 8px;
+    cursor: pointer;
+    /* Tap-state visual feedback for touch (no hover) — taps flash
+       the gold border briefly. */
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quote-preview:active {
+    border-color: var(--gold);
+    transform: scale(0.97);
+  }
+  .quote-preview img {
+    /* Don't try to magnify on touch — the lightbox opens instead. */
+    transform: none !important;
+  }
+}
+
+/* Pointer-coarse devices (touch screens) — neutralise the hover
+   3x magnifier rule so taps don't briefly zoom before the lightbox
+   opens. */
+@media (hover: none) and (pointer: coarse) {
+  .quote-preview img { transform: none !important; }
+  .quote-preview { cursor: pointer; }
 }

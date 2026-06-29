@@ -27,7 +27,7 @@ const jaccard = (a, b) => {
 };
 
 function capabilities() {
-  return { ahrefs: ahrefs.isConfigured(), kv: store.isConfigured(), anthropic: require('./_content-agent').isConfigured(), github: require('./_github').isConfigured() };
+  return { ahrefs: ahrefs.isConfigured(), kv: store.isConfigured(), anthropic: require('./_content-agent').isConfigured(), github: require('./_github').isConfigured(), gemini: require('./_covers').isConfigured() };
 }
 
 /* ─────────────────────────── research ─────────────────────────── */
@@ -147,6 +147,7 @@ async function relatedLinksFor(item, plan) {
 async function generate({ id, publish }) {
   const agent = require('./_content-agent');
   const github = require('./_github');
+  const covers = require('./_covers');
   const item = await store.getPlanItem(id);
   if (!item) return { status: 404, body: { error: `plan item "${id}" not found` } };
   if (!agent.isConfigured()) {
@@ -175,6 +176,21 @@ async function generate({ id, publish }) {
     }
 
     const relatedLinks = await relatedLinksFor(item, plan);
+
+    // Kick the cover image off in parallel with the article draft (fail-soft) so
+    // the Gemini call doesn't stack onto Claude's time and blow the 60s budget.
+    // We can't wait for the draft's excerpt (that would make it sequential), so we
+    // feed the strongest pre-draft relevance signals we already have — the title
+    // and the article's target keyword — to keep the image specific to THIS piece.
+    const coverCategory = cluster ? cluster.categorySlug : 'equestrian-life';
+    const coverTheme = item.targetKeyword
+      ? `An editorial cover for an article about "${item.targetKeyword}".`
+      : undefined;
+    const coverPromise = (publish && covers.isConfigured())
+      ? covers.generateCover({ title: item.title, excerpt: coverTheme, category: coverCategory })
+          .catch((e) => ({ error: (e && e.message) || 'cover generation crashed' }))
+      : Promise.resolve(null);
+
     const result = await agent.generate({ item, cluster, enrichment, relatedLinks, dateISO: isoToday(), onStage });
 
     if (!publish) {
@@ -182,15 +198,36 @@ async function generate({ id, publish }) {
       return { status: 200, body: { jobId, slug: id, title: item.title, gate: result.gate, markdown: result.markdown, parsed: result.parsed, published: false } };
     }
 
-    // publish — commit content/posts/<slug>.md (Vercel deploy rebuilds the blog).
+    // Fold the generated cover (if any) into the post frontmatter + commit set.
     await onStage('publish', 'committing markdown');
+    let markdown = result.markdown;
+    const files = [];
+    const cover = await coverPromise;
+    const coverOk = !!(cover && cover.data);
+    if (coverOk) {
+      const coverPath = `/images/blog/${id}.${cover.ext}`;
+      markdown = covers.patchFrontmatter(markdown, coverPath, covers.coverAltFor(item.title, coverCategory));
+      files.push({ path: `images/blog/${id}.${cover.ext}`, content: cover.data, encoding: 'base64' });
+    }
+    files.push({ path: `content/posts/${id}.md`, content: markdown });
+
+    // publish — commit post (+ cover) atomically; Vercel deploy rebuilds the blog.
     const commit = await github.commitFiles(
-      [{ path: `content/posts/${id}.md`, content: result.markdown }],
-      `Content engine: publish "${item.title}"`
+      files,
+      `Content engine: publish "${item.title}"${coverOk ? ' (+ cover)' : ''}`
     );
     await store.patchPlanItem(id, { status: 'Live', publishedDate: isoToday() });
-    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, note: 'published' });
-    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, commit: commit.url } };
+    // Surface a missing cover so it doesn't slip through silently: if Gemini is
+    // configured but returned no image, the article still publishes (fail-soft) —
+    // but the job note carries the exact Gemini error so it's diagnosable in-UI.
+    const coverErr = cover && cover.error;
+    const coverNote = coverOk
+      ? 'published (+ cover)'
+      : (covers.isConfigured()
+        ? `published — NO COVER: ${coverErr || 'image generation failed'}`
+        : 'published — no cover (GEMINI_API_KEY not set)');
+    await store.updateJob(jobId, { stage: 'done', status: 'done', progress: 100, gate: result.gate, commit: commit.url, cover: coverOk, note: coverNote });
+    return { status: 200, body: { jobId, slug: id, gate: result.gate, published: true, cover: coverOk, commit: commit.url } };
   } catch (e) {
     await store.updateJob(jobId, { status: 'failed', error: e.message, note: `error: ${e.message}` }).catch(() => {});
     return { status: 500, body: { error: e.message, jobId } };

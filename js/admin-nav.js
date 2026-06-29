@@ -11,6 +11,7 @@
     { href: '/admin/products', label: 'Products', icon: '◈', match: ['/admin/products'], min: 'manager' },
     { href: '/admin/submissions', label: 'Form Submissions', icon: '✉', match: ['/admin/submissions'], min: 'manager' },
     { href: '/admin/content', label: 'Content Engine', icon: '✍', match: ['/admin/content'], min: 'manager' },
+    { href: '/admin/flows', label: 'Email Flows', icon: '✦', match: ['/admin/flows'], min: 'manager' },
     { href: '/admin/settings', label: 'Settings', icon: '⚙', match: ['/admin/settings', '/admin/users'], min: 'owner' },
   ];
   const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

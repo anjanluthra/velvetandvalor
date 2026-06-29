@@ -314,7 +314,10 @@
                   <span class="colour-swatch-label">Nude</span>
                 </button>
                 <button type="button" class="colour-swatch-card" data-colour="Pink">
-                  <div class="colour-swatch-img"><img src="/images/pink product image.jpg" alt="Pink case" loading="lazy" /></div>
+                  <div class="colour-swatch-img">
+                    <img src="/images/quote-example.jpg" alt="Pink case with handwritten quote" loading="lazy" />
+                    <span class="colour-swatch-example-tag">Example Custom &amp; Quote</span>
+                  </div>
                   <span class="colour-swatch-label">Pink</span>
                 </button>
                 <button type="button" class="colour-swatch-card" data-colour="Burgundy">
@@ -407,20 +410,38 @@
                 <input type="checkbox" id="cf-add-initials" name="add_initials" />
                 <span class="initials-toggle-text">
                   <span class="initials-toggle-title">Add Custom Initials <span class="initials-price-tag" data-price-usd="6.00" data-price-gbp="5.00" data-price-prefix="+">+$6.00</span></span>
-                  <span class="initials-toggle-desc">Add up to 4 initials &mdash; an elegantly placed monogram on your bespoke case.</span>
+                  <span class="initials-toggle-desc">Add up to 3 initials &mdash; an elegantly placed monogram on your bespoke case.</span>
                 </span>
               </label>
               <div class="initials-input-wrap" id="initialsInputWrap" hidden>
                 <label class="form-label" for="cf-initials">Your initials</label>
-                <input class="form-input initials-input" id="cf-initials" name="initials" type="text" maxlength="4" placeholder="e.g. KAL" autocomplete="off" />
-                <p class="form-help">Letters only, up to 4 characters. We&rsquo;ll preview placement during design.</p>
+                <input class="form-input initials-input" id="cf-initials" name="initials" type="text" maxlength="3" placeholder="e.g. KAL" autocomplete="off" />
+                <p class="form-help">Letters only, up to 3 characters. We&rsquo;ll preview placement during design.</p>
+              </div>
+            </div>
+
+            <!-- Custom handwritten quote add-on -->
+            <div class="form-group form-initials form-with-preview">
+              <label class="initials-toggle">
+                <input type="checkbox" id="cf-add-quote" name="add_quote" />
+                <span class="initials-toggle-text">
+                  <span class="initials-toggle-title">Add a Custom Quote <span class="initials-price-tag" data-price-usd="6.00" data-price-gbp="5.00" data-price-prefix="+">+$6.00</span></span>
+                  <span class="initials-toggle-desc">A short personal phrase in elegant handwriting &mdash; e.g. <em>&ldquo;memories to last a lifetime.&rdquo;</em></span>
+                </span>
+                <span class="quote-preview" role="button" tabindex="0" aria-label="Tap to see the handwritten quote up close">
+                  <img src="/images/quote-example.jpg" alt="Burgundy phone case with handwritten quote 'Memories to last a lifetime'" loading="lazy" />
+                </span>
+              </label>
+              <div class="initials-input-wrap" id="quoteInputWrap" hidden>
+                <label class="form-label" for="cf-quote">Your quote</label>
+                <input class="form-input" id="cf-quote" name="custom_quote" type="text" maxlength="48" placeholder="memories to last a lifetime" autocomplete="off" />
+                <p class="form-help">Up to 48 characters. We&rsquo;ll handwrite it in the artist&rsquo;s signature script and preview placement during design.</p>
               </div>
             </div>
 
             <!-- Notes -->
             <div class="form-group">
-              <label class="form-label" for="cf-notes">Anything else? <span class="opt">(optional)</span></label>
-              <p class="form-help">Tell us about your horse &mdash; their personality, special markings, or anything you&rsquo;d like us to know.</p>
+              <label class="form-label" for="cf-notes">Anything else you&rsquo;d like us to know? <span class="opt">(optional)</span></label>
               <textarea class="form-input" id="cf-notes" name="notes" rows="3" placeholder="My horse Daisy is a 16hh dapple grey with a white blaze…"></textarea>
             </div>
 

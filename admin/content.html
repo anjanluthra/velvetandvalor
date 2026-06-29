@@ -160,7 +160,7 @@
 
     function renderCaps() {
       const c = CFG.capabilities || {};
-      const items = [['KV store', c.kv], ['Ahrefs', c.ahrefs], ['Claude (generation)', c.anthropic], ['GitHub (publish)', c.github]];
+      const items = [['KV store', c.kv], ['Ahrefs', c.ahrefs], ['Claude (generation)', c.anthropic], ['GitHub (publish)', c.github], ['Covers (Gemini)', c.gemini]];
       document.getElementById('caps').innerHTML = items.map(([label, on]) =>
         `<span class="cap ${on ? 'on' : 'off'}"><b>${esc(label)}</b> · ${on ? 'connected' : 'not set'}</span>`).join('');
     }
@@ -200,7 +200,7 @@
             <td class="num hide">${p.kd == null ? '—' : p.kd}</td>
             <td><span class="st ${esc(p.status)}">${esc(p.status)}</span>${p.publishedDate ? '<br><span class="kw">' + esc(p.publishedDate) + '</span>' : ''}</td>
             <td style="white-space:nowrap;">
-              ${canGen ? `<button class="mini" data-publish="${esc(p.id)}">Generate&nbsp;&amp;&nbsp;Publish</button>` : `<a class="mini" href="/blog/${esc(p.id)}" target="_blank">View</a>`}
+              ${canGen ? `<button class="mini" data-publish="${esc(p.id)}">Generate&nbsp;&amp;&nbsp;Publish</button>` : `<a class="mini" href="/blog/${esc(p.id)}" target="_blank">View</a> <button class="mini" data-regen="${esc(p.id)}" title="Re-run generation and overwrite the published article">Regenerate</button>`}
               <button class="mini danger" data-delete="${esc(p.id)}" title="Remove from plan">Delete</button>
             </td></tr>`;
         }).join('') + '</tbody></table>';
@@ -242,9 +242,11 @@
     async function loadPlan() { const d = await api.get('plan'); PLAN = d.plan || []; renderPlan(); }
 
     document.getElementById('planList').addEventListener('click', async (e) => {
-      const pub = e.target.closest('[data-publish]'), del = e.target.closest('[data-delete]');
+      const pub = e.target.closest('[data-publish]'), regen = e.target.closest('[data-regen]'), del = e.target.closest('[data-delete]');
       if (pub) { if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
         if (!confirm('Generate and publish this article to the live Journal?')) return; return generate(pub.dataset.publish, true, pub); }
+      if (regen) { if (!CFG.capabilities.anthropic) return toast('Add ANTHROPIC_API_KEY in Vercel to generate articles.');
+        if (!confirm('Regenerate this article from scratch and OVERWRITE the published version? (New body, links, and cover image.)')) return; return generate(regen.dataset.regen, true, regen); }
       if (del) { if (!confirm('Delete this article from the plan permanently? (Does not affect anything already published.)')) return;
         const r = await api.post({ op: 'plan-delete', id: del.dataset.delete });
         if (r.ok) { toast('Deleted from plan'); loadPlan(); } else toast(r.data.error || 'Failed'); }
@@ -319,7 +321,7 @@
       if (!jobs.length) { el.innerHTML = '<div class="state">No generation jobs yet.</div>'; return; }
       el.innerHTML = '<table><thead><tr><th>Article</th><th>Stage</th><th>Progress</th><th>Status</th><th class="hide">When</th></tr></thead><tbody>' +
         jobs.map((j) => `<tr>
-          <td><div class="ttl">${esc(j.title || j.slug)}</div>${j.commit ? `<a class="kw" href="${esc(j.commit)}" target="_blank">commit ↗</a>` : ''}${j.error ? `<div class="kw" style="color:#ff9a9a">${esc(j.error)}</div>` : ''}</td>
+          <td><div class="ttl">${esc(j.title || j.slug)}</div>${j.commit ? `<a class="kw" href="${esc(j.commit)}" target="_blank">commit ↗</a>` : ''}${j.error ? `<div class="kw" style="color:#ff9a9a">${esc(j.error)}</div>` : ''}${j.status === 'done' && j.note ? `<div class="kw" style="color:${j.cover === false ? '#ffcf8a' : ''}">${esc(j.note)}</div>` : ''}</td>
           <td>${esc(j.stage || '')}</td>
           <td><div class="bar"><i style="width:${j.progress || 0}%"></i></div></td>
           <td><span class="st ${j.status === 'done' ? 'Live' : j.status === 'failed' ? 'Cancelled' : 'Outstanding'}">${esc(j.status || '')}</span></td>

@@ -98,7 +98,7 @@ Understanding **what is Apple MagSafe** fully means looking beyond the charger. 
 - **MagSafe battery packs** — Apple's own MagSafe Battery Pack and third-party equivalents that add capacity without a cable
 - **MagSafe cases with integrated features** — cases that incorporate a built-in wallet, kickstand, or additional lens protection, all aligned via the magnetic ring
 
-The British Standards Institution and Apple's own Made for iPhone (MFi) programme both provide frameworks for accessory certification, meaning that when you see the Made for MagSafe badge, the accessory has passed defined alignment, attachment, and electrical safety tests. Apple's MFi programme details are published at [https://developer.apple.com/programs/mfi/](https://developer.apple.com/programs/mfi/).
+The British Standards Institution and Apple's own Made for iPhone (MFi) programme both provide frameworks for accessory certification, meaning that when you see the Made for MagSafe badge, the accessory has passed defined alignment, attachment, and electrical safety tests. You can read the full requirements in [Apple's MFi programme documentation](https://developer.apple.com/programs/mfi/).
 
 ## What to Look For in a MagSafe Phone Case
 

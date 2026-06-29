@@ -470,7 +470,7 @@ ${toc}
       <p class="article-related-eyebrow">Continue Reading</p>
       <div class="article-related-grid">
 ${pool.map(r => `        <a href="${r.path}" class="article-related-card">
-          <div class="article-related-thumb" aria-hidden="true"><span>&#10022;</span></div>
+          <div class="article-related-thumb"${r.cover ? '' : ' aria-hidden="true"'}>${r.cover ? `<img src="${r.cover}" alt="${esc(r.coverAlt || r.title)}" loading="lazy" />` : '<span aria-hidden="true">&#10022;</span>'}</div>
           <div class="article-related-body">
             <span class="article-related-cat">${esc(catName(r.category))}</span>
             <h3 class="article-related-title">${esc(r.title)}</h3>

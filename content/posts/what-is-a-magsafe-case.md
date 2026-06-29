@@ -124,6 +124,6 @@ Before you purchase, ask yourself four questions:
 - **How much do I value longevity over initial cost?** A well-made leather MagSafe case costs more upfront and lasts considerably longer than a silicone alternative that will need replacing within a year.
 - **Does case thickness matter for my charging habits?** If you charge wirelessly every night, prioritise a case that sits within Apple's thickness tolerance for 15 W charging. If you mostly charge by cable, this is less critical.
 
-Apple maintains a curated list of MagSafe-certified accessories at [apple.com](https://www.apple.com), which is a useful reference when verifying whether a specific charger or accessory meets the standard. For the case itself, certification is worth confirming directly with the manufacturer before purchase.
+Apple maintains a [curated list of MagSafe-certified accessories](https://www.apple.com), which is a useful reference when verifying whether a specific charger or accessory meets the standard. For the case itself, certification is worth confirming directly with the manufacturer before purchase.
 
 A MagSafe case is, at its best, an invisible infrastructure upgrade: it makes charging effortless, keeps accessories exactly where you place them, and asks nothing of you beyond fitting the case once. The question is simply whether the case surrounding that magnet ring is worthy of the phone — and the person — it protects.

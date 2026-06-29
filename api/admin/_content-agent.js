@@ -99,6 +99,7 @@ LINKING — MANDATORY (an article with no links will be rejected). Use Markdown 
 - You MUST link to /custom once, where a personalisation / horse-bond angle fits naturally.
 ${related ? `- Link to 2–3 of these related Journal articles where genuinely relevant:\n${related}` : '- Where it helps the reader, link to the Journal index /blog for further reading.'}
 - Add 1–3 EXTERNAL links to genuinely authoritative organisations (e.g. a national equestrian federation, recognised breed society, or veterinary/welfare body) ONLY where it backs up a specific claim — and ONLY using a real, well-known URL you are confident exists. Prefer the organisation's main domain (e.g. https://www.bhs.org.uk); NEVER fabricate a deep link or attach a real org to a made-up page.
+- ANCHOR TEXT — every link MUST be woven naturally into a sentence, with the anchor being descriptive words (the organisation's name, or a noun phrase like "MFi programme documentation"). NEVER use a bare domain or raw URL as the anchor, and NEVER tack a link onto a name in parentheses. WRONG: "the British Horse Society ([bhs.org.uk](https://www.bhs.org.uk))" or "details are published at [https://developer.apple.com/...](...)". RIGHT: "the [British Horse Society](https://www.bhs.org.uk) has long emphasised…".
 - Spread links through the body; never dump them in a list at the end.
 
 STRUCTURE (Markdown body)
@@ -220,6 +221,9 @@ function validateArticle(item, parsed) {
   // Linking — internal money page + at least some links overall.
   if (item.moneyPage && !parsed.body.includes(item.moneyPage)) failures.push(`money-page link ${item.moneyPage} missing from body`);
   if (!/\]\([^)]+\)/.test(parsed.body)) failures.push('no links in body (internal or external)');
+  // Anchor text must be natural prose, never a bare domain or raw URL dumped as the anchor.
+  const badAnchor = parsed.body.match(/\[(?:https?:\/\/|www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\/[^\]]*)?\]\([^)]+\)/i);
+  if (badAnchor) failures.push(`bare-domain/URL link anchor (insert links naturally instead): ${badAnchor[0]}`);
 
   const hay = (parsed.body + ' ' + parsed.meta).toLowerCase();
   const hitBanned = BANNED_PHRASES.filter((p) => hay.includes(p));

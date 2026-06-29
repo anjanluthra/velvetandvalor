@@ -81,7 +81,7 @@ Here is an insight that rarely appears in mainstream tech coverage: the yellowin
 
 A bridle left in sunlight will dry and fade if untreated, but it will not turn a dismaying yellow. The correct response is conditioning with a quality leather balm — not replacement. This is the philosophy behind [our handcrafted leather iPhone cases](/collections/iphone-cases): rather than fighting an inevitable chemical degradation, the material improves with handling. The oils from your hands, the warmth of your pocket — these are the same forces that ruin a TPU case but enrich a piece of full-grain leather.
 
-It is worth noting that the British Horse Society ([bhs.org.uk](https://www.bhs.org.uk)) has long emphasised the importance of quality tack materials and regular conditioning in its horsemanship guidance — a philosophy of maintenance over replacement that translates naturally to how one ought to think about any leather accessory.
+It is worth noting that the [British Horse Society](https://www.bhs.org.uk) has long emphasised the importance of quality tack materials and regular conditioning in its horsemanship guidance — a philosophy of maintenance over replacement that translates naturally to how one ought to think about any leather accessory.
 
 ## How to Slow Yellowing If You Already Own a Clear Case
 

@@ -71,7 +71,7 @@ The **FEI** — *Fédération Equestre Internationale* — is the single most im
 
 Equestrian sport has featured at every modern Olympic Games since **1912** (Stockholm), making it one of the longest-running Olympic disciplines. It is also, notably, one of the very few Olympic sports in which **men and women compete directly against one another** on equal terms — a distinction that speaks to the unique partnership at the heart of the discipline.
 
-The FEI's official home is [www.fei.org](https://www.fei.org), where you can find competition calendars, ranking lists, and the welfare frameworks that govern horse care at international events.
+The [FEI's official site](https://www.fei.org) carries competition calendars, ranking lists, and the welfare frameworks that govern horse care at international events.
 
 ## Equestrian Property Meaning
 
@@ -87,7 +87,7 @@ An **equestrian property** is a parcel of land and buildings specifically design
 
 In the United States, equestrian zoning varies by county and state, but properties marketed as equestrian typically sit on **Agricultural** or **Rural Residential** zoned land with explicit provisions for livestock. In the UK, a change of use from agricultural to equestrian use — even for private, non-commercial purposes — has historically required planning permission in many local authority areas, a nuance that catches buyers off guard.
 
-The British Horse Society ([www.bhs.org.uk](https://www.bhs.org.uk)) publishes guidance on land management and planning matters that any prospective equestrian property buyer would do well to consult.
+The [British Horse Society](https://www.bhs.org.uk) publishes guidance on land management and planning matters that any prospective equestrian property buyer would do well to consult.
 
 ## Equestrian Camping Meaning
 

@@ -2431,3 +2431,16 @@
 .rm-swatch-purple-green { background: linear-gradient(135deg, #2D5F4A 50%, #5A2A6B 50%); }
 .rm-swatch-burgundy      { --accent: #722030; }
 .rm-swatch-emerald-green { --accent: #1E5F3C; }
+
+/* ============================================================
+   The Cowgirl Collection — variant swatches
+   Hair-tone tile colours: redhead (coppery), brunette (deep brown),
+   auburn (rich red-brown).
+   ============================================================ */
+.cg-swatch {
+  position: relative;
+  background: linear-gradient(135deg, #6B1840 50%, var(--accent, #C75A3A) 50%);
+}
+.cg-swatch-redhead  { --accent: #D6663A; } /* bright copper */
+.cg-swatch-brunette { --accent: #4A2C1E; } /* deep brown */
+.cg-swatch-auburn   { --accent: #8B3A1F; } /* rich red-brown */

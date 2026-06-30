@@ -4,6 +4,8 @@
   "rewrites": [
     { "source": "/products/riders-motto-:slug", "destination": "/riders-motto" },
     { "source": "/products/riders-motto", "destination": "/riders-motto" },
+    { "source": "/products/cowgirl-:slug", "destination": "/cowgirl" },
+    { "source": "/products/cowgirl", "destination": "/cowgirl" },
     { "source": "/products/:slug", "destination": "/product" }
   ],
   "crons": [

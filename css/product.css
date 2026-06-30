@@ -2434,13 +2434,13 @@
 
 /* ============================================================
    The Cowgirl Collection — variant swatches
-   Hair-tone tile colours: redhead (coppery), brunette (deep brown),
+   Hair-tone tile colours: auburn (rich red-brown), brunette (deep brown),
    blonde (warm honey).
    ============================================================ */
 .cg-swatch {
   position: relative;
   background: linear-gradient(135deg, #6B1840 50%, var(--accent, #C75A3A) 50%);
 }
-.cg-swatch-redhead  { --accent: #D6663A; } /* bright copper */
+.cg-swatch-auburn   { --accent: #8B3A1F; } /* rich red-brown */
 .cg-swatch-brunette { --accent: #4A2C1E; } /* deep brown */
 .cg-swatch-blonde   { --accent: #E2B97A; } /* warm honey blonde */

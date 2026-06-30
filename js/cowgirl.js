@@ -5,7 +5,7 @@
 'use strict';
 
 const CG_DESIGNS = {
-  'redhead':  { name: 'Cowgirl & Mare — Redhead',  image: '/images/cowgirl-redhead product image.jpg' },
+  'auburn':  { name: 'Cowgirl & Mare — Auburn',  image: '/images/cowgirl-auburn product image.jpg' },
   'brunette': { name: 'Cowgirl & Mare — Brunette', image: '/images/cowgirl-brunette product image.jpg' },
   'blonde':   { name: 'Cowgirl & Mare — Blonde',   image: '/images/cowgirl-blonde product image.jpg' },
 };
@@ -13,7 +13,7 @@ const CG_DESIGNS = {
 const CG_COLLECTION = 'The Cowgirl Collection';
 const CG_UNIT_AMOUNT_CENTS = 4800; // $48.00 (matches Noble Steed)
 
-let currentVariant = 'redhead';
+let currentVariant = 'auburn';
 let currentDevice = 'iPhone 17';
 
 /* ── Parse URL for variant ─────────────────────────────────── */
@@ -99,7 +99,7 @@ if (deviceSelect) {
   if (!btn) return;
   btn.addEventListener('click', () => {
     if (btn.classList.contains('btn-atb-disabled') || !window.vvCart) return;
-    const cfg = CG_DESIGNS[currentVariant] || CG_DESIGNS.redhead;
+    const cfg = CG_DESIGNS[currentVariant] || CG_DESIGNS.auburn;
     const modelLabel = deviceSelect
       ? deviceSelect.options[deviceSelect.selectedIndex].text
       : 'iPhone 17';
@@ -129,7 +129,7 @@ if (deviceSelect) {
     btn.querySelector('.btn-atb-text').textContent = 'Opening checkout…';
     btn.classList.add('btn-atb-disabled');
 
-    const variantName = (CG_DESIGNS[currentVariant] || CG_DESIGNS.redhead).name;
+    const variantName = (CG_DESIGNS[currentVariant] || CG_DESIGNS.auburn).name;
     const modelLabel = deviceSelect ? deviceSelect.value : 'iPhone 17';
 
     try {

@@ -6,8 +6,6 @@
 
 const CG_DESIGNS = {
   'auburn':  { name: 'Cowgirl & Mare — Auburn',  image: '/images/cowgirl-auburn product image.jpg' },
-  'brunette': { name: 'Cowgirl & Mare — Brunette', image: '/images/cowgirl-brunette product image.jpg' },
-  'blonde':   { name: 'Cowgirl & Mare — Blonde',   image: '/images/cowgirl-blonde product image.jpg' },
 };
 
 const CG_COLLECTION = 'The Cowgirl Collection';

@@ -424,6 +424,7 @@
 .swatch-burgundy      { background: radial-gradient(circle at 35% 35%, #8C2034, #4A0E1C); }
 .swatch-blue          { background: radial-gradient(circle at 35% 35%, #3A5FA8, #1A2F5C); }
 .swatch-navy-burgundy { background: linear-gradient(110deg, #1F3A6B 0%, #1F3A6B 48%, #6B1840 52%, #6B1840 100%); }
+.swatch-burgundy-rose { background: linear-gradient(110deg, #6B1840 0%, #6B1840 55%, #C68A98 60%, #C68A98 100%); }
 
 /* ── Device Options ─────────────────────────────────────────── */
 .device-options {

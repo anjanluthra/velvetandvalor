@@ -17,7 +17,7 @@ const DESIGNS = {
   burgundy:        { name: 'Burgundy',       image: '/images/burgundy product image.jpg' },
   blue:            { name: 'Blue',            image: '/images/blue product image.jpg' },
   'navy-burgundy': { name: 'Navy & Burgundy', image: '/images/navy-burgundy product image.jpg' },
-  'burgundy-rose': { name: 'Burgundy & Rose', image: '/images/burgundy-rose product image.jpg' },
+  'raspberry-rose': { name: 'Raspberry & Rose', image: '/images/raspberry-rose product image.jpg' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */

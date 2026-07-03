@@ -18,7 +18,6 @@ const DESIGNS = {
   blue:            { name: 'Blue',            image: '/images/blue product image.jpg' },
   'navy-burgundy': { name: 'Navy & Burgundy', image: '/images/navy-burgundy product image.jpg' },
   'raspberry-rose': { name: 'Raspberry & Rose', image: '/images/raspberry-rose product image.jpg' },
-  'deep-teal':      { name: 'Deep Teal',        image: '/images/deep-teal product image.jpg' },
 };
 
 /* ── State ───────────────────────────────────────────────────── */

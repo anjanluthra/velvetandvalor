@@ -27,6 +27,8 @@ module.exports = async (req, res) => {
     initials = '',
     add_quote = false,
     custom_quote = '',
+    add_furry_friend = false,
+    furry_friend_photo_url = '',
   } = req.body || {};
 
   if (!photo_url_1) {
@@ -44,9 +46,14 @@ module.exports = async (req, res) => {
   const cleanQuote = (custom_quote || '').toString().replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 48);
   const wantsQuote = !!add_quote && cleanQuote.length > 0;
 
+  // Furry friend add-on: valid only if toggle on AND photo URL provided
+  const cleanFurryUrl = (furry_friend_photo_url || '').toString().slice(0, 500);
+  const wantsFurry = !!add_furry_friend && /^https?:\/\//.test(cleanFurryUrl);
+
   const addOnSuffix = [
     wantsInitials ? ` + Initials "${cleanInitials}"` : '',
     wantsQuote ? ` + Quote "${cleanQuote}"` : '',
+    wantsFurry ? ` + Furry Friend Portrait` : '',
   ].join('');
   const description = `Custom Horse Portrait — ${case_colour} ${finish}, ${iphone_model}${addOnSuffix}`;
 
@@ -62,6 +69,8 @@ module.exports = async (req, res) => {
     notes: (notes || '').slice(0, 400),
     initials: wantsInitials ? cleanInitials : '',
     custom_quote: wantsQuote ? cleanQuote : '',
+    furry_friend_photo_url: wantsFurry ? cleanFurryUrl : '',
+    add_furry_friend: wantsFurry ? 'yes' : 'no',
   };
 
   try {
@@ -108,6 +117,17 @@ module.exports = async (req, res) => {
               description: 'A short personal phrase handwritten by the artist on your bespoke phone case.',
             },
             unit_amount: 600, // $6.00 (~ £5 GBP)
+          },
+          quantity: 1,
+        }] : []),
+        ...(wantsFurry ? [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Furry Friend Portrait',
+              description: 'A hand-designed portrait of your dog (or cat) added to your bespoke horse case.',
+            },
+            unit_amount: 3200, // $32.00 (~ £25 GBP)
           },
           quantity: 1,
         }] : []),

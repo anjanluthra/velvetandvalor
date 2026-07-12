@@ -211,6 +211,7 @@
   }
 
   setupSlot(1);
+  setupSlot(2);
 
   /* ── Shared close-up lightbox (swatches + quote preview) ─ */
   // Build once at outer scope so both the swatch zoom triggers
@@ -306,16 +307,21 @@
   const quoteWrap = document.getElementById('quoteInputWrap');
   const quoteInput = document.getElementById('cf-quote');
 
+  const furryToggle = document.getElementById('cf-add-furry');
+  const furryWrap = document.getElementById('furryInputWrap');
+
   const submitPriceEl = document.getElementById('customSubmitPrice');
 
   const BASE_PRICE = 73;
   const ADDON_PRICE = 6; // initials + quote each cost the same
+  const FURRY_PRICE = 32; // furry-friend portrait add-on
 
   function updatePriceDisplay() {
     if (!submitPriceEl) return;
     let total = BASE_PRICE;
     if (initialsToggle && initialsToggle.checked) total += ADDON_PRICE;
     if (quoteToggle && quoteToggle.checked) total += ADDON_PRICE;
+    if (furryToggle && furryToggle.checked) total += FURRY_PRICE;
     submitPriceEl.setAttribute('data-price-usd', total.toFixed(2));
     submitPriceEl.textContent = `— $${total.toFixed(2)}`;
     // If currency toggle has selected a non-USD currency, re-trigger via change event
@@ -338,6 +344,26 @@
     quoteToggle.addEventListener('change', () => {
       quoteWrap.hidden = !quoteToggle.checked;
       if (!quoteToggle.checked) quoteInput.value = '';
+      updatePriceDisplay();
+    });
+  }
+
+  if (furryToggle && furryWrap) {
+    furryToggle.addEventListener('change', () => {
+      furryWrap.hidden = !furryToggle.checked;
+      if (!furryToggle.checked) {
+        // Clear the uploaded dog photo when the add-on is unticked
+        if (window.photos) window.photos[2] = '';
+        photos[2] = '';
+        const previewImg = document.getElementById('photoSlot2Img');
+        const preview = document.getElementById('photoSlot2Preview');
+        const empty = document.getElementById('photoSlot2Empty');
+        const input = document.getElementById('photoInput2');
+        if (preview) preview.hidden = true;
+        if (empty) empty.hidden = false;
+        if (previewImg) previewImg.src = '';
+        if (input) input.value = '';
+      }
       updatePriceDisplay();
     });
   }
@@ -387,6 +413,8 @@
   /* ── Form validation / enable submit ───────────────────── */
   function isFormValid() {
     if (!photos[1]) return false; // photo 1 required
+    // If furry-friend add-on is on, require a dog photo
+    if (furryToggle && furryToggle.checked && !photos[2]) return false;
     if (!form.name.value.trim()) return false;
     if (!form.email.value.trim()) return false;
     if (!form.case_colour.value) return false;
@@ -434,6 +462,8 @@
       initials: initialsInput ? initialsInput.value.trim() : '',
       add_quote: !!(quoteToggle && quoteToggle.checked && quoteInput && quoteInput.value.trim()),
       custom_quote: quoteInput ? quoteInput.value.trim() : '',
+      add_furry_friend: !!(furryToggle && furryToggle.checked && photos[2]),
+      furry_friend_photo_url: photos[2] || '',
     };
 
     try {

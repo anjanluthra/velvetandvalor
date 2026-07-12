@@ -447,6 +447,39 @@
               </div>
             </div>
 
+            <!-- Furry Friend photo add-on -->
+            <div class="form-group form-initials">
+              <label class="initials-toggle">
+                <input type="checkbox" id="cf-add-furry" name="add_furry_friend" />
+                <span class="initials-toggle-text">
+                  <span class="initials-toggle-title">Add Your Furry Friend <span class="initials-price-tag" data-price-usd="32.00" data-price-gbp="25.00" data-price-prefix="+">+$32.00</span></span>
+                  <span class="initials-toggle-desc">Include a portrait of your dog (or cat) alongside your horse &mdash; hand-designed onto the same bespoke case.</span>
+                </span>
+              </label>
+              <div class="initials-input-wrap" id="furryInputWrap" hidden>
+                <label class="form-label">Photo of Your Furry Friend</label>
+                <p class="form-help">Upload one clear photo &mdash; ideally a close-up of the face. Same guidelines as your horse photo.</p>
+                <div class="photo-uploads photo-uploads-single">
+                  <div class="photo-slot" id="photoSlot2" data-slot="2">
+                    <input type="file" id="photoInput2" accept="image/*" hidden />
+                    <div class="photo-slot-empty" id="photoSlot2Empty">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                      <span class="photo-slot-label">Click or drag to upload</span>
+                      <span class="photo-slot-sub">JPG, PNG, HEIC &mdash; up to 10MB</span>
+                    </div>
+                    <div class="photo-slot-preview" id="photoSlot2Preview" hidden>
+                      <img id="photoSlot2Img" alt="Furry friend photo preview" />
+                      <button type="button" class="photo-remove" data-slot="2" aria-label="Remove photo">&times;</button>
+                      <div class="photo-progress" id="photoSlot2Progress" hidden>
+                        <div class="photo-progress-bar"></div>
+                        <span class="photo-progress-text">Uploading&hellip;</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Notes -->
             <div class="form-group">
               <label class="form-label" for="cf-notes">Anything else you&rsquo;d like us to know? <span class="opt">(optional)</span></label>

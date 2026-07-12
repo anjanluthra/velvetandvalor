@@ -125,7 +125,7 @@ module.exports = async (req, res) => {
             currency: 'usd',
             product_data: {
               name: 'Furry Friend Portrait',
-              description: 'A hand-designed portrait of your dog (or cat) added to your bespoke horse case.',
+              description: 'A portrait of your dog (or cat) added to your bespoke horse case.',
             },
             unit_amount: 3200, // $32.00 (~ £25 GBP)
           },

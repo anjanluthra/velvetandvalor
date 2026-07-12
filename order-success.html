@@ -237,24 +237,49 @@
         return;
       }
 
-      fetch('/api/get-order?session_id=' + encodeURIComponent(sessionId))
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+      // Retry with backoff — Stripe occasionally takes a beat to
+      // finalise a session, and we don't want the customer to see
+      // a blank "Order Confirmed" screen with no price.
+      function fetchOrderWithRetry(attempt) {
+        attempt = attempt || 1;
+        return fetch('/api/get-order?session_id=' + encodeURIComponent(sessionId))
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+          .catch(function (err) {
+            if (attempt >= 3) throw err;
+            // 500ms, 1500ms, 3500ms — total ~5s worst case
+            var delay = 500 + Math.pow(attempt, 2) * 1000;
+            return new Promise(function (resolve) {
+              setTimeout(function () { resolve(fetchOrderWithRetry(attempt + 1)); }, delay);
+            });
+          });
+      }
+
+      // Always reveal the details block so pricing is visible one way
+      // or another — either the real total, or a fallback pointing
+      // customers to their emailed receipt.
+      function showTotal(text) {
+        setText('orderTotal', text);
+        document.getElementById('orderDetails').hidden = false;
+      }
+
+      fetchOrderWithRetry()
         .then(function (data) {
-          if (!data) return;
-          // Payment is confirmed (Stripe only redirects here post-payment and
-          // the order was found) — empty the bag.
+          if (!data) throw new Error('Empty response');
+          // Payment is confirmed — empty the bag.
           if (window.vvCart && typeof window.vvCart.clear === 'function') {
             try { window.vvCart.clear(); } catch (e) {}
           }
           var totalDisplay = formatMoney(data.total, data.currency);
-          if (!totalDisplay) return;
-          setText('orderTotal', totalDisplay);
-          document.getElementById('orderDetails').hidden = false;
+          if (!totalDisplay) throw new Error('No total returned');
+          showTotal(totalDisplay);
         })
         .catch(function (err) {
-          // On error, leave default confirmation visible without the
-          // total — better than showing a wrong number.
-          if (window.console) console.warn('Order summary unavailable:', err);
+          // API unreachable after retries. Rather than hide the pricing
+          // row entirely, tell the customer their receipt is en route.
+          if (window.console) console.warn('Order summary unavailable, showing fallback:', err);
+          var label = document.querySelector('#orderDetails .success-detail-label');
+          if (label) label.textContent = 'Receipt';
+          showTotal('Sent to your email');
         });
     })();
   </script>

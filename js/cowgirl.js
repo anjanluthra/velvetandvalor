@@ -114,51 +114,38 @@ if (deviceSelect) {
   });
 })();
 
-/* ── Buy Now → Stripe Checkout ─────────────────────────────── */
+/* ── Buy Now → on-domain /checkout with embedded Payment Element ─── */
 (function initBuy() {
   const btn = document.getElementById('buyNow');
   if (!btn) return;
 
-  btn.addEventListener('click', async (e) => {
+  btn.addEventListener('click', (e) => {
     e.preventDefault();
     if (btn.classList.contains('btn-atb-disabled')) return;
 
-    const original = btn.querySelector('.btn-atb-text').textContent;
-    btn.querySelector('.btn-atb-text').textContent = 'Opening checkout…';
-    btn.classList.add('btn-atb-disabled');
-
-    const variantName = (CG_DESIGNS[currentVariant] || CG_DESIGNS.auburn).name;
+    const cfg = CG_DESIGNS[currentVariant] || CG_DESIGNS.auburn;
+    const variantName = cfg.name;
+    const image = cfg.image || '';
     const modelLabel = deviceSelect ? deviceSelect.value : 'iPhone 17';
 
     try {
-      const res = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          collectionId: 'cowgirl',
-          collection: CG_COLLECTION,
-          design: variantName,
-          model: modelLabel,
-          finish: 'Glossy',
-          unit_amount_cents: CG_UNIT_AMOUNT_CENTS,
-        }),
-      });
-      const data = await res.json();
-      if (data && data.url) {
-        if (typeof window.vvGoToCheckout === 'function') {
-          window.vvGoToCheckout(data.url);
-        } else {
-          window.location.href = data.url;
-        }
-      } else {
-        throw new Error((data && data.error) || 'No checkout URL returned');
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-      btn.querySelector('.btn-atb-text').textContent = original;
-      btn.classList.remove('btn-atb-disabled');
-      alert('Sorry — we couldn’t open checkout. Please try again, or email info@velvet-valor.com.');
-    }
+      sessionStorage.setItem('vvCheckoutCart', JSON.stringify({
+        collection: CG_COLLECTION,
+        collectionId: 'cowgirl',
+        design: variantName,
+        model: modelLabel,
+        finish: 'Glossy',
+        unit_amount_cents: CG_UNIT_AMOUNT_CENTS,
+        image: image,
+      }));
+    } catch (err) {}
+
+    window.location.href = '/checkout?collection=' + encodeURIComponent(CG_COLLECTION)
+      + '&collectionId=cowgirl'
+      + '&design=' + encodeURIComponent(variantName)
+      + '&model=' + encodeURIComponent(modelLabel)
+      + '&unit_amount_cents=' + CG_UNIT_AMOUNT_CENTS
+      + (image ? '&image=' + encodeURIComponent(image) : '');
   });
 })();
 

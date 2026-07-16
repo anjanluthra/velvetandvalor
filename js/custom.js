@@ -439,57 +439,52 @@
     errorEl.hidden = true;
   }
 
-  /* ── Submit → Stripe Checkout ──────────────────────────── */
-  form.addEventListener('submit', async (e) => {
+  /* ── Submit → on-domain /checkout with embedded Payment Element ─── */
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!isFormValid()) return;
 
     submitBtn.disabled = true;
     const textEl = submitBtn.querySelector('.custom-submit-text');
-    const originalText = textEl.textContent;
-    textEl.textContent = 'Processing…';
+    textEl.textContent = 'Opening checkout…';
 
-    const payload = {
+    const cart = {
+      is_custom: true,
+      collection: 'Noble Steed — Custom Horse Portrait',
+      collectionId: 'custom',
+      design: 'Custom Horse Portrait',
+      finish: form.finish.value,
+      // Custom-portrait fields (server validates + creates line items)
       name: form.name.value.trim(),
       email: form.email.value.trim(),
       horse_name: form.horse_name.value.trim(),
       case_colour: form.case_colour.value,
       iphone_model: form.iphone_model.value,
-      finish: form.finish.value,
+      model: form.iphone_model.value,
       notes: form.notes.value.trim(),
       photo_url_1: photos[1],
+      image: photos[1] || '',
       add_initials: !!(initialsToggle && initialsToggle.checked && initialsInput && initialsInput.value.trim()),
       initials: initialsInput ? initialsInput.value.trim() : '',
       add_quote: !!(quoteToggle && quoteToggle.checked && quoteInput && quoteInput.value.trim()),
       custom_quote: quoteInput ? quoteInput.value.trim() : '',
       add_furry_friend: !!(furryToggle && furryToggle.checked && photos[2]),
       furry_friend_photo_url: photos[2] || '',
+      unit_amount_cents: 7300,
     };
 
     try {
-      const res = await fetch('/api/create-custom-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-
-      if (data.url) {
-        if (typeof window.vvGoToCheckout === 'function') {
-          window.vvGoToCheckout(data.url);
-        } else {
-          window.location.href = data.url;
-        }
-      } else {
-        const msg = data.detail ? `${data.error || 'Checkout error'}: ${data.detail}` : (data.error || 'Could not start checkout');
-        throw new Error(msg);
-      }
+      sessionStorage.setItem('vvCheckoutCart', JSON.stringify(cart));
     } catch (err) {
-      console.error('Custom checkout error:', err);
-      showError(`Something went wrong: ${err.message}. Please try again, or email info@velvet-valor.com.`);
-      textEl.textContent = originalText;
+      showError('Your browser blocked storing checkout data. Please enable session storage and try again.');
+      textEl.textContent = 'Continue to Payment';
       submitBtn.disabled = false;
+      return;
     }
+
+    // Route to embedded checkout on our own domain (Stripe Payment
+    // Element mounts there — no redirect to checkout.stripe.com).
+    window.location.href = '/checkout';
   });
 
   // Initial state

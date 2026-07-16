@@ -241,58 +241,36 @@ function updateURL() {
   const btn = document.getElementById('buyNow');
   if (!btn) return;
 
-  btn.addEventListener('click', async (e) => {
+  btn.addEventListener('click', (e) => {
     e.preventDefault();
-    const textEl = btn.querySelector('.btn-atb-text');
-    const originalText = textEl ? textEl.textContent : 'Buy Now';
 
-    if (textEl) textEl.textContent = 'Processing...';
-    btn.style.pointerEvents = 'none';
-    btn.style.opacity = '0.7';
-
-    const designLabel = DESIGNS[currentDesign]?.name || 'Nude';
+    const cfg = DESIGNS[currentDesign] || DESIGNS.nude;
+    const designLabel = cfg.name || 'Nude';
+    const image = cfg.image || '';
     const select = document.getElementById('deviceSelect');
     const modelLabel = select ? select.options[select.selectedIndex].text : 'iPhone 17';
-    const finishLabel = 'Glossy';
 
-    // Collect customer insights from sessionStorage (Safari private mode safe)
-    let productSuggestion = '', journalWaitlist = 'no';
+    // Save cart to sessionStorage so /checkout can pick it up
     try {
-      productSuggestion = sessionStorage.getItem('vv_product_suggestion') || '';
-      journalWaitlist = sessionStorage.getItem('vv_journal_waitlist') || 'no';
-    } catch (e) { /* private mode */ }
+      sessionStorage.setItem('vvCheckoutCart', JSON.stringify({
+        collection: 'Noble Steed',
+        collectionId: 'noble-steed',
+        design: designLabel,
+        model: modelLabel,
+        finish: 'Glossy',
+        unit_amount_cents: 4800,
+        image: image,
+      }));
+    } catch (err) { /* private mode — cart falls back to querystring */ }
 
-    try {
-      const res = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          collectionId: 'noble-steed',
-          design: designLabel,
-          model: modelLabel,
-          finish: finishLabel,
-          product_suggestion: productSuggestion,
-          journal_waitlist: journalWaitlist,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        if (typeof window.vvGoToCheckout === 'function') {
-          window.vvGoToCheckout(data.url);
-        } else {
-          window.location.href = data.url;
-        }
-      } else {
-        throw new Error(data.error || 'Checkout failed');
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-      if (textEl) textEl.textContent = 'Try Again';
-      btn.style.pointerEvents = '';
-      btn.style.opacity = '';
-      setTimeout(() => { if (textEl) textEl.textContent = originalText; }, 2500);
-    }
+    // Redirect to our on-domain checkout (embedded Stripe Payment Element).
+    // No more redirect to checkout.stripe.com → fixes the Instagram
+    // in-app browser problem at the source.
+    window.location.href = '/checkout?collection=Noble%20Steed&collectionId=noble-steed'
+      + '&design=' + encodeURIComponent(designLabel)
+      + '&model=' + encodeURIComponent(modelLabel)
+      + '&unit_amount_cents=4800'
+      + (image ? '&image=' + encodeURIComponent(image) : '');
   });
 })();
 

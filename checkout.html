@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Checkout — Velvet &amp; Valor</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" />
+
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+
+  <!-- Cookie consent + conditional analytics -->
+  <script src="/js/consent.js"></script>
+  <!-- Stripe.js — must load before checkout.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <nav class="nav scrolled" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Velvet and Valor home">
+        VELVET <span class="amp">&amp;</span> VALOR
+      </a>
+      <div class="nav-actions">
+        <a href="/collections/iphone-cases" class="btn-ghost checkout-back-link" style="padding: 10px 20px; font-size: 0.7rem;">&larr; Back to shopping</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="checkout-page">
+    <div class="checkout-container">
+
+      <!-- LEFT: form -->
+      <section class="checkout-form-column" aria-labelledby="checkout-heading">
+        <header class="checkout-header">
+          <span class="checkout-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="10" width="16" height="10" rx="2"/>
+              <path d="M8 10V7a4 4 0 018 0v3"/>
+            </svg>
+            Secure Checkout
+          </span>
+          <h1 id="checkout-heading">Complete Your Order</h1>
+        </header>
+
+        <form id="checkoutForm" novalidate>
+          <div class="checkout-section">
+            <h2 class="checkout-section-title">Contact</h2>
+            <label class="checkout-label" for="checkoutEmail">Email <span class="req">*</span></label>
+            <input type="email" id="checkoutEmail" name="email" required autocomplete="email" placeholder="you@example.com" />
+          </div>
+
+          <div class="checkout-section">
+            <h2 class="checkout-section-title">Shipping Address</h2>
+            <div id="addressElement"><!-- Stripe Address Element mounts here --></div>
+          </div>
+
+          <div class="checkout-section">
+            <h2 class="checkout-section-title">Payment</h2>
+            <div id="paymentElement"><!-- Stripe Payment Element mounts here --></div>
+            <p class="checkout-payment-note">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="10" rx="2"/>
+                <path d="M8 10V7a4 4 0 018 0v3"/>
+              </svg>
+              Secured by Stripe. We never see your card details.
+            </p>
+          </div>
+
+          <button type="submit" id="checkoutSubmit" class="checkout-submit" disabled>
+            <span class="checkout-submit-label">Complete Order</span>
+            <span class="checkout-submit-price" id="checkoutSubmitPrice">—</span>
+          </button>
+
+          <p id="checkoutError" class="checkout-error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <!-- RIGHT: order summary -->
+      <aside class="checkout-summary-column" aria-labelledby="summary-heading">
+        <h2 id="summary-heading" class="visually-hidden">Order Summary</h2>
+        <div class="checkout-summary">
+          <div class="checkout-summary-item">
+            <div class="checkout-summary-thumb">
+              <img id="summaryImage" src="" alt="" />
+            </div>
+            <div class="checkout-summary-info">
+              <p class="checkout-summary-collection" id="summaryCollection">—</p>
+              <p class="checkout-summary-design" id="summaryDesign">—</p>
+              <p class="checkout-summary-model" id="summaryModel">—</p>
+            </div>
+            <div class="checkout-summary-price" id="summaryUnitPrice">—</div>
+          </div>
+
+          <div class="checkout-summary-line" id="summaryAddonInitials" hidden>
+            <span>Custom initials</span><span id="summaryInitialsPrice">$6.00</span>
+          </div>
+          <div class="checkout-summary-line" id="summaryAddonQuote" hidden>
+            <span>Handwritten quote</span><span id="summaryQuotePrice">$6.00</span>
+          </div>
+          <div class="checkout-summary-line" id="summaryAddonFurry" hidden>
+            <span>Furry friend portrait</span><span id="summaryFurryPrice">$32.00</span>
+          </div>
+
+          <div class="checkout-summary-line">
+            <span>Shipping</span><span id="summaryShipping">$5.49</span>
+          </div>
+
+          <div class="checkout-summary-total">
+            <span>Total</span><span id="summaryTotal">—</span>
+          </div>
+
+          <p class="checkout-summary-note">
+            Please allow 1–2 days production time before shipping. You&rsquo;ll receive a confirmation and tracking email.
+          </p>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

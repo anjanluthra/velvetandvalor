@@ -210,6 +210,11 @@
     (function () {
       var params = new URLSearchParams(window.location.search);
       var sessionId = params.get('session_id');
+      var paymentIntentId = params.get('payment_intent');
+      // Build the query — either flow returns the same shape from /api/get-order
+      var apiQuery = paymentIntentId
+        ? 'payment_intent=' + encodeURIComponent(paymentIntentId)
+        : (sessionId ? 'session_id=' + encodeURIComponent(sessionId) : '');
 
       function setText(id, text) {
         var el = document.getElementById(id);
@@ -232,8 +237,8 @@
         }
       }
 
-      if (!sessionId) {
-        // No session id — leave default copy in place
+      if (!apiQuery) {
+        // No session id and no payment intent — leave default copy in place
         return;
       }
 
@@ -242,7 +247,7 @@
       // a blank "Order Confirmed" screen with no price.
       function fetchOrderWithRetry(attempt) {
         attempt = attempt || 1;
-        return fetch('/api/get-order?session_id=' + encodeURIComponent(sessionId))
+        return fetch('/api/get-order?' + apiQuery)
           .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
           .catch(function (err) {
             if (attempt >= 3) throw err;

@@ -1666,115 +1666,162 @@ html, body {
 
 
 /* ============================================================
-   In-app browser → instant checkout instruction
-   Shown the moment user taps Buy from inside IG/FB/TikTok WebView
+   IN-APP BROWSER — LAYER 1: sticky top banner
+   Shown on every page load inside Instagram/FB/TikTok WebViews so
+   customers switch to Safari BEFORE they build a cart. They lose no
+   state (the deep-link opens the same URL in Safari).
+   ============================================================ */
+#vv-iab-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100003;
+  background: linear-gradient(180deg, #071428 0%, #0C1E3A 100%);
+  border-bottom: 1px solid var(--gold);
+  color: var(--cream);
+  padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  animation: vvIabSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes vvIabSlideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+/* Push page content down when banner is visible so it doesn't overlap */
+body.vv-iab-banner-active { padding-top: 78px; }
+@media (min-width: 640px) {
+  body.vv-iab-banner-active { padding-top: 60px; }
+}
+
+.vv-iab-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.vv-iab-text {
+  flex: 1 1 100%;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--cream-mid);
+}
+.vv-iab-text strong { color: var(--cream); font-weight: 600; }
+
+.vv-iab-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+.vv-iab-open {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: var(--gold);
+  color: var(--obsidian);
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  min-height: 40px;
+  -webkit-tap-highlight-color: transparent;
+}
+.vv-iab-open:active { transform: translateY(1px); }
+.vv-iab-copy {
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-authority);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold-muted);
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 40px;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.vv-iab-copy:active { border-color: var(--gold); }
+.vv-iab-close {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--cream-muted);
+  border: none;
+  font-size: 1.375rem;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+.vv-iab-close:hover, .vv-iab-close:active { color: var(--cream); }
+
+@media (min-width: 640px) {
+  .vv-iab-text { flex: 1 1 auto; }
+  .vv-iab-actions { width: auto; }
+  .vv-iab-open { flex: 0 0 auto; }
+}
+
+/* ============================================================
+   IN-APP BROWSER — LAYER 2: checkout overlay safety net
+   Shows only if the customer dismissed the banner AND hit Buy Now
+   from inside the in-app browser. The primary CTA anchors to the
+   Stripe URL directly so if the deep-link fires they land straight
+   on payment (not the product page).
    ============================================================ */
 #vv-checkout-overlay {
   position: fixed;
   inset: 0;
   z-index: 100002;
-  padding: calc(20px + env(safe-area-inset-top)) 20px 24px;
+  padding: 24px;
   background: rgba(4, 13, 28, 0.96);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   animation: vvCoIn 0.18s ease-out;
 }
 @keyframes vvCoIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* Arrow pointing up to where IG/FB/TikTok shows its ··· menu */
-.vv-co-arrow {
-  align-self: flex-end;
-  margin-right: 4px;
-  margin-bottom: 8px;
-  text-align: center;
-  color: var(--gold);
-  animation: vvCoArrowBob 1.4s ease-in-out infinite;
-}
-@keyframes vvCoArrowBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-.vv-co-arrow-icon {
-  font-size: 2.4rem;
-  line-height: 1;
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-.vv-co-arrow-label {
-  font-family: var(--font-authority);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
 .vv-co-card {
   width: 100%;
-  max-width: 420px;
-  margin-top: auto;
-  margin-bottom: auto;
+  max-width: 400px;
   text-align: center;
   color: var(--cream);
 }
-
 .vv-co-title {
   font-family: var(--font-display), Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 500;
-  letter-spacing: 0.005em;
   color: var(--cream);
-  margin: 0 0 22px;
+  margin: 0 0 12px;
   line-height: 1.25;
 }
-
-.vv-co-steps {
-  list-style: none;
-  counter-reset: vv-co-step;
-  padding: 0;
-  margin: 0 0 26px;
-  text-align: left;
-}
-.vv-co-steps li {
-  counter-increment: vv-co-step;
-  position: relative;
-  padding: 12px 0 12px 44px;
+.vv-co-sub {
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--cream-mid);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+  margin: 0 0 24px;
 }
-.vv-co-steps li:last-child { border-bottom: none; }
-.vv-co-steps li::before {
-  content: counter(vv-co-step);
-  position: absolute;
-  left: 0;
-  top: 11px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(212, 175, 55, 0.14);
-  border: 1px solid var(--gold-muted);
-  color: var(--gold);
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-.vv-co-steps strong { color: var(--cream); font-weight: 600; }
-
-.vv-co-copy {
+.vv-co-open-primary {
   display: block;
   width: 100%;
+  padding: 15px 18px;
   margin-bottom: 12px;
-  padding: 14px 16px;
   background: var(--gold);
   color: var(--obsidian);
   font-family: var(--font-authority);
@@ -1782,25 +1829,37 @@ html, body {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  border: 1px solid var(--gold);
+  text-decoration: none;
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.28);
+  min-height: 48px;
+  -webkit-tap-highlight-color: transparent;
+}
+.vv-co-open-primary:active { transform: translateY(1px); }
+.vv-co-copy {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-authority);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold-muted);
   border-radius: 999px;
   cursor: pointer;
+  min-height: 44px;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
-  min-height: 48px;
 }
-.vv-co-copy:active { transform: translateY(1px); }
-
-.vv-co-open-link {
-  display: inline-block;
-  margin-top: 4px;
-  padding: 4px 8px;
+.vv-co-copy:active { border-color: var(--gold); transform: translateY(1px); }
+.vv-co-fallback {
   font-family: var(--font-sans);
   font-size: 0.75rem;
+  line-height: 1.5;
   color: var(--cream-muted);
-  text-decoration: underline;
-  text-decoration-color: var(--gold-muted);
-  text-underline-offset: 3px;
+  margin: 18px 0 0;
 }
 
 

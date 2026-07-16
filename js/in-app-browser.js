@@ -98,39 +98,42 @@
       if (sessionStorage.getItem('vvIabBannerDismissed') === '1') return;
     } catch (e) { /* Safari private mode */ }
 
-    var browserLabel = platform === 'ios' ? 'Safari' :
-                       platform === 'android' ? 'Chrome' :
-                       'your browser';
-    // The deep-link targets the CURRENT page URL, so Safari opens
-    // right where the customer was — they don't lose their place.
+    // Instagram/Facebook show the native menu option as "Open in
+     // external browser" (some iOS versions also show "Open in Safari").
+     // Use IG's exact wording on our CTA so customers recognise it.
+    var menuChar = platform === 'ios' ? '···' : '⋮';
+    // The deep-link targets the CURRENT page URL, so their browser
+    // opens right where they were — no state loss.
     var deepLink = externalLink(window.location.href);
 
     var html =
-      '<div id="vv-iab-banner" role="region" aria-label="Open in ' + browserLabel + '">' +
+      '<div id="vv-iab-banner" role="region" aria-label="Required — Open in External Browser">' +
         '<div class="vv-iab-inner">' +
           '<div class="vv-iab-text">' +
-            '<strong>For smooth checkout &amp; secure payment,</strong> ' +
-            'open this page in <strong>' + browserLabel + '</strong>.' +
+            '<strong>Checkout requires an external browser.</strong> ' +
+            'Tap below to open this page &mdash; or use the ' +
+            '<strong>' + menuChar + ' menu</strong> at the top right and choose ' +
+            '<strong>&ldquo;Open in External Browser&rdquo;</strong>.' +
           '</div>' +
           '<div class="vv-iab-actions">' +
-            '<a class="vv-iab-open" href="' + deepLink + '">Open in ' + browserLabel + '</a>' +
+            '<a class="vv-iab-open" href="' + deepLink + '">Open in External Browser</a>' +
             '<button class="vv-iab-copy" type="button" aria-label="Copy link">Copy link</button>' +
-            '<button class="vv-iab-close" type="button" aria-label="Dismiss">&times;</button>' +
           '</div>' +
+          '<a href="#" class="vv-iab-continue" role="button" aria-label="Continue browsing here — checkout will not work">Continue browsing here (checkout won\'t work)</a>' +
         '</div>' +
       '</div>';
     document.body.insertAdjacentHTML('afterbegin', html);
-    // Push page down so the banner doesn't cover content
     document.body.classList.add('vv-iab-banner-active');
 
     var banner = document.getElementById('vv-iab-banner');
     var copyBtn = banner.querySelector('.vv-iab-copy');
-    var closeBtn = banner.querySelector('.vv-iab-close');
+    var continueLink = banner.querySelector('.vv-iab-continue');
 
     copyBtn.addEventListener('click', function () {
       copyToClipboard(window.location.href, copyBtn, 'Copy link');
     });
-    closeBtn.addEventListener('click', function () {
+    continueLink.addEventListener('click', function (e) {
+      e.preventDefault();
       banner.remove();
       document.body.classList.remove('vv-iab-banner-active');
       try { sessionStorage.setItem('vvIabBannerDismissed', '1'); } catch (e) {}
@@ -147,19 +150,19 @@
   function showCheckoutOverlay(stripeUrl) {
     if (document.getElementById('vv-checkout-overlay')) return;
 
-    var browserLabel = platform === 'ios' ? 'Safari' :
-                       platform === 'android' ? 'Chrome' :
-                       'your browser';
+    var menuChar = platform === 'ios' ? '···' : '⋮';
     var stripeDeepLink = externalLink(stripeUrl);
 
     var html =
       '<div id="vv-checkout-overlay" role="dialog" aria-modal="true">' +
         '<div class="vv-co-card">' +
-          '<h2 class="vv-co-title">One quick step to pay securely</h2>' +
-          '<p class="vv-co-sub">Tap below to jump straight to secure payment in ' + browserLabel + '.</p>' +
-          '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '">Continue payment in ' + browserLabel + ' →</a>' +
+          '<h2 class="vv-co-title">Payment requires an external browser</h2>' +
+          '<p class="vv-co-sub">Tap below to jump straight to secure payment &mdash; or use the ' +
+            '<strong>' + menuChar + ' menu</strong> at the top right and choose ' +
+            '<strong>&ldquo;Open in External Browser&rdquo;</strong>.</p>' +
+          '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '">Open Payment in External Browser</a>' +
           '<button id="vv-co-copy" class="vv-co-copy" type="button">Or copy payment link</button>' +
-          '<p class="vv-co-fallback">If the button above doesn\'t work: tap the copy button, open ' + browserLabel + ', and paste it into the address bar.</p>' +
+          '<p class="vv-co-fallback">If the button above doesn\'t work: tap the copy button, open your browser, and paste the link into the address bar.</p>' +
         '</div>' +
       '</div>';
     document.body.insertAdjacentHTML('beforeend', html);

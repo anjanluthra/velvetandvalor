@@ -1686,10 +1686,12 @@ html, body {
 }
 @keyframes vvIabSlideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
-/* Push page content down when banner is visible so it doesn't overlap */
-body.vv-iab-banner-active { padding-top: 78px; }
+/* Push page content down when banner is visible so it doesn't overlap.
+   Taller now that the banner has a "Continue browsing here" opt-out
+   link beneath the primary CTA row. */
+body.vv-iab-banner-active { padding-top: 110px; }
 @media (min-width: 640px) {
-  body.vv-iab-banner-active { padding-top: 60px; }
+  body.vv-iab-banner-active { padding-top: 88px; }
 }
 
 .vv-iab-inner {
@@ -1751,22 +1753,19 @@ body.vv-iab-banner-active { padding-top: 78px; }
   -webkit-tap-highlight-color: transparent;
 }
 .vv-iab-copy:active { border-color: var(--gold); }
-.vv-iab-close {
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
+.vv-iab-continue {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
   color: var(--cream-muted);
-  border: none;
-  font-size: 1.375rem;
-  line-height: 1;
-  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 175, 55, 0.28);
+  text-underline-offset: 3px;
+  text-align: center;
   -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
 }
-.vv-iab-close:hover, .vv-iab-close:active { color: var(--cream); }
+.vv-iab-continue:hover, .vv-iab-continue:active { color: var(--cream-mid); }
 
 @media (min-width: 640px) {
   .vv-iab-text { flex: 1 1 auto; }

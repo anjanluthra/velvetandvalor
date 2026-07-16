@@ -98,26 +98,37 @@
       if (sessionStorage.getItem('vvIabBannerDismissed') === '1') return;
     } catch (e) { /* Safari private mode */ }
 
-    // Instagram/Facebook show the native menu option as "Open in
-     // external browser" (some iOS versions also show "Open in Safari").
-     // Use IG's exact wording on our CTA so customers recognise it.
     var menuChar = platform === 'ios' ? '···' : '⋮';
-    // The deep-link targets the CURRENT page URL, so their browser
-    // opens right where they were — no state loss.
+    // iOS: no reliable JS scheme escape (Apple locked down
+    // x-safari-https://), so we DON'T show an auto-open button —
+    // the customer would tap it, nothing would happen, and they'd
+    // think the site is broken. Instead we point them at IG's own
+    // native menu with a bouncing arrow. Copy Link is the safe
+    // fallback.
+    // Android: intent:// with the Chrome package is reliable enough
+    // to keep as a primary CTA.
+    var showAutoOpenBtn = (platform === 'android');
     var deepLink = externalLink(window.location.href);
+
+    var autoBtn = showAutoOpenBtn
+      ? '<a class="vv-iab-open" href="' + deepLink + '">Open in Chrome</a>'
+      : '';
 
     var html =
       '<div id="vv-iab-banner" role="region" aria-label="Required — Open in External Browser">' +
         '<div class="vv-iab-inner">' +
+          '<div class="vv-iab-arrow" aria-hidden="true">' +
+            '<span class="vv-iab-arrow-glyph">↗</span>' +
+            '<span class="vv-iab-arrow-label">Tap ' + menuChar + ' up here</span>' +
+          '</div>' +
           '<div class="vv-iab-text">' +
-            '<strong>Checkout requires an external browser.</strong> ' +
-            'Tap below to open this page &mdash; or use the ' +
-            '<strong>' + menuChar + ' menu</strong> at the top right and choose ' +
+            '<strong>Checkout requires an external browser.</strong><br>' +
+            'Tap the <strong>' + menuChar + ' menu</strong> at the top right of Instagram, then choose ' +
             '<strong>&ldquo;Open in External Browser&rdquo;</strong>.' +
           '</div>' +
           '<div class="vv-iab-actions">' +
-            '<a class="vv-iab-open" href="' + deepLink + '">Open in External Browser</a>' +
-            '<button class="vv-iab-copy" type="button" aria-label="Copy link">Copy link</button>' +
+            autoBtn +
+            '<button class="vv-iab-copy" type="button" aria-label="Copy link">Copy link to paste in browser</button>' +
           '</div>' +
           '<a href="#" class="vv-iab-continue" role="button" aria-label="Continue browsing here — checkout will not work">Continue browsing here (checkout won\'t work)</a>' +
         '</div>' +
@@ -130,7 +141,7 @@
     var continueLink = banner.querySelector('.vv-iab-continue');
 
     copyBtn.addEventListener('click', function () {
-      copyToClipboard(window.location.href, copyBtn, 'Copy link');
+      copyToClipboard(window.location.href, copyBtn, 'Copy link to paste in browser');
     });
     continueLink.addEventListener('click', function (e) {
       e.preventDefault();
@@ -151,18 +162,26 @@
     if (document.getElementById('vv-checkout-overlay')) return;
 
     var menuChar = platform === 'ios' ? '···' : '⋮';
+    // iOS: no reliable JS scheme escape. On Android intent:// works.
+    var showAutoOpenBtn = (platform === 'android');
     var stripeDeepLink = externalLink(stripeUrl);
+    var autoBtn = showAutoOpenBtn
+      ? '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '">Open Payment in Chrome</a>'
+      : '';
 
     var html =
       '<div id="vv-checkout-overlay" role="dialog" aria-modal="true">' +
         '<div class="vv-co-card">' +
+          '<div class="vv-iab-arrow vv-co-arrow-alt" aria-hidden="true">' +
+            '<span class="vv-iab-arrow-glyph">↗</span>' +
+            '<span class="vv-iab-arrow-label">Tap ' + menuChar + ' up here</span>' +
+          '</div>' +
           '<h2 class="vv-co-title">Payment requires an external browser</h2>' +
-          '<p class="vv-co-sub">Tap below to jump straight to secure payment &mdash; or use the ' +
-            '<strong>' + menuChar + ' menu</strong> at the top right and choose ' +
-            '<strong>&ldquo;Open in External Browser&rdquo;</strong>.</p>' +
-          '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '">Open Payment in External Browser</a>' +
-          '<button id="vv-co-copy" class="vv-co-copy" type="button">Or copy payment link</button>' +
-          '<p class="vv-co-fallback">If the button above doesn\'t work: tap the copy button, open your browser, and paste the link into the address bar.</p>' +
+          '<p class="vv-co-sub">Tap the <strong>' + menuChar + ' menu</strong> at the top right of Instagram, then choose ' +
+            '<strong>&ldquo;Open in External Browser&rdquo;</strong> to complete payment securely.</p>' +
+          autoBtn +
+          '<button id="vv-co-copy" class="vv-co-copy" type="button">Or copy payment link to paste in browser</button>' +
+          '<p class="vv-co-fallback">Your order details are saved &mdash; you\'ll pick right back up.</p>' +
         '</div>' +
       '</div>';
     document.body.insertAdjacentHTML('beforeend', html);

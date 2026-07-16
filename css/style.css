@@ -1767,6 +1767,47 @@ body.vv-iab-banner-active { padding-top: 110px; }
 }
 .vv-iab-continue:hover, .vv-iab-continue:active { color: var(--cream-mid); }
 
+/* Bouncing arrow pointing up to Instagram's ⋯ menu.
+   Only useful on mobile inside the WebView. */
+.vv-iab-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  color: var(--gold);
+  text-align: right;
+  align-self: flex-end;
+  animation: vvIabArrowBob 1.4s ease-in-out infinite;
+}
+@keyframes vvIabArrowBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.vv-iab-arrow-glyph {
+  font-size: 1.6rem;
+  line-height: 1;
+  font-weight: 700;
+}
+.vv-iab-arrow-label {
+  font-family: var(--font-authority);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Overlay variant of the arrow — larger, centered above the title */
+.vv-co-arrow-alt {
+  align-self: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.vv-co-arrow-alt .vv-iab-arrow-glyph { font-size: 2.4rem; }
+.vv-co-arrow-alt .vv-iab-arrow-label { font-size: 0.6875rem; }
+
 @media (min-width: 640px) {
   .vv-iab-text { flex: 1 1 auto; }
   .vv-iab-actions { width: auto; }

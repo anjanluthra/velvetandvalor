@@ -58,32 +58,6 @@
     return url;
   }
 
-  function copyToClipboard(text, btn, originalLabel) {
-    function done() {
-      btn.textContent = '✓ Link copied';
-      setTimeout(function () { btn.textContent = originalLabel; }, 2500);
-    }
-    function fail() {
-      btn.textContent = 'Press & hold the address bar to copy';
-      setTimeout(function () { btn.textContent = originalLabel; }, 3000);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done).catch(fail);
-    } else {
-      try {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        done();
-      } catch (e) { fail(); }
-    }
-  }
-
   /* ============================================================
      LAYER 1 — Sticky top banner on page load
      Prompts the customer to switch to Safari BEFORE they start
@@ -118,12 +92,10 @@
           '</div>' +
           '<div class="vv-iab-text">' +
             '<strong>Checkout requires an external browser.</strong><br>' +
-            'Tap the button below, or open the <strong>' + menuChar + ' menu</strong> at the top right of Instagram and choose ' +
-            '<strong>&ldquo;Open in External Browser&rdquo;</strong>.' +
+            'Tap the button below to open this page in your browser. If nothing happens, use Instagram\'s <strong>' + menuChar + ' menu</strong> (top right) &rarr; <strong>&ldquo;Open in External Browser&rdquo;</strong>.' +
           '</div>' +
           '<div class="vv-iab-actions">' +
             '<a class="vv-iab-open" href="' + deepLink + '" data-target-url="' + window.location.href + '">' + openBtnLabel + '</a>' +
-            '<button class="vv-iab-copy" type="button" aria-label="Copy link">Copy link to paste in browser</button>' +
           '</div>' +
           '<a href="#" class="vv-iab-continue" role="button" aria-label="Continue browsing here — checkout will not work">Continue browsing here (checkout won\'t work)</a>' +
         '</div>' +
@@ -133,7 +105,6 @@
 
     var banner = document.getElementById('vv-iab-banner');
     var openBtn = banner.querySelector('.vv-iab-open');
-    var copyBtn = banner.querySelector('.vv-iab-copy');
     var continueLink = banner.querySelector('.vv-iab-continue');
 
     // Multi-scheme escape attempt. Fires the browser-scheme <a> href
@@ -174,9 +145,6 @@
       }, 1500);
     });
 
-    copyBtn.addEventListener('click', function () {
-      copyToClipboard(window.location.href, copyBtn, 'Copy link to paste in browser');
-    });
     continueLink.addEventListener('click', function (e) {
       e.preventDefault();
       banner.remove();
@@ -207,10 +175,8 @@
             '<span class="vv-iab-arrow-label">Tap ' + menuChar + ' up here</span>' +
           '</div>' +
           '<h2 class="vv-co-title">Payment requires an external browser</h2>' +
-          '<p class="vv-co-sub">Tap the button below, or use Instagram\'s <strong>' + menuChar + ' menu</strong> at the top right and choose ' +
-            '<strong>&ldquo;Open in External Browser&rdquo;</strong> to complete payment securely.</p>' +
+          '<p class="vv-co-sub">Tap the button below to continue securely. If nothing happens, use Instagram\'s <strong>' + menuChar + ' menu</strong> (top right) &rarr; <strong>&ldquo;Open in External Browser&rdquo;</strong>.</p>' +
           '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '" data-target-url="' + stripeUrl + '">Open Payment in ' + browserLabel + '</a>' +
-          '<button id="vv-co-copy" class="vv-co-copy" type="button">Or copy payment link to paste in browser</button>' +
           '<p class="vv-co-fallback">Your order details are saved &mdash; you\'ll pick right back up.</p>' +
         '</div>' +
       '</div>';
@@ -219,7 +185,6 @@
 
     var overlay = document.getElementById('vv-checkout-overlay');
     var openBtn = document.getElementById('vv-co-open');
-    var copyBtn = document.getElementById('vv-co-copy');
 
     // Same multi-scheme escape as the top banner (see comment there).
     openBtn.addEventListener('click', function () {
@@ -245,9 +210,6 @@
       }, 1500);
     });
 
-    copyBtn.addEventListener('click', function () {
-      copyToClipboard(stripeUrl, copyBtn, 'Or copy payment link to paste in browser');
-    });
   }
 
   /* ============================================================

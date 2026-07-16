@@ -107,8 +107,6 @@ The aesthetic also explains why the horse girl identity overlaps so naturally wi
 
 No discussion of the horse girl identity is complete without acknowledging one of its most personal rituals: **naming a horse**. Whether you are choosing a name for a new mare, a rescue with a yard name that never quite suited her, or a foal whose personality is still revealing itself, the process is treated with genuine reverence.
 
-The right name is not merely a label. It is an early expression of the relationship — a signal of how you see this animal and what you hope your time together will hold. If you are in that process, our guide to [girl horse names](/blog/girl-horse-names) offers more than 200 ideas across every register, from the classical to the whimsical.
-
 ## A Final Word on the Label
 
 The horse girl meaning has travelled a long way — from playground galloping to internet meme to reclaimed identity — and it has arrived somewhere rather good. It describes a person of unusual dedication, genuine empathy, and a relationship with the natural world that most people only encounter at a distance.

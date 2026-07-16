@@ -117,8 +117,6 @@ What distinguishes authentic equestrian style from imitation is **material integ
 
 There is one dimension of equestrian meaning that no dictionary captures adequately: the relationship between a rider and a **particular horse**. Equestrianism is not simply the skill of riding horses in the abstract — it is, at its deepest, the cultivation of partnership with an individual animal whose temperament, history, and character you come to know intimately.
 
-This is why so many equestrians name their horses with unusual care, choosing names that reflect personality, bloodline, or a private meaning shared between rider and horse. If you are looking for inspiration, [Girl Horse Names: 200+ Ideas](/blog/girl-horse-names) is a thoughtful starting point.
-
 And if you would like to carry that bond into the objects you use every day — a leather case engraved with your horse's name or a motif that means something to you specifically — the [Velvet & Valor custom design service](/custom) exists precisely for that.
 
 ## A Word That Carries Its History Lightly

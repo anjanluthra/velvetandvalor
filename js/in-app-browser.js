@@ -99,20 +99,15 @@
     } catch (e) { /* Safari private mode */ }
 
     var menuChar = platform === 'ios' ? '···' : '⋮';
-    // iOS: no reliable JS scheme escape (Apple locked down
-    // x-safari-https://), so we DON'T show an auto-open button —
-    // the customer would tap it, nothing would happen, and they'd
-    // think the site is broken. Instead we point them at IG's own
-    // native menu with a bouncing arrow. Copy Link is the safe
-    // fallback.
-    // Android: intent:// with the Chrome package is reliable enough
-    // to keep as a primary CTA.
-    var showAutoOpenBtn = (platform === 'android');
+    // Primary CTA is a real anchor with the deep-link as its href —
+    // user-initiated taps have higher OS-privilege than JS-set
+    // location.href, so an <a href> is the most likely to actually
+    // fire the scheme handler. We ALSO try multiple fallback
+    // schemes on click (see tryEscape below) so if the first fails
+    // we cycle through others before giving up.
+    var browserLabel = platform === 'ios' ? 'Safari' : 'External Browser';
     var deepLink = externalLink(window.location.href);
-
-    var autoBtn = showAutoOpenBtn
-      ? '<a class="vv-iab-open" href="' + deepLink + '">Open in Chrome</a>'
-      : '';
+    var openBtnLabel = 'Open in ' + browserLabel;
 
     var html =
       '<div id="vv-iab-banner" role="region" aria-label="Required — Open in External Browser">' +
@@ -123,11 +118,11 @@
           '</div>' +
           '<div class="vv-iab-text">' +
             '<strong>Checkout requires an external browser.</strong><br>' +
-            'Tap the <strong>' + menuChar + ' menu</strong> at the top right of Instagram, then choose ' +
+            'Tap the button below, or open the <strong>' + menuChar + ' menu</strong> at the top right of Instagram and choose ' +
             '<strong>&ldquo;Open in External Browser&rdquo;</strong>.' +
           '</div>' +
           '<div class="vv-iab-actions">' +
-            autoBtn +
+            '<a class="vv-iab-open" href="' + deepLink + '" data-target-url="' + window.location.href + '">' + openBtnLabel + '</a>' +
             '<button class="vv-iab-copy" type="button" aria-label="Copy link">Copy link to paste in browser</button>' +
           '</div>' +
           '<a href="#" class="vv-iab-continue" role="button" aria-label="Continue browsing here — checkout will not work">Continue browsing here (checkout won\'t work)</a>' +
@@ -137,8 +132,47 @@
     document.body.classList.add('vv-iab-banner-active');
 
     var banner = document.getElementById('vv-iab-banner');
+    var openBtn = banner.querySelector('.vv-iab-open');
     var copyBtn = banner.querySelector('.vv-iab-copy');
     var continueLink = banner.querySelector('.vv-iab-continue');
+
+    // Multi-scheme escape attempt. Fires the browser-scheme <a> href
+    // naturally (user-initiated navigation), and ALSO tries a
+    // sequence of alternative schemes via JS in case the primary
+    // href silently no-ops on the customer's iOS version.
+    openBtn.addEventListener('click', function () {
+      // Don't preventDefault — let the browser handle the primary
+      // scheme (x-safari-https:// on iOS, intent:// on Android).
+      // Then, as belt-and-braces, try alternate schemes 200ms and
+      // 800ms later. If the primary worked, this page is already
+      // backgrounded and these no-op. If it didn't, one of these
+      // may still trigger.
+      var raw = openBtn.getAttribute('data-target-url') || window.location.href;
+      var attempts = [];
+      if (platform === 'ios') {
+        attempts.push(raw.replace(/^https?:\/\//, 'googlechrome://'));       // Chrome on iOS (if installed)
+        attempts.push(raw.replace(/^https?:\/\//, 'googlechromes://'));      // Chrome (https variant)
+      }
+      setTimeout(function () {
+        try { window.location.href = attempts[0] || raw; } catch (e) {}
+      }, 200);
+      setTimeout(function () {
+        try { window.location.href = attempts[1] || raw; } catch (e) {}
+      }, 800);
+      // Give the customer a follow-up hint if we're still on the page
+      // after 1.5s — meaning nothing worked and they should use IG's menu.
+      setTimeout(function () {
+        if (!document.hidden) {
+          var hint = banner.querySelector('.vv-iab-hint');
+          if (!hint) {
+            hint = document.createElement('p');
+            hint.className = 'vv-iab-hint';
+            hint.innerHTML = 'Didn\'t open? Use Instagram\'s <strong>' + menuChar + '</strong> menu &rarr; <strong>Open in External Browser</strong>.';
+            banner.querySelector('.vv-iab-inner').appendChild(hint);
+          }
+        }
+      }, 1500);
+    });
 
     copyBtn.addEventListener('click', function () {
       copyToClipboard(window.location.href, copyBtn, 'Copy link to paste in browser');
@@ -162,12 +196,8 @@
     if (document.getElementById('vv-checkout-overlay')) return;
 
     var menuChar = platform === 'ios' ? '···' : '⋮';
-    // iOS: no reliable JS scheme escape. On Android intent:// works.
-    var showAutoOpenBtn = (platform === 'android');
+    var browserLabel = platform === 'ios' ? 'Safari' : 'External Browser';
     var stripeDeepLink = externalLink(stripeUrl);
-    var autoBtn = showAutoOpenBtn
-      ? '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '">Open Payment in Chrome</a>'
-      : '';
 
     var html =
       '<div id="vv-checkout-overlay" role="dialog" aria-modal="true">' +
@@ -177,9 +207,9 @@
             '<span class="vv-iab-arrow-label">Tap ' + menuChar + ' up here</span>' +
           '</div>' +
           '<h2 class="vv-co-title">Payment requires an external browser</h2>' +
-          '<p class="vv-co-sub">Tap the <strong>' + menuChar + ' menu</strong> at the top right of Instagram, then choose ' +
+          '<p class="vv-co-sub">Tap the button below, or use Instagram\'s <strong>' + menuChar + ' menu</strong> at the top right and choose ' +
             '<strong>&ldquo;Open in External Browser&rdquo;</strong> to complete payment securely.</p>' +
-          autoBtn +
+          '<a id="vv-co-open" class="vv-co-open-primary" href="' + stripeDeepLink + '" data-target-url="' + stripeUrl + '">Open Payment in ' + browserLabel + '</a>' +
           '<button id="vv-co-copy" class="vv-co-copy" type="button">Or copy payment link to paste in browser</button>' +
           '<p class="vv-co-fallback">Your order details are saved &mdash; you\'ll pick right back up.</p>' +
         '</div>' +
@@ -187,9 +217,36 @@
     document.body.insertAdjacentHTML('beforeend', html);
     document.body.style.overflow = 'hidden';
 
+    var overlay = document.getElementById('vv-checkout-overlay');
+    var openBtn = document.getElementById('vv-co-open');
     var copyBtn = document.getElementById('vv-co-copy');
+
+    // Same multi-scheme escape as the top banner (see comment there).
+    openBtn.addEventListener('click', function () {
+      var raw = openBtn.getAttribute('data-target-url') || stripeUrl;
+      var attempts = [];
+      if (platform === 'ios') {
+        attempts.push(raw.replace(/^https?:\/\//, 'googlechrome://'));
+        attempts.push(raw.replace(/^https?:\/\//, 'googlechromes://'));
+      }
+      setTimeout(function () { try { window.location.href = attempts[0] || raw; } catch (e) {} }, 200);
+      setTimeout(function () { try { window.location.href = attempts[1] || raw; } catch (e) {} }, 800);
+      setTimeout(function () {
+        if (!document.hidden) {
+          var hint = overlay.querySelector('.vv-iab-hint');
+          if (!hint) {
+            var menuChar = platform === 'ios' ? '···' : '⋮';
+            hint = document.createElement('p');
+            hint.className = 'vv-iab-hint vv-co-hint';
+            hint.innerHTML = 'Didn\'t open? Use Instagram\'s <strong>' + menuChar + '</strong> menu &rarr; <strong>Open in External Browser</strong>.';
+            overlay.querySelector('.vv-co-card').appendChild(hint);
+          }
+        }
+      }, 1500);
+    });
+
     copyBtn.addEventListener('click', function () {
-      copyToClipboard(stripeUrl, copyBtn, 'Or copy payment link');
+      copyToClipboard(stripeUrl, copyBtn, 'Or copy payment link to paste in browser');
     });
   }
 

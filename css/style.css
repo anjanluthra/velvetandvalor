@@ -1808,6 +1808,25 @@ body.vv-iab-banner-active { padding-top: 110px; }
 .vv-co-arrow-alt .vv-iab-arrow-glyph { font-size: 2.4rem; }
 .vv-co-arrow-alt .vv-iab-arrow-label { font-size: 0.6875rem; }
 
+/* Follow-up hint appended if the Open button's schemes didn't fire.
+   Points customers to Instagram's own ⋯ menu as the fallback. */
+.vv-iab-hint {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.10);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--cream-mid);
+  text-align: center;
+  animation: vvIabHintIn 0.35s ease-out;
+}
+@keyframes vvIabHintIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.vv-iab-hint strong { color: var(--cream); font-weight: 600; }
+.vv-co-hint { margin-top: 16px; }
+
 @media (min-width: 640px) {
   .vv-iab-text { flex: 1 1 auto; }
   .vv-iab-actions { width: auto; }

@@ -341,6 +341,18 @@ svg    { display: block; }
   100% { transform: translate(-2%, 6%); }
 }
 
+/* Kill the grain overlay on mobile. The 6.7 fps translate animation
+   on a fixed 200%-viewport layer was forcing iOS Safari to composite
+   the whole screen every frame, causing the half-screen flicker Kate
+   flagged. At 0.032 opacity this texture barely reads on desktop
+   anyway — on mobile it's invisible in exchange for zero paint cost. */
+@media (max-width: 900px) {
+  .grain { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+}
+
 /* ── Navigation ─────────────────────────────────────────────── */
 .nav {
   position: sticky;

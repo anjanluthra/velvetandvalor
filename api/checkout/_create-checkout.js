@@ -1,37 +1,7 @@
 const Stripe = require('stripe');
-
-// Server-derived prices (cents). NEVER trust a client-sent price.
-const COLLECTIONS = {
-  'noble-steed':  { name: 'Noble Steed',       cents: 4800 },
-  'riders-motto': { name: "The Rider's Motto",  cents: 4000 },
-};
-
-// Resolve a collection to its trusted name + price. Prefer a stable slug
-// (collectionId); fall back to legacy free-text `collection` so existing
-// single-item Buy Now keeps working until all clients send collectionId.
-function resolveCollection(collectionId, legacyName) {
-  if (collectionId && COLLECTIONS[collectionId]) {
-    return { id: collectionId, ...COLLECTIONS[collectionId] };
-  }
-  if (typeof legacyName === 'string' && /rider/i.test(legacyName)) {
-    return { id: 'riders-motto', ...COLLECTIONS['riders-motto'] };
-  }
-  return { id: 'noble-steed', ...COLLECTIONS['noble-steed'] };
-}
-
-// Strip control characters; cap length. Display use only.
-function clean(v, max) {
-  return String(v == null ? '' : v)
-    .replace(/[\x00-\x1F\x7F]/g, '')
-    .trim()
-    .slice(0, max || 80);
-}
-
-function clampQty(q) {
-  const n = Math.floor(Number(q));
-  if (!Number.isFinite(n) || n < 1) return 1;
-  return Math.min(n, 10);
-}
+// Prices, and the helpers that sanitise item fields, live in _prices.js so the
+// hosted and embedded checkouts can never disagree on what a case costs.
+const { COLLECTIONS, resolveCollection, clean, clampQty } = require('./_prices');
 
 function lineItem(col, design, model, finish, qty) {
   const designName = clean(design, 60) || 'Case';

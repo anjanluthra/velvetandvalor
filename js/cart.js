@@ -241,18 +241,58 @@
   }
 
   /* ── Checkout ──────────────────────────────────────────────── */
+  /**
+   * Hand the bag to our on-domain checkout.
+   *
+   * Deliberately NOT a redirect to checkout.stripe.com: that is what breaks
+   * inside the Instagram in-app browser. Payment now happens on
+   * velvet-valor.com via the embedded Stripe Payment Element, same as Buy Now.
+   *
+   * Prices are not sent — /api/create-payment-intent re-derives every one of
+   * them from the server-side table. The cart is passed through sessionStorage
+   * (not the querystring) so a long bag can't blow the URL length limit.
+   */
   function checkout() {
     var arr = read();
     if (!arr.length) return;
     var btn = els.checkout;
     var label = btn.textContent;
     btn.disabled = true; btn.textContent = 'Processing…';
+
+    var payload = {
+      items: arr.map(function (i) {
+        return {
+          collectionId: i.collectionId,
+          collection: i.name || '',
+          design: i.design,
+          model: i.model,
+          finish: i.finish || 'Glossy',
+          qty: clampQty(i.qty),
+          image: i.image || '',
+          unitAmountCents: i.unitAmountCents,
+        };
+      }),
+    };
+
+    try {
+      sessionStorage.setItem('vvCheckoutCart', JSON.stringify(payload));
+    } catch (e) {
+      // Private mode — /checkout can't read the bag, so fall back to the
+      // hosted flow rather than stranding the customer on an empty page.
+      fallbackToHostedCheckout(payload, btn, label);
+      return;
+    }
+    window.location.href = '/checkout';
+  }
+
+  /** Last-resort hosted Stripe Checkout when sessionStorage is unavailable. */
+  function fallbackToHostedCheckout(payload, btn, label) {
     fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        items: arr.map(function (i) {
-          return { collectionId: i.collectionId, design: i.design, model: i.model, finish: i.finish || 'Glossy', qty: clampQty(i.qty) };
+        items: payload.items.map(function (i) {
+          return { collectionId: i.collectionId, design: i.design, model: i.model, finish: i.finish, qty: i.qty };
         }),
       }),
     }).then(function (r) { return r.json(); }).then(function (data) {

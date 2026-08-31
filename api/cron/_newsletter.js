@@ -16,8 +16,8 @@
  * Optional CRON_SECRET (Vercel sends it as `Authorization: Bearer <secret>`).
  */
 const Stripe = require('stripe');
-const store = require('./admin/_store');
-const { sendNewsletterFlowEmail } = require('./admin/_email');
+const store = require('../admin/_store');
+const { sendNewsletterFlowEmail } = require('../admin/_email');
 
 const DAY = 86400000;
 // Day offset at which each email becomes due, keyed by email number.

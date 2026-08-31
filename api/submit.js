@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
 
   if (type === 'newsletter') {
     // Enrol in the welcome flow + send Email 1 immediately. The daily cron
-    // (api/cron-newsletter) handles Emails 2–6. Suppressed addresses are skipped.
+    // (api/cron/_newsletter) handles Emails 2–6. Suppressed addresses are skipped.
     try { await startWelcomeFlow(entry); } catch (e) { console.error('welcome flow start failed:', e.message); }
   } else {
     // Waitlist confirm / contact auto-reply.

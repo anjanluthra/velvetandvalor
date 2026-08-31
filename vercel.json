@@ -2,6 +2,13 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/api/create-checkout", "destination": "/api/checkout/create-checkout" },
+    { "source": "/api/create-custom-checkout", "destination": "/api/checkout/create-custom-checkout" },
+    { "source": "/api/create-payment-intent", "destination": "/api/checkout/create-payment-intent" },
+    { "source": "/api/get-order", "destination": "/api/checkout/get-order" },
+    { "source": "/api/stripe-config", "destination": "/api/checkout/stripe-config" },
+    { "source": "/api/cron-newsletter", "destination": "/api/cron/newsletter" },
+    { "source": "/api/cron-recover", "destination": "/api/cron/recover" },
     { "source": "/products/riders-motto-:slug", "destination": "/riders-motto" },
     { "source": "/products/riders-motto", "destination": "/riders-motto" },
     { "source": "/products/cowgirl-:slug", "destination": "/cowgirl" },
@@ -9,7 +16,7 @@
     { "source": "/products/:slug", "destination": "/product" }
   ],
   "crons": [
-    { "path": "/api/cron-recover", "schedule": "0 10 * * *" },
-    { "path": "/api/cron-newsletter", "schedule": "0 9 * * *" }
+    { "path": "/api/cron/recover", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/newsletter", "schedule": "0 9 * * *" }
   ]
 }

@@ -13,7 +13,7 @@
  * as `Authorization: Bearer <CRON_SECRET>` — enforced here when set).
  */
 const Stripe = require('stripe');
-const { sendCartRecoveryEmail } = require('./admin/_email');
+const { sendCartRecoveryEmail } = require('../admin/_email');
 
 const DISCOUNT_CODE = process.env.RECOVERY_DISCOUNT_CODE || 'COMEBACK10';
 const MIN_AGE_MS = 18 * 60 * 60 * 1000; // wait ~a day after the reminder

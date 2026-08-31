@@ -138,7 +138,11 @@ module.exports = async (req, res) => {
         currency: 'usd',
         description,
         metadata: bagMetadata,
-        automatic_payment_methods: { enabled: true },
+        // Card only — deliberately NOT automatic_payment_methods, which pulls in
+        // Link and lets it hijack the form with an email/OTP step before the
+        // customer can reach the card fields. Apple Pay and Google Pay still
+        // appear: they are card wallets and ride on the `card` type.
+        payment_method_types: ['card'],
         ...(email ? { receipt_email: email } : {}),
         // NB: do not send `shipping` here. stripe-node serialises null as an
         // empty value (`shipping=`), and Stripe rejects empty strings for
@@ -242,10 +246,11 @@ module.exports = async (req, res) => {
       currency: 'usd',
       description,
       metadata,
-      // Enable card, Apple Pay, Google Pay, Link, and any other methods
-      // enabled on the Stripe Dashboard for this account, without us
-      // having to hard-code the list here.
-      automatic_payment_methods: { enabled: true },
+      // Card only — deliberately NOT automatic_payment_methods, which pulls in
+      // Link and lets it hijack the form with an email/OTP step before the
+      // customer can reach the card fields. Apple Pay and Google Pay still
+      // appear: they are card wallets and ride on the `card` type.
+      payment_method_types: ['card'],
       ...(email ? { receipt_email: email } : {}),
       // NB: do not send `shipping` here — see the note on the bag path above.
     });

@@ -247,6 +247,12 @@
 
       paymentElement = elements.create('payment', {
         layout: { type: 'tabs', defaultCollapsed: false },
+        // Card first and open by default. The PaymentIntent is card-only
+        // (see _create-payment-intent), so Link never appears — but be
+        // explicit here too so the card fields are what a customer lands on.
+        paymentMethodOrder: ['card'],
+        // Apple Pay / Google Pay are card wallets and stay available.
+        wallets: { applePay: 'auto', googlePay: 'auto' },
       });
       paymentElement.mount('#paymentElement');
 

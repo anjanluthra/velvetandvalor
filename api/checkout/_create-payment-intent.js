@@ -140,7 +140,10 @@ module.exports = async (req, res) => {
         metadata: bagMetadata,
         automatic_payment_methods: { enabled: true },
         ...(email ? { receipt_email: email } : {}),
-        shipping: null, // Stripe collects shipping via Address Element client-side
+        // NB: do not send `shipping` here. stripe-node serialises null as an
+        // empty value (`shipping=`), and Stripe rejects empty strings for
+        // non-unsettable params on create — which failed every PaymentIntent.
+        // The Address Element attaches shipping at confirm time instead.
       });
 
       return res.status(200).json({
@@ -244,7 +247,7 @@ module.exports = async (req, res) => {
       // having to hard-code the list here.
       automatic_payment_methods: { enabled: true },
       ...(email ? { receipt_email: email } : {}),
-      shipping: null, // Stripe collects shipping via Address Element client-side
+      // NB: do not send `shipping` here — see the note on the bag path above.
     });
 
     return res.status(200).json({

@@ -255,6 +255,14 @@
 }
 .checkout-summary-line:last-of-type { border-bottom: none; }
 
+/* The display rules above are author-level, so they beat the UA stylesheet's
+   [hidden] { display: none } and the add-on lines showed on every order —
+   customers saw "Custom initials / Handwritten quote / Furry friend portrait"
+   as if charged. Restore hiding explicitly. */
+.checkout-summary-line[hidden],
+.checkout-summary-item[hidden],
+.checkout-summary-total[hidden] { display: none; }
+
 .checkout-summary-total {
   display: flex;
   justify-content: space-between;

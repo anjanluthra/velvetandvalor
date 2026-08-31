@@ -3,13 +3,17 @@
  *
  *   checkout.session.completed → Kate's founder welcome email
  *   checkout.session.expired   → cart-recovery "you left something behind" email
+ *   payment_intent.succeeded   → same welcome + owner notification, for the
+ *                                on-domain embedded checkout (which creates a
+ *                                PaymentIntent and never a Checkout Session)
  *
  * Verifies the Stripe signature against the raw request body, then sends via Resend.
  *
  * Required env: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY.
  * Configure the endpoint in Stripe → Developers → Webhooks:
  *   URL: https://www.velvet-valor.com/api/stripe-webhook
- *   Events: checkout.session.completed, checkout.session.expired
+ *   Events: checkout.session.completed, checkout.session.expired,
+ *           payment_intent.succeeded
  */
 const Stripe = require('stripe');
 const store = require('./admin/_store');
@@ -59,6 +63,28 @@ function itemDescriptions(lineItems) {
   });
 }
 
+/**
+ * Readable item list for a PaymentIntent order. The embedded checkout has no
+ * Stripe line items, so the bag is reconstructed from the items_json metadata
+ * written by _create-payment-intent; falls back to the single-item fields.
+ */
+function itemDescriptionsFromMetadata(md) {
+  if (md.items_json) {
+    try {
+      const rows = JSON.parse(md.items_json);
+      if (Array.isArray(rows) && rows.length) {
+        return rows.map((r) => {
+          const qty = r.q > 1 ? ` \u00d7 ${r.q}` : '';
+          const detail = [r.d, r.m].filter(Boolean).join(' \u00b7 ');
+          return detail ? `${detail}${qty}` : `${r.c || 'Item'}${qty}`;
+        });
+      }
+    } catch (e) { /* fall through to the single-item shape */ }
+  }
+  const one = [md.collection, md.design, md.model, md.finish].filter(Boolean).join(' \u00b7 ');
+  return one ? [one] : [];
+}
+
 /** checkout.session.completed → founder welcome email. */
 async function handleCompleted(stripe, sessionId) {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
@@ -96,6 +122,68 @@ async function handleCompleted(stripe, sessionId) {
 
   await sendFounderWelcomeEmail({ to, name: details.name || '', product });
   console.log('stripe-webhook: welcome sent to', to, 'for', session.id);
+  return { emailed: true, notified: true };
+}
+
+/**
+ * payment_intent.succeeded → owner notification + founder welcome email.
+ *
+ * The embedded on-domain checkout (/checkout) pays via a PaymentIntent, so it
+ * never emits checkout.session.completed. Without this, an embedded order would
+ * take the customer's money silently: no notification to us, no email to them,
+ * and they'd stay in the newsletter "buy now" flow after buying.
+ *
+ * PaymentIntents created BY a Checkout Session also fire this event, so those
+ * are skipped here — handleCompleted already covers them and would otherwise
+ * send everything twice.
+ */
+async function handlePaymentIntent(stripe, paymentIntentId) {
+  const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+    expand: ['latest_charge'],
+  });
+  if (pi.status !== 'succeeded') return { skipped: 'not succeeded' };
+
+  // Skip anything that belongs to a Checkout Session — handleCompleted owns it.
+  try {
+    const sessions = await stripe.checkout.sessions.list({ payment_intent: pi.id, limit: 1 });
+    if (sessions.data && sessions.data.length) {
+      return { skipped: 'handled by checkout.session.completed' };
+    }
+  } catch (e) {
+    // If the lookup fails we'd rather risk a duplicate email than drop the
+    // only notification for a real order — fall through and send.
+    console.warn('stripe-webhook: session lookup failed for', pi.id, e && e.message);
+  }
+
+  const charge = pi.latest_charge && typeof pi.latest_charge === 'object' ? pi.latest_charge : null;
+  const billing = (charge && charge.billing_details) || {};
+  const shipping = pi.shipping || (charge && charge.shipping) || {};
+  const md = pi.metadata || {};
+
+  const to = pi.receipt_email || billing.email || '';
+  const name = shipping.name || billing.name || md.customer_name || '';
+  const product = productName({ metadata: md }, []);
+
+  try {
+    await sendPurchaseNotification({
+      name,
+      email: to,
+      product,
+      amount: formatAmount(pi.amount, pi.currency),
+      items: itemDescriptionsFromMetadata(md),
+      sessionId: pi.id,
+    });
+    console.log('stripe-webhook: purchase notification sent for', pi.id);
+  } catch (e) {
+    console.error('stripe-webhook: purchase notification failed:', e && e.message);
+  }
+
+  if (!to) return { skipped: 'no customer email', notified: true };
+
+  try { await store.removeNewsletterFlow(to); } catch (e) { console.warn('stripe-webhook: flow exit failed:', e && e.message); }
+
+  await sendFounderWelcomeEmail({ to, name, product });
+  console.log('stripe-webhook: welcome sent to', to, 'for', pi.id);
   return { emailed: true, notified: true };
 }
 
@@ -169,6 +257,8 @@ const handler = async (req, res) => {
       result = await handleCompleted(stripe, id);
     } else if (event.type === 'checkout.session.expired') {
       result = await handleExpired(stripe, id);
+    } else if (event.type === 'payment_intent.succeeded') {
+      result = await handlePaymentIntent(stripe, id);
     } else {
       return res.status(200).json({ received: true });
     }

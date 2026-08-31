@@ -3,9 +3,13 @@ const { requireUser } = require('./_auth');
 const { sendShippedEmail } = require('./_email');
 
 /**
- * Marks an order shipped/unfulfilled by writing fulfillment status to the
- * Stripe Checkout Session metadata. Metadata updates merge, so existing
- * product keys (design/model/finish/sku) are preserved.
+ * Marks an order shipped/unfulfilled by writing fulfillment status to Stripe
+ * metadata. Metadata updates merge, so existing product keys
+ * (design/model/finish/sku) are preserved.
+ *
+ * Handles both order shapes, keyed off the id prefix:
+ *   cs_... → Checkout Session (hosted checkout.stripe.com flow)
+ *   pi_... → PaymentIntent    (on-domain embedded checkout, no Session exists)
  * When `notify` is set (Mark Shipped confirmation), also emails the customer
  * a shipping confirmation via Resend.
  */
@@ -43,6 +47,27 @@ async function describeFromLineItems(stripe, sessionId) {
   }
 }
 
+/**
+ * Product summary for a PaymentIntent order. Embedded checkout has no Stripe
+ * line items, so the bag is rebuilt from the items_json metadata written by
+ * _create-payment-intent; falls back to the single-item fields.
+ */
+function describeFromMetadata(md) {
+  if (md && md.items_json) {
+    try {
+      const rows = JSON.parse(md.items_json);
+      if (Array.isArray(rows) && rows.length) {
+        return rows.map((r) => {
+          const qty = r.q > 1 ? ` \u00d7${r.q}` : '';
+          const detail = [r.d, r.m].filter(Boolean).join(', ');
+          return detail ? `${detail}${qty}` : `${r.c || 'Item'}${qty}`;
+        }).join(', ');
+      }
+    } catch (e) { /* fall through */ }
+  }
+  return describeProduct(md);
+}
+
 module.exports = async (req, res) => {
   const me = await requireUser(req, res);
   if (!me) return;
@@ -59,16 +84,21 @@ module.exports = async (req, res) => {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const isShipped = shipped !== false; // default to true
+  // Embedded-checkout orders are PaymentIntents; hosted ones are Sessions.
+  const isPaymentIntent = sessionId.startsWith('pi_');
 
   try {
-    const updated = await stripe.checkout.sessions.update(sessionId, {
-      metadata: {
-        fulfillment_status: isShipped ? 'shipped' : 'unfulfilled',
-        shipped_at: isShipped ? String(Date.now()) : '',
-        tracking: isShipped ? String(tracking || '') : '',
-        estimated_delivery: isShipped ? cleanDelivery : '',
-      },
-    });
+    const fulfillmentMetadata = {
+      fulfillment_status: isShipped ? 'shipped' : 'unfulfilled',
+      shipped_at: isShipped ? String(Date.now()) : '',
+      tracking: isShipped ? String(tracking || '') : '',
+      estimated_delivery: isShipped ? cleanDelivery : '',
+    };
+
+    const updated = isPaymentIntent
+      // expand latest_charge so the billing-email fallback below has something to read
+      ? await stripe.paymentIntents.update(sessionId, { metadata: fulfillmentMetadata, expand: ['latest_charge'] })
+      : await stripe.checkout.sessions.update(sessionId, { metadata: fulfillmentMetadata });
 
     const md = updated.metadata || {};
 
@@ -76,13 +106,24 @@ module.exports = async (req, res) => {
     let emailed = false;
     let emailError = null;
     if (isShipped && notify) {
-      const cust = updated.customer_details || {};
+      const cust = isPaymentIntent
+        ? (() => {
+            const charge = updated.latest_charge && typeof updated.latest_charge === 'object'
+              ? updated.latest_charge
+              : null;
+            const billing = (charge && charge.billing_details) || {};
+            const ship = updated.shipping || {};
+            return { email: updated.receipt_email || billing.email || '', name: ship.name || billing.name || '' };
+          })()
+        : (updated.customer_details || {});
       const to = cust.email || updated.customer_email || md.customer_email || '';
       if (!to) {
         emailError = 'No customer email on this order';
       } else {
         try {
-          const product = (await describeFromLineItems(stripe, sessionId)) || describeProduct(md);
+          const product = isPaymentIntent
+            ? describeFromMetadata(md)
+            : ((await describeFromLineItems(stripe, sessionId)) || describeProduct(md));
           await sendShippedEmail({
             to,
             name: cust.name || md.customer_name || '',

@@ -13,8 +13,43 @@
  * add-ons: initials, quote, furry-friend photo).
  */
 const Stripe = require('stripe');
+// Shared with the hosted checkout so the two flows can never disagree on price.
+const {
+  COLLECTIONS, SHIPPING_CENTS, CUSTOM_PORTRAIT_CENTS,
+  resolveCollection, clean, clampQty,
+} = require('./_prices');
 
-const SHIPPING_CENTS = 549; // $5.49 flat worldwide, matches old flow
+/**
+ * Price a multi-item bag from the trusted server-side table.
+ * The client sends only collectionId/design/model/finish/qty — never a price.
+ * Shipping is flat per order, not per item, matching the hosted flow.
+ * Throws a _client-tagged error for an unknown collection so the caller 400s.
+ */
+function priceItems(items) {
+  if (items.length > 20) {
+    throw Object.assign(new Error('too_many'), { _client: 'Too many items' });
+  }
+  const lines = items.map((it) => {
+    if (!it || !it.collectionId || !COLLECTIONS[it.collectionId]) {
+      throw Object.assign(new Error('bad_collection'), { _client: 'Invalid item in cart' });
+    }
+    const col = resolveCollection(it.collectionId);
+    const qty = clampQty(it.qty);
+    return {
+      collectionId: col.id,
+      collection: col.name,
+      design: clean(it.design, 60) || 'Case',
+      model: clean(it.model, 40) || 'iPhone',
+      finish: clean(it.finish, 20) || 'Glossy',
+      image: clean(it.image, 500),
+      qty,
+      unit_amount_cents: col.cents,
+      amount_cents: col.cents * qty,
+    };
+  });
+  const subtotal = lines.reduce((sum, l) => sum + l.amount_cents, 0);
+  return { lines, subtotal, total: subtotal + SHIPPING_CENTS };
+}
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,6 +65,10 @@ module.exports = async (req, res) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   const {
+    // Multi-item bag (from the cart). When present it wins over the
+    // single-item fields below.
+    items,
+
     // Cart shape
     collection = 'Noble Steed',
     collectionId = 'noble-steed',
@@ -57,11 +96,75 @@ module.exports = async (req, res) => {
     furry_friend_photo_url = '',
   } = req.body || {};
 
+  // ── Multi-item bag path ───────────────────────────────────
+  // The cart posts items[]; every price is resolved server-side. Returns the
+  // same response shape as the single-item path, plus `items` so the checkout
+  // page can render one summary row per line.
+  if (Array.isArray(items) && items.length > 0) {
+    let priced;
+    try {
+      priced = priceItems(items);
+    } catch (e) {
+      if (e && e._client) return res.status(400).json({ error: e._client });
+      console.error('PaymentIntent bag pricing failed:', e && e.message);
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+
+    const totalQty = priced.lines.reduce((sum, l) => sum + l.qty, 0);
+    const first = priced.lines[0];
+    const description = priced.lines.length === 1
+      ? `${first.collection} — ${first.design} (${first.model}) ${first.finish}`.trim()
+      : `${totalQty} items — ${[...new Set(priced.lines.map((l) => l.collection))].join(', ')}`;
+
+    const bagMetadata = {
+      order_type: 'standard',
+      // Keep the webhook welcome-email contract: name from the first line.
+      collection_id: first.collectionId,
+      collection: first.collection,
+      design: first.design,
+      model: first.model,
+      finish: first.finish,
+      image_url: first.image,
+      item_count: String(totalQty),
+      collections: clean([...new Set(priced.lines.map((l) => l.collection))].join(', '), 200),
+      items_json: clean(JSON.stringify(priced.lines.map((l) => ({
+        c: l.collectionId, d: clean(l.design, 30), m: clean(l.model, 24), q: l.qty,
+      }))), 480),
+    };
+
+    try {
+      const pi = await stripe.paymentIntents.create({
+        amount: priced.total,
+        currency: 'usd',
+        description,
+        metadata: bagMetadata,
+        automatic_payment_methods: { enabled: true },
+        ...(email ? { receipt_email: email } : {}),
+        shipping: null, // Stripe collects shipping via Address Element client-side
+      });
+
+      return res.status(200).json({
+        client_secret: pi.client_secret,
+        payment_intent_id: pi.id,
+        amount: priced.total,
+        subtotal: priced.subtotal,
+        shipping: SHIPPING_CENTS,
+        currency: 'usd',
+        description,
+        items: priced.lines,
+        image: first.image || '',
+      });
+    } catch (err) {
+      console.error('PaymentIntent (bag) error:', err && err.message);
+      return res.status(500).json({ error: 'Failed to create payment', detail: err && err.message });
+    }
+  }
+
   // Resolve base unit price. Custom portraits are always $73; other
   // collections accept a client-supplied unit_amount_cents (validated).
   let baseUnitCents;
   if (is_custom) {
-    baseUnitCents = 7300;
+    baseUnitCents = CUSTOM_PORTRAIT_CENTS;
   } else if (
     typeof unit_amount_cents === 'number' &&
     unit_amount_cents >= 100 &&

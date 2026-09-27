@@ -37,6 +37,13 @@ module.exports = {
    */
   series: [
     {
+      name: 'iPhone 18 Series', year: 2026,
+      models: [
+        { name: 'iPhone 18 Pro',     slug: 'iphone-18-pro',     device: 'iphone18pro',      display: '6.3"', chip: 'A20 Pro', cameras: 'Triple-camera', primaryKw: 'horse iphone 18 pro case' },
+        { name: 'iPhone 18 Pro Max', slug: 'iphone-18-pro-max', device: 'iphone18promax',   display: '6.9"', chip: 'A20 Pro', cameras: 'Triple-camera', primaryKw: 'horse iphone 18 pro max case' },
+      ],
+    },
+    {
       name: 'iPhone 17 Series', year: 2025,
       models: [
         { name: 'iPhone 17',         slug: 'iphone-17',         device: 'iphone17',         display: '6.3"', chip: 'A19',     cameras: 'Dual-camera',   primaryKw: 'horse iphone 17 case' },

@@ -211,6 +211,7 @@ window.addEventListener('unhandledrejection', function (e) {
   if (!nav) return;
 
   const SERIES = [
+    { name: 'iPhone 18', models: [['iPhone 18 Pro', 'iphone-18-pro'], ['iPhone 18 Pro Max', 'iphone-18-pro-max']] },
     { name: 'iPhone 17', models: [['iPhone 17', 'iphone-17'], ['iPhone 17 Air', 'iphone-17-air'], ['iPhone 17 Pro', 'iphone-17-pro'], ['iPhone 17 Pro Max', 'iphone-17-pro-max']] },
     { name: 'iPhone 16', models: [['iPhone 16', 'iphone-16'], ['iPhone 16 Pro', 'iphone-16-pro'], ['iPhone 16 Pro Max', 'iphone-16-pro-max'], ['iPhone 16 Plus', 'iphone-16-plus']] },
     { name: 'iPhone 15', models: [['iPhone 15', 'iphone-15'], ['iPhone 15 Pro', 'iphone-15-pro'], ['iPhone 15 Pro Max', 'iphone-15-pro-max'], ['iPhone 15 Plus', 'iphone-15-plus']] },

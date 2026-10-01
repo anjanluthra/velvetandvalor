@@ -20,6 +20,44 @@ const {
 } = require('./_prices');
 
 /**
+ * Promo codes. Keep the list small and server-side so the client cannot
+ * invent new codes or alter their value. Discount applies to the SUBTOTAL
+ * (never shipping). Case-insensitive; whitespace trimmed.
+ *   FIRST10   — advertised on site banners
+ *   WELCOME10 — legacy name, kept so dashboard links still work
+ */
+const PROMO_CODES = {
+  FIRST10:   { type: 'percent', value: 10 },
+  WELCOME10: { type: 'percent', value: 10 },
+};
+
+function resolvePromo(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  const code = raw.trim().toUpperCase().slice(0, 20);
+  const def = PROMO_CODES[code];
+  return def ? { code, ...def } : null;
+}
+
+/**
+ * Given a subtotal in cents and a promo-code definition, return
+ *   { discountCents, newSubtotal } where discountCents is always 0..subtotal.
+ * `null` promo returns a zero discount.
+ */
+function applyPromo(subtotalCents, promo) {
+  if (!promo || subtotalCents <= 0) return { discountCents: 0, newSubtotal: subtotalCents };
+  let discount = 0;
+  if (promo.type === 'percent') {
+    discount = Math.round((subtotalCents * promo.value) / 100);
+  } else if (promo.type === 'amount') {
+    discount = Math.round(promo.value);
+  }
+  // Never discount below zero; never discount shipping (handled by caller).
+  if (discount > subtotalCents) discount = subtotalCents;
+  if (discount < 0) discount = 0;
+  return { discountCents: discount, newSubtotal: subtotalCents - discount };
+}
+
+/**
  * Price a multi-item bag from the trusted server-side table.
  * The client sends only collectionId/design/model/finish/qty — never a price.
  * Shipping is flat per order, not per item, matching the hosted flow.
@@ -69,6 +107,11 @@ module.exports = async (req, res) => {
     // single-item fields below.
     items,
 
+    // Promo code typed in the summary. Validated server-side against
+    // PROMO_CODES (invalid codes are silently ignored — the client UI
+    // reports the status).
+    promo_code,
+
     // Cart shape
     collection = 'Noble Steed',
     collectionId = 'noble-steed',
@@ -116,6 +159,13 @@ module.exports = async (req, res) => {
       ? `${first.collection} — ${first.design} (${first.model}) ${first.finish}`.trim()
       : `${totalQty} items — ${[...new Set(priced.lines.map((l) => l.collection))].join(', ')}`;
 
+    // Promo code → discount on the subtotal (never shipping). Final charged
+    // amount = (subtotal - discount) + shipping. If the code is unknown,
+    // promo is null and nothing changes.
+    const bagPromo = resolvePromo(promo_code);
+    const { discountCents: bagDiscount } = applyPromo(priced.subtotal, bagPromo);
+    const bagFinalTotal = priced.subtotal - bagDiscount + SHIPPING_CENTS;
+
     const bagMetadata = {
       order_type: 'standard',
       // Keep the webhook welcome-email contract: name from the first line.
@@ -130,11 +180,12 @@ module.exports = async (req, res) => {
       items_json: clean(JSON.stringify(priced.lines.map((l) => ({
         c: l.collectionId, d: clean(l.design, 30), m: clean(l.model, 24), q: l.qty,
       }))), 480),
+      ...(bagPromo ? { promo_code: bagPromo.code, promo_discount_cents: String(bagDiscount) } : {}),
     };
 
     try {
       const pi = await stripe.paymentIntents.create({
-        amount: priced.total,
+        amount: bagFinalTotal,
         currency: 'usd',
         description,
         metadata: bagMetadata,
@@ -153,9 +204,14 @@ module.exports = async (req, res) => {
       return res.status(200).json({
         client_secret: pi.client_secret,
         payment_intent_id: pi.id,
-        amount: priced.total,
+        amount: bagFinalTotal,
         subtotal: priced.subtotal,
         shipping: SHIPPING_CENTS,
+        discount_cents: bagDiscount,
+        promo_code: bagPromo ? bagPromo.code : null,
+        promo_applied: !!bagPromo,
+        // When a code was sent but didn't resolve, let the UI tell the customer.
+        promo_rejected: promo_code && !bagPromo ? true : false,
         currency: 'usd',
         description,
         items: priced.lines,
@@ -192,12 +248,15 @@ module.exports = async (req, res) => {
   const cleanFurryUrl = (furry_friend_photo_url || '').toString().slice(0, 500);
   const wantsFurry = is_custom && !!add_furry_friend && /^https?:\/\//.test(cleanFurryUrl);
 
-  // Total cents = base + add-ons + shipping
-  let totalCents = baseUnitCents;
-  if (wantsInitials) totalCents += 600;
-  if (wantsQuote) totalCents += 600;
-  if (wantsFurry) totalCents += 3200;
-  totalCents += SHIPPING_CENTS;
+  // Subtotal (everything except shipping) → apply promo → add shipping.
+  let subtotalCents = baseUnitCents;
+  if (wantsInitials) subtotalCents += 600;
+  if (wantsQuote) subtotalCents += 600;
+  if (wantsFurry) subtotalCents += 3200;
+
+  const singlePromo = resolvePromo(promo_code);
+  const { discountCents: singleDiscount } = applyPromo(subtotalCents, singlePromo);
+  let totalCents = subtotalCents - singleDiscount + SHIPPING_CENTS;
 
   // Enforce validation for the custom-portrait server-required fields
   if (is_custom && !photo_url_1) {
@@ -238,6 +297,7 @@ module.exports = async (req, res) => {
       furry_friend_photo_url: wantsFurry ? cleanFurryUrl : '',
       add_furry_friend: wantsFurry ? 'yes' : 'no',
     } : {}),
+    ...(singlePromo ? { promo_code: singlePromo.code, promo_discount_cents: String(singleDiscount) } : {}),
   };
 
   try {
@@ -259,6 +319,12 @@ module.exports = async (req, res) => {
       client_secret: pi.client_secret,
       payment_intent_id: pi.id,
       amount: totalCents,
+      subtotal: subtotalCents,
+      shipping: SHIPPING_CENTS,
+      discount_cents: singleDiscount,
+      promo_code: singlePromo ? singlePromo.code : null,
+      promo_applied: !!singlePromo,
+      promo_rejected: promo_code && !singlePromo ? true : false,
       currency: 'usd',
       description,
       image: image || '',

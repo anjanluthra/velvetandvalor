@@ -190,6 +190,7 @@
   /* ── 3. Load Stripe.js + create the PaymentIntent ──────── */
   let stripe, elements, addressElement, paymentElement;
   let totalCents = 0;
+  let currentPromoCode = ''; // '' = none applied
 
   async function bootstrap() {
     try {
@@ -205,7 +206,7 @@
       const piRes = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cart),
+        body: JSON.stringify(Object.assign({}, cart, { promo_code: currentPromoCode })),
       });
       if (!piRes.ok) {
         const errData = await piRes.json().catch(() => ({}));
@@ -221,6 +222,7 @@
       // Complete the total display. The server is the authority on every
       // figure here, so overwrite the provisional bag row prices too.
       if (pi.items) reconcileBagPrices(pi.items);
+      updateDiscountDisplay(pi);
       setText('summaryTotal', fmt(totalCents, pi.currency));
       submitPriceEl.textContent = fmt(totalCents, pi.currency);
 
@@ -263,6 +265,131 @@
       console.error('Checkout bootstrap failed:', err);
       showFatalError('Could not open checkout.', err.message || 'Please refresh and try again.');
     }
+  }
+
+  /* ── 3b. Promo code — Apply button ─────────────────────────
+     Re-POSTs to /api/create-payment-intent with promo_code. On success,
+     cancel the old PaymentIntent (fire-and-forget on the server) by
+     dropping its id and swapping the client_secret, then re-mount the
+     Payment Element so the amount shown by Apple Pay / Google Pay
+     also updates. Card fields re-render; we announce that in advance. */
+  const promoInput = document.getElementById('promoCodeInput');
+  const promoApplyBtn = document.getElementById('promoCodeApply');
+  const promoStatus = document.getElementById('promoCodeStatus');
+
+  function setPromoStatus(msg, kind) {
+    if (!promoStatus) return;
+    if (!msg) {
+      promoStatus.hidden = true;
+      promoStatus.textContent = '';
+      promoStatus.classList.remove('is-ok', 'is-err');
+      return;
+    }
+    promoStatus.hidden = false;
+    promoStatus.textContent = msg;
+    promoStatus.classList.toggle('is-ok',  kind === 'ok');
+    promoStatus.classList.toggle('is-err', kind === 'err');
+  }
+
+  function updateDiscountDisplay(pi) {
+    const line = document.getElementById('summaryDiscountLine');
+    const codeEl = document.getElementById('summaryDiscountCode');
+    const amtEl = document.getElementById('summaryDiscountAmount');
+    if (!line || !codeEl || !amtEl) return;
+    if (pi && pi.promo_applied && pi.discount_cents > 0) {
+      line.hidden = false;
+      codeEl.textContent = pi.promo_code ? '(' + pi.promo_code + ')' : '';
+      amtEl.textContent = '− ' + fmt(pi.discount_cents, pi.currency);
+    } else {
+      line.hidden = true;
+    }
+  }
+
+  async function applyPromoCode() {
+    if (!promoInput || !promoApplyBtn) return;
+    const raw = (promoInput.value || '').trim().toUpperCase();
+    if (!raw) {
+      setPromoStatus('Enter a code first.', 'err');
+      return;
+    }
+    promoApplyBtn.disabled = true;
+    const oldLabel = promoApplyBtn.textContent;
+    promoApplyBtn.textContent = 'Applying…';
+    setPromoStatus('', '');
+    try {
+      const res = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.assign({}, cart, { promo_code: raw })),
+      });
+      const pi = await res.json();
+      if (!res.ok) {
+        setPromoStatus(pi.error || 'Could not apply code.', 'err');
+        return;
+      }
+      if (pi.promo_rejected || !pi.promo_applied) {
+        setPromoStatus("That code isn't valid.", 'err');
+        return;
+      }
+      // Success — swap in the new PaymentIntent + remount Elements.
+      currentPromoCode = pi.promo_code || raw;
+      totalCents = pi.amount;
+      try { sessionStorage.setItem('vvCheckoutPI', pi.payment_intent_id); } catch (e) {}
+
+      if (pi.items) reconcileBagPrices(pi.items);
+      updateDiscountDisplay(pi);
+      setText('summaryTotal', fmt(totalCents, pi.currency));
+      submitPriceEl.textContent = fmt(totalCents, pi.currency);
+      setPromoStatus('Code applied — ' + fmt(pi.discount_cents, pi.currency) + ' off', 'ok');
+
+      // Rebuild the Elements against the new client_secret. The Payment
+      // Element remount means wallets refresh to the new amount; the
+      // Address Element is preserved because mount() replaces #addressElement
+      // children, so we re-mount both for consistency.
+      if (paymentElement) paymentElement.unmount();
+      if (addressElement) addressElement.unmount();
+      elements = stripe.elements({
+        clientSecret: pi.client_secret,
+        appearance: buildAppearance(),
+        loader: 'auto',
+      });
+      addressElement = elements.create('address', {
+        mode: 'shipping',
+        allowedCountries: [
+          'US', 'GB', 'CA', 'AU', 'NZ', 'IE', 'DE', 'FR', 'IT', 'ES',
+          'NL', 'BE', 'AT', 'CH', 'SE', 'NO', 'DK', 'FI', 'PT', 'PL',
+          'CZ', 'GR', 'HU', 'RO', 'BG', 'HR', 'SK', 'SI', 'LT', 'LV',
+          'EE', 'LU', 'MT', 'CY', 'JP', 'KR', 'SG', 'HK', 'AE', 'SA',
+          'QA', 'BH', 'KW', 'OM', 'IL', 'ZA', 'MX', 'BR', 'AR', 'CL',
+          'CO', 'IN', 'MY', 'TH', 'PH', 'ID', 'VN', 'TW',
+        ],
+        fields: { phone: 'auto' },
+      });
+      addressElement.mount('#addressElement');
+      paymentElement = elements.create('payment', {
+        layout: { type: 'tabs', defaultCollapsed: false },
+        paymentMethodOrder: ['card'],
+        wallets: { applePay: 'auto', googlePay: 'auto' },
+      });
+      paymentElement.mount('#paymentElement');
+      paymentElement.on('ready', () => { submitBtn.disabled = false; });
+    } catch (err) {
+      console.error('Promo apply failed:', err);
+      setPromoStatus('Could not apply code — please try again.', 'err');
+    } finally {
+      promoApplyBtn.disabled = false;
+      promoApplyBtn.textContent = oldLabel;
+    }
+  }
+
+  if (promoApplyBtn) promoApplyBtn.addEventListener('click', applyPromoCode);
+  if (promoInput) {
+    promoInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyPromoCode();
+      }
+    });
   }
 
   /* ── 4. Submit → confirmPayment ────────────────────────── */

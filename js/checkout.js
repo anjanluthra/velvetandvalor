@@ -307,7 +307,10 @@
 
   async function applyPromoCode() {
     if (!promoInput || !promoApplyBtn) return;
-    const raw = (promoInput.value || '').trim().toUpperCase();
+    // Send the raw value (trimmed) — the server tries the exact case
+    // first, then UPPERCASE, so codes like "TESS PURCHASE" or lowercase
+    // custom codes both match whatever Kate created in Stripe.
+    const raw = (promoInput.value || '').trim();
     if (!raw) {
       setPromoStatus('Enter a code first.', 'err');
       return;

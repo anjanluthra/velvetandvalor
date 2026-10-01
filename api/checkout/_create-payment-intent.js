@@ -20,22 +20,54 @@ const {
 } = require('./_prices');
 
 /**
- * Promo codes. Keep the list small and server-side so the client cannot
- * invent new codes or alter their value. Discount applies to the SUBTOTAL
- * (never shipping). Case-insensitive; whitespace trimmed.
- *   FIRST10   — advertised on site banners
- *   WELCOME10 — legacy name, kept so dashboard links still work
+ * Resolve a promo code against the merchant's Stripe dashboard.
+ * Stripe is the source of truth — whatever Kate creates in the dashboard
+ * (any code, expiry, usage limits) just works without a code deploy.
+ *
+ * Lookup is case-sensitive on Stripe's side, so we try the raw string
+ * first, then its UPPERCASE variant (Stripe codes are conventionally
+ * all-caps). Returns null if nothing matches, is expired, or has hit
+ * its max redemptions.
  */
-const PROMO_CODES = {
-  FIRST10:   { type: 'percent', value: 10 },
-  WELCOME10: { type: 'percent', value: 10 },
-};
-
-function resolvePromo(raw) {
+async function resolvePromoViaStripe(stripe, raw) {
   if (!raw || typeof raw !== 'string') return null;
-  const code = raw.trim().toUpperCase().slice(0, 20);
-  const def = PROMO_CODES[code];
-  return def ? { code, ...def } : null;
+  const trimmed = raw.trim().slice(0, 50);
+  if (!trimmed) return null;
+
+  const upper = trimmed.toUpperCase();
+  const candidates = upper === trimmed ? [trimmed] : [trimmed, upper];
+
+  for (const code of candidates) {
+    try {
+      const list = await stripe.promotionCodes.list({ code, active: true, limit: 1 });
+      const pc = list.data && list.data[0];
+      if (!pc) continue;
+      const coupon = pc.coupon;
+      if (!coupon || !coupon.valid) continue;
+
+      // Promotion-code level expiry (Stripe lets both the code and the coupon expire).
+      if (pc.expires_at && pc.expires_at * 1000 < Date.now()) continue;
+      // Promotion-code level redemption cap.
+      if (pc.max_redemptions && pc.times_redeemed >= pc.max_redemptions) continue;
+      // Coupon-level redemption cap (shared across all promotion codes using this coupon).
+      if (coupon.max_redemptions && coupon.times_redeemed >= coupon.max_redemptions) continue;
+      // Coupon-level expiry.
+      if (coupon.redeem_by && coupon.redeem_by * 1000 < Date.now()) continue;
+
+      return {
+        code: pc.code,
+        promotion_code_id: pc.id,
+        type: coupon.percent_off != null ? 'percent' : 'amount',
+        value: coupon.percent_off != null ? coupon.percent_off : (coupon.amount_off || 0),
+        coupon_id: coupon.id,
+        coupon_currency: coupon.currency || null,
+      };
+    } catch (err) {
+      // Soft-fail: never let a Stripe hiccup break checkout — just treat as "no code".
+      console.error('[promo] Stripe lookup failed for', code, '—', err && err.message);
+    }
+  }
+  return null;
 }
 
 /**
@@ -49,7 +81,12 @@ function applyPromo(subtotalCents, promo) {
   if (promo.type === 'percent') {
     discount = Math.round((subtotalCents * promo.value) / 100);
   } else if (promo.type === 'amount') {
-    discount = Math.round(promo.value);
+    // Stripe stores amount_off in the smallest currency unit (cents for USD).
+    // Only honour amount-off coupons priced in the merchant's base currency
+    // (USD here) — a USD cart shouldn't accept a GBP coupon by number.
+    if (!promo.coupon_currency || promo.coupon_currency === 'usd') {
+      discount = Math.round(promo.value);
+    }
   }
   // Never discount below zero; never discount shipping (handled by caller).
   if (discount > subtotalCents) discount = subtotalCents;
@@ -161,8 +198,9 @@ module.exports = async (req, res) => {
 
     // Promo code → discount on the subtotal (never shipping). Final charged
     // amount = (subtotal - discount) + shipping. If the code is unknown,
-    // promo is null and nothing changes.
-    const bagPromo = resolvePromo(promo_code);
+    // promo is null and nothing changes. Codes resolve against the merchant's
+    // Stripe dashboard so adding a code in Stripe needs no code deploy.
+    const bagPromo = await resolvePromoViaStripe(stripe, promo_code);
     const { discountCents: bagDiscount } = applyPromo(priced.subtotal, bagPromo);
     const bagFinalTotal = priced.subtotal - bagDiscount + SHIPPING_CENTS;
 
@@ -180,7 +218,12 @@ module.exports = async (req, res) => {
       items_json: clean(JSON.stringify(priced.lines.map((l) => ({
         c: l.collectionId, d: clean(l.design, 30), m: clean(l.model, 24), q: l.qty,
       }))), 480),
-      ...(bagPromo ? { promo_code: bagPromo.code, promo_discount_cents: String(bagDiscount) } : {}),
+      ...(bagPromo ? {
+        promo_code: bagPromo.code,
+        promo_discount_cents: String(bagDiscount),
+        stripe_promotion_code: bagPromo.promotion_code_id || '',
+        stripe_coupon: bagPromo.coupon_id || '',
+      } : {}),
     };
 
     try {
@@ -254,7 +297,7 @@ module.exports = async (req, res) => {
   if (wantsQuote) subtotalCents += 600;
   if (wantsFurry) subtotalCents += 3200;
 
-  const singlePromo = resolvePromo(promo_code);
+  const singlePromo = await resolvePromoViaStripe(stripe, promo_code);
   const { discountCents: singleDiscount } = applyPromo(subtotalCents, singlePromo);
   let totalCents = subtotalCents - singleDiscount + SHIPPING_CENTS;
 
@@ -297,7 +340,12 @@ module.exports = async (req, res) => {
       furry_friend_photo_url: wantsFurry ? cleanFurryUrl : '',
       add_furry_friend: wantsFurry ? 'yes' : 'no',
     } : {}),
-    ...(singlePromo ? { promo_code: singlePromo.code, promo_discount_cents: String(singleDiscount) } : {}),
+    ...(singlePromo ? {
+      promo_code: singlePromo.code,
+      promo_discount_cents: String(singleDiscount),
+      stripe_promotion_code: singlePromo.promotion_code_id || '',
+      stripe_coupon: singlePromo.coupon_id || '',
+    } : {}),
   };
 
   try {

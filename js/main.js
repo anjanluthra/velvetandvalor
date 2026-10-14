@@ -307,7 +307,7 @@ window.addEventListener('unhandledrejection', function (e) {
             <div class="mega-coll-stack">
               <a class="mega-coll-card" href="/collections/noble-steed">
                 <span class="mega-coll-name">Noble Steed</span>
-                <span class="mega-coll-sub">Artist equestrian portraits &middot; 10 colourways</span>
+                <span class="mega-coll-sub">Artist equestrian portraits &middot; 9 colourways</span>
               </a>
               <a class="mega-coll-card" href="/collections/riders-motto">
                 <span class="mega-coll-name">The Rider&rsquo;s Motto</span>

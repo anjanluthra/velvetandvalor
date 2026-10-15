@@ -291,6 +291,9 @@ window.addEventListener('unhandledrejection', function (e) {
         <button class="mega-rail-item" data-panel="custom" type="button">
           <span class="mega-rail-ico">${customIco}</span><span class="mega-rail-label">Custom Portrait</span><span class="mega-rail-arrow">&rsaquo;</span>
         </button>
+        <button class="mega-rail-item" data-panel="commissions" type="button">
+          <span class="mega-rail-ico">${customIco}</span><span class="mega-rail-label">Private Commissions</span><span class="mega-rail-arrow">&rsaquo;</span>
+        </button>
       </div>
       <div class="mega-panels">
         <div class="mega-panel active" data-panel="iphone">
@@ -329,6 +332,19 @@ window.addEventListener('unhandledrejection', function (e) {
             </a>
             <a class="mega-img-fill" href="/custom" aria-label="Create your custom case">
               <img data-src="/images/custom-case-prompt.jpg" alt="Custom horse portrait phone case with monogram" />
+            </a>
+          </div>
+        </div>
+        <div class="mega-panel" data-panel="commissions">
+          <div class="mega-split">
+            <a class="mega-custom" href="/private-commissions">
+              <span class="mega-coll-kicker">By commission &middot; From $1,291</span>
+              <span class="mega-custom-title">Your Horse. Your Story. Abstract Art.</span>
+              <span class="mega-custom-text">Large-format abstract portraits of your horse, composed exclusively for you from your own photography. One-of-a-kind, made to order.</span>
+              <span class="mega-custom-cta">Enquire now &rarr;</span>
+            </a>
+            <a class="mega-img-fill" href="/private-commissions" aria-label="Private commissions">
+              <img data-src="/images/private-commissions-hero.webp" alt="Framed abstract equestrian portrait" />
             </a>
           </div>
         </div>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Commissions — Bespoke Equestrian Abstract Art | Velvet &amp; Valor</title>
+  <meta name="description" content="Private commissions by Velvet & Valor. Your horse composed as a large-format, one-of-a-kind abstract artwork — made to order from your own photography. Enquire now." />
+
+  <meta property="og:title" content="Private Commissions — Velvet & Valor" />
+  <meta property="og:description" content="Your horse. Your story. Large-format abstract art, composed exclusively for you." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.velvet-valor.com/private-commissions" />
+  <meta property="og:image" content="https://www.velvet-valor.com/images/private-commissions-hero.webp" />
+  <link rel="canonical" href="https://www.velvet-valor.com/private-commissions" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="/css/style.css?v=v2026-10-15" />
+  <link rel="stylesheet" href="/css/private-commissions.css?v=v2026-10-15" />
+
+  <script src="/js/consent.js"></script>
+  <script src="/js/in-app-browser.js?v=v2026-08-29c"></script>
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Nav gets injected / managed by main.js (same as other pages) -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Velvet and Valor home">
+        VELVET <span class="amp">&amp;</span> VALOR
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-actions">
+        <a href="/collections/iphone-cases" class="nav-link">Shop</a>
+        <a href="/custom" class="nav-link">Custom</a>
+        <a href="/private-commissions" class="nav-link active">Commissions</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ─────────── HERO ─────────── -->
+    <section class="pc-hero" aria-labelledby="pc-hero-heading">
+      <div class="pc-hero-bg" aria-hidden="true">
+        <img src="/images/private-commissions-hero.webp" alt="" />
+      </div>
+      <div class="pc-hero-copy">
+        <p class="pc-eyebrow">Private Commissions</p>
+        <h1 id="pc-hero-heading" class="pc-hero-title">
+          Your horse.<br>Your story.<br><em>Abstract art.</em>
+        </h1>
+        <p class="pc-hero-sub">
+          Composed and finished exclusively for you — no two commissions are the same.
+        </p>
+        <a href="#pc-enquire" class="pc-hero-cta">Enquire Now</a>
+      </div>
+    </section>
+
+    <!-- ─────────── INTRO ─────────── -->
+    <section class="pc-intro" aria-labelledby="pc-intro-heading">
+      <div class="pc-intro-inner">
+        <p class="pc-eyebrow pc-eyebrow-centered">Made to Order</p>
+        <h2 id="pc-intro-heading" class="pc-intro-title">
+          Large-format. Hand-composed. Yours alone.
+        </h2>
+        <p class="pc-intro-body">
+          Created individually from your own photography, each piece is composed and
+          finished exclusively for you — <em>no two commissions are the same</em>.
+          Private commissions are now open.
+        </p>
+        <div class="pc-intro-details">
+          <div class="pc-detail">
+            <span class="pc-detail-label">Format</span>
+            <span class="pc-detail-value">Large-scale abstract</span>
+          </div>
+          <div class="pc-detail">
+            <span class="pc-detail-label">Lead time</span>
+            <span class="pc-detail-value">4–6 weeks</span>
+          </div>
+          <div class="pc-detail">
+            <span class="pc-detail-label">Edition</span>
+            <span class="pc-detail-value">One-of-a-kind</span>
+          </div>
+          <div class="pc-detail">
+            <span class="pc-detail-label">Pricing</span>
+            <span class="pc-detail-value">From $1,291 USD</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── ENQUIRY FORM ─────────── -->
+    <section id="pc-enquire" class="pc-enquiry" aria-labelledby="pc-enquiry-heading">
+      <div class="pc-enquiry-inner">
+
+        <header class="pc-enquiry-header">
+          <p class="pc-eyebrow pc-eyebrow-centered">Register Your Interest</p>
+          <h2 id="pc-enquiry-heading">Begin Your Commission</h2>
+          <p class="pc-enquiry-sub">
+            Share your horse, your palette, your preferred format. We'll come back to you within 48 hours with next steps. <strong>Commissions start from $1,291 USD.</strong>
+          </p>
+        </header>
+
+        <form id="pcForm" class="pc-form" novalidate>
+
+          <!-- Name -->
+          <div class="pc-field">
+            <label class="pc-label" for="pc-name">Your Name <span class="pc-req">*</span></label>
+            <input type="text" id="pc-name" name="name" class="pc-input" required autocomplete="name" maxlength="80" />
+          </div>
+
+          <!-- Email -->
+          <div class="pc-field">
+            <label class="pc-label" for="pc-email">Email <span class="pc-req">*</span></label>
+            <input type="email" id="pc-email" name="email" class="pc-input" required autocomplete="email" maxlength="120" placeholder="you@example.com" />
+          </div>
+
+          <!-- Horse photo upload -->
+          <div class="pc-field">
+            <label class="pc-label" for="pc-photo">A Photograph of Your Horse <span class="pc-req">*</span></label>
+            <p class="pc-help">A clear, well-lit photograph helps most. We can request additional reference once the commission begins.</p>
+            <div class="pc-upload" id="pcUploadZone">
+              <input type="file" id="pc-photo" name="photo" accept="image/jpeg,image/png,image/webp,image/heic" required hidden />
+              <label for="pc-photo" class="pc-upload-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span id="pcUploadLabel">Upload photograph</span>
+              </label>
+              <div class="pc-upload-preview" id="pcUploadPreview" hidden>
+                <img id="pcUploadImg" src="" alt="Uploaded horse photograph preview" />
+                <button type="button" class="pc-upload-remove" id="pcUploadRemove" aria-label="Remove photograph">&times;</button>
+              </div>
+              <p class="pc-upload-status" id="pcUploadStatus" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <!-- Palette picker (choose up to 3) -->
+          <div class="pc-field">
+            <span class="pc-label" id="pc-palette-label">Preferred Background Palette <span class="pc-req">*</span></span>
+            <p class="pc-help">Choose up to three. Tap again to deselect.</p>
+            <div class="pc-palette" role="listbox" aria-labelledby="pc-palette-label" aria-multiselectable="true" id="pcPalette">
+              <!-- Swatches injected by JS from a shared config so order/colours are easy to tune. -->
+            </div>
+            <input type="hidden" id="pc-colours" name="colours" value="" />
+          </div>
+
+          <!-- Frame choice -->
+          <div class="pc-field">
+            <span class="pc-label">Frame Finish <span class="pc-req">*</span></span>
+            <div class="pc-choice-row" role="radiogroup" aria-label="Frame finish">
+              <label class="pc-choice">
+                <input type="radio" name="frame" value="Light Oak" required />
+                <span class="pc-choice-card">
+                  <span class="pc-choice-swatch pc-frame-light" aria-hidden="true"></span>
+                  <span class="pc-choice-label">Light Oak</span>
+                </span>
+              </label>
+              <label class="pc-choice">
+                <input type="radio" name="frame" value="Dark Walnut" required />
+                <span class="pc-choice-card">
+                  <span class="pc-choice-swatch pc-frame-dark" aria-hidden="true"></span>
+                  <span class="pc-choice-label">Dark Walnut</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Size choice -->
+          <div class="pc-field">
+            <span class="pc-label">Size <span class="pc-req">*</span></span>
+            <div class="pc-choice-row pc-choice-row-sizes" role="radiogroup" aria-label="Size">
+              <label class="pc-choice">
+                <input type="radio" name="size" value="60 × 90 cm" required />
+                <span class="pc-choice-card pc-size-card">
+                  <span class="pc-size-visual pc-size-s" aria-hidden="true"></span>
+                  <span class="pc-choice-label">60 × 90 cm</span>
+                  <span class="pc-size-hint">24 × 35"</span>
+                </span>
+              </label>
+              <label class="pc-choice">
+                <input type="radio" name="size" value="80 × 120 cm" required />
+                <span class="pc-choice-card pc-size-card">
+                  <span class="pc-size-visual pc-size-m" aria-hidden="true"></span>
+                  <span class="pc-choice-label">80 × 120 cm</span>
+                  <span class="pc-size-hint">31 × 47"</span>
+                </span>
+              </label>
+              <label class="pc-choice">
+                <input type="radio" name="size" value="100 × 150 cm" required />
+                <span class="pc-choice-card pc-size-card">
+                  <span class="pc-size-visual pc-size-l" aria-hidden="true"></span>
+                  <span class="pc-choice-label">100 × 150 cm</span>
+                  <span class="pc-size-hint">39 × 59"</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Notes (optional) -->
+          <div class="pc-field">
+            <label class="pc-label" for="pc-notes">Anything else we should know? <span class="pc-optional">(optional)</span></label>
+            <textarea id="pc-notes" name="notes" class="pc-input pc-textarea" rows="4" maxlength="800" placeholder="Markings, movement, meaning, deadlines — anything that matters to you."></textarea>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" id="pcSubmit" class="pc-submit">
+            <span class="pc-submit-label">Send Enquiry</span>
+          </button>
+
+          <p id="pcError" class="pc-error" role="alert" hidden></p>
+        </form>
+
+        <!-- Success state -->
+        <div id="pcSuccess" class="pc-success" hidden>
+          <div class="pc-success-mark" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h3>Thank you.</h3>
+          <p>Your enquiry has been sent. We'll be in touch within 48 hours with next steps.</p>
+          <a href="/" class="pc-success-link">Return to Velvet &amp; Valor</a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site footer injected by main.js on other pages; keep page lightweight here. -->
+  <footer class="pc-footer" role="contentinfo">
+    <p>© Velvet &amp; Valor &middot; <a href="/our-story">Our Story</a> &middot; <a href="/contact">Contact</a></p>
+  </footer>
+
+  <script src="/js/private-commissions.js?v=v2026-10-15" defer></script>
+</body>
+</html>

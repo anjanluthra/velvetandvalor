@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
   }
 
   const b = req.body || {};
-  const type = ['newsletter', 'waitlist', 'contact'].includes(b.type) ? b.type : 'contact';
+  const type = ['newsletter', 'waitlist', 'contact', 'commission'].includes(b.type) ? b.type : 'contact';
   const email = String(b.email || '').trim();
   if (!email || !/.+@.+\..+/.test(email)) {
     return res.status(400).json({ error: 'A valid email is required' });

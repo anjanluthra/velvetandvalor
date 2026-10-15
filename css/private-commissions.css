@@ -602,3 +602,50 @@ body { color: var(--pc-cream); }
   .pc-hero-cta, .pc-submit, .pc-upload-btn, .pc-choice-card, .pc-swatch { transition: none; }
   .pc-hero-cta:hover, .pc-submit:hover, .pc-swatch:hover { transform: none; }
 }
+
+/* ============================================================
+   IN SITU — standalone framed-in-the-room feature
+   ============================================================ */
+.pc-situ {
+  background: var(--pc-navy-deep);
+  padding: 100px 48px 110px;
+  border-top: 1px solid var(--pc-ash);
+}
+.pc-situ-inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.pc-situ-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+.pc-situ-figure img {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  border-radius: 2px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(200, 164, 92, 0.14);
+}
+.pc-situ-caption {
+  text-align: center;
+}
+.pc-situ-note {
+  font-family: var(--pc-font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--pc-cream-soft);
+  margin: 10px 0 0;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 768px) {
+  .pc-situ { padding: 70px 20px 80px; }
+  .pc-situ-figure { gap: 20px; }
+  .pc-situ-note { font-size: 0.95rem; }
+}

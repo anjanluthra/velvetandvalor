@@ -296,6 +296,7 @@ async function sendCartRecoveryEmail({ to, name, items, recoveryUrl, discountCod
 function submissionLabel(type) {
   return type === 'newsletter' ? 'Newsletter signup'
     : type === 'waitlist' ? 'Journal waitlist signup'
+    : type === 'commission' ? 'Private Commission Enquiry'
     : 'Contact message';
 }
 

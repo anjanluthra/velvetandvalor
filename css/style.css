@@ -2095,3 +2095,18 @@ body.cart-open { overflow: hidden; }
 @media (max-width: 768px) {
   .cart-drawer { width: 100%; }
 }
+
+/* ─── Top banner — British Vogue featured mention ─────────── */
+.top-banner-vogue {
+  letter-spacing: 0.14em;
+  color: var(--gold);
+}
+.top-banner-vogue strong {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  font-size: 1.05em;
+  margin-left: 2px;
+}

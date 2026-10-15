@@ -722,3 +722,14 @@ body { color: var(--pc-cream); }
   border-left: 2px solid var(--pc-gold-soft);
 }
 .pc-furry-reveal .pc-help { margin-top: 0; }
+
+/* ─── Vogue flag on the hero eyebrow ─── */
+.pc-eyebrow-vogue em {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.1em;
+  letter-spacing: 0.02em;
+  color: var(--pc-cream);
+  margin-left: 2px;
+}

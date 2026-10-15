@@ -3059,50 +3059,103 @@
 }
 
 /* ============================================================
-   AS FEATURED IN — British Vogue editorial band
+   AS FEATURED IN — British Vogue, Oct 2026
+   Light cream backdrop so the authentic Vogue logo + cover
+   render in their native black-on-white, signalling "editorial"
+   against the surrounding dark-navy sections.
    ============================================================ */
 .as-featured {
-  padding: 72px 24px 48px;
-  background: var(--obsidian, #050b17);
-  border-top: 1px solid rgba(200, 164, 92, 0.14);
-  text-align: center;
+  padding: 96px 48px 110px;
+  background: #f4ecd8;
+  border-top: 1px solid rgba(10, 20, 36, 0.08);
+  border-bottom: 1px solid rgba(10, 20, 36, 0.08);
 }
-.as-featured .container {
-  max-width: 720px;
+.as-featured-container {
+  max-width: 1140px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 72px;
 }
+.as-featured-copy { max-width: 480px; }
 .as-featured-eyebrow {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: #c8a45c;
-  margin: 0 0 20px;
+  color: #8a6a2b;
+  margin: 0 0 22px;
 }
-.as-featured-title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.6rem, 5vw, 3.8rem);
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #f4ecd8;
-  margin: 0 0 14px;
-}
-.as-featured-title em {
-  font-style: italic;
-  color: #c8a45c;
+.as-featured-logo {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 0 0 28px;
 }
 .as-featured-date {
   font-family: 'Inter', sans-serif;
   font-size: 0.76rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(244, 236, 216, 0.55);
+  color: #4a3d1f;
+  margin: 0 0 20px;
+}
+.as-featured-note {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: #2a2420;
   margin: 0;
 }
-@media (max-width: 768px) {
-  .as-featured { padding: 56px 20px 36px; }
-  .as-featured-eyebrow { font-size: 0.64rem; letter-spacing: 0.32em; }
-  .as-featured-title { font-size: clamp(2rem, 10vw, 2.8rem); }
+
+.as-featured-cover-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.as-featured-cover {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 2px;
+  box-shadow:
+    0 24px 60px rgba(10, 20, 36, 0.28),
+    0 2px 6px rgba(10, 20, 36, 0.12);
+}
+.as-featured-cover-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #8a6a2b;
+  margin: 0;
+}
+
+@media (max-width: 820px) {
+  .as-featured { padding: 64px 24px 72px; }
+  .as-featured-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .as-featured-copy {
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    order: 1;
+  }
+  .as-featured-cover-wrap { order: 2; }
+  .as-featured-logo { max-width: 320px; margin-bottom: 20px; }
+  .as-featured-eyebrow { font-size: 0.64rem; letter-spacing: 0.32em; margin-bottom: 18px; }
+  .as-featured-note { font-size: 0.98rem; }
+  .as-featured-cover { max-width: 280px; }
 }

@@ -344,7 +344,7 @@ window.addEventListener('unhandledrejection', function (e) {
               <span class="mega-custom-cta">Enquire now &rarr;</span>
             </a>
             <a class="mega-img-fill" href="/private-commissions" aria-label="Private commissions">
-              <img data-src="/images/private-commissions-hero.webp" alt="Framed abstract equestrian portrait" />
+              <img data-src="/images/private-commissions-hero.webp?v=2" alt="Framed abstract equestrian portrait" />
             </a>
           </div>
         </div>

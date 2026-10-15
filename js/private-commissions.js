@@ -42,6 +42,17 @@
   const errorEl     = document.getElementById('pcError');
   const successEl   = document.getElementById('pcSuccess');
 
+  // Furry friend add-on
+  const furryToggle = document.getElementById('pc-add-furry');
+  const furryReveal = document.getElementById('pcFurryReveal');
+  const furryInput  = document.getElementById('pc-furry-photo');
+  const furryLabel  = document.getElementById('pcFurryLabel');
+  const furryPrev   = document.getElementById('pcFurryPreview');
+  const furryPrevImg= document.getElementById('pcFurryImg');
+  const furryRemove = document.getElementById('pcFurryRemove');
+  const furryStat   = document.getElementById('pcFurryStatus');
+  let uploadedFurryUrl = null;
+
   /* ── Palette picker ─────────────────────────────────────── */
   const picked = []; // ordered list of swatch names
   PALETTE.forEach((p) => {
@@ -176,6 +187,90 @@
     uploadStat.classList.toggle('is-err', kind === 'err');
   }
 
+  /* ── Furry friend toggle + upload ────────────────────────── */
+  if (furryToggle && furryReveal) {
+    furryToggle.addEventListener('change', () => {
+      furryReveal.hidden = !furryToggle.checked;
+      if (!furryToggle.checked) {
+        // Toggling off clears any uploaded photo so a stale URL doesn't
+        // end up in the enquiry email.
+        uploadedFurryUrl = null;
+        if (furryInput) furryInput.value = '';
+        if (furryPrev) furryPrev.hidden = true;
+        if (furryPrevImg) furryPrevImg.src = '';
+        setFurryStatus('', '');
+        if (furryLabel) furryLabel.textContent = 'Upload furry friend';
+      }
+    });
+  }
+
+  if (furryInput) {
+    furryInput.addEventListener('change', async () => {
+      const file = furryInput.files && furryInput.files[0];
+      if (!file) return;
+      if (!/^image\//.test(file.type)) {
+        setFurryStatus('Please choose an image file (JPEG, PNG, WEBP, HEIC).', 'err');
+        furryInput.value = '';
+        return;
+      }
+      if (file.size > MAX_MB * 1024 * 1024) {
+        setFurryStatus(`That image is over ${MAX_MB} MB. Try a smaller version.`, 'err');
+        furryInput.value = '';
+        return;
+      }
+      try {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          furryPrevImg.src = e.target.result;
+          furryPrev.hidden = false;
+        };
+        reader.readAsDataURL(file);
+      } catch (e) {}
+
+      setFurryStatus('Uploading…', '');
+      furryLabel.textContent = 'Uploading…';
+      try {
+        const safeName = (file.name || 'furry.jpg').replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 80);
+        const res = await fetch('/api/upload-photo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': file.type || 'image/jpeg',
+            'x-filename': 'commission-furry-' + Date.now() + '-' + safeName,
+          },
+          body: file,
+        });
+        const data = await res.json();
+        if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed');
+        uploadedFurryUrl = data.url;
+        setFurryStatus('✓ Furry friend photograph uploaded.', 'ok');
+        furryLabel.textContent = 'Replace furry friend';
+      } catch (err) {
+        console.error('[commissions] furry upload failed:', err);
+        setFurryStatus(err.message || 'Upload failed. Please try again, or email info@velvet-valor.com.', 'err');
+        furryLabel.textContent = 'Upload furry friend';
+        uploadedFurryUrl = null;
+      }
+    });
+  }
+
+  if (furryRemove) {
+    furryRemove.addEventListener('click', () => {
+      uploadedFurryUrl = null;
+      if (furryInput) furryInput.value = '';
+      if (furryPrev) furryPrev.hidden = true;
+      if (furryPrevImg) furryPrevImg.src = '';
+      setFurryStatus('', '');
+      if (furryLabel) furryLabel.textContent = 'Upload furry friend';
+    });
+  }
+
+  function setFurryStatus(msg, kind) {
+    if (!furryStat) return;
+    furryStat.textContent = msg || '';
+    furryStat.classList.toggle('is-ok',  kind === 'ok');
+    furryStat.classList.toggle('is-err', kind === 'err');
+  }
+
   /* ── Error helpers ──────────────────────────────────────── */
   function showError(msg) {
     errorEl.textContent = msg;
@@ -222,6 +317,8 @@
         photoUrl: uploadedPhotoUrl,
         colours: picked.join(', '),
         frame, size,
+        addFurryFriend: !!(furryToggle && furryToggle.checked),
+        furryPhotoUrl: uploadedFurryUrl,
         notes: (notesInput.value || '').trim(),
       }),
       source: 'private-commissions',
@@ -268,6 +365,14 @@
       'SIZE',
       '  ' + f.size,
     ];
+    if (f.addFurryFriend) {
+      lines.push(
+        '',
+        'FURRY FRIEND ADD-ON',
+        '  Yes — additional cost to be confirmed in consultation.',
+        '  Photo: ' + (f.furryPhotoUrl || '(not uploaded yet)')
+      );
+    }
     if (f.notes) {
       lines.push('', 'NOTES', '  ' + f.notes.replace(/\n/g, '\n  '));
     }

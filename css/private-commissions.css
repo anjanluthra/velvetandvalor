@@ -649,3 +649,76 @@ body { color: var(--pc-cream); }
   .pc-situ-figure { gap: 20px; }
   .pc-situ-note { font-size: 0.95rem; }
 }
+
+/* ============================================================
+   FURRY FRIEND add-on toggle + reveal
+   ============================================================ */
+.pc-furry-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--pc-navy-deep);
+  border: 1px solid var(--pc-gold-soft);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.pc-furry-toggle:hover { border-color: var(--pc-gold); }
+.pc-furry-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.pc-furry-check {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--pc-gold-soft);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--pc-navy-deep);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  margin-top: 2px;
+}
+.pc-furry-check svg { opacity: 0; transition: opacity 0.15s ease; }
+.pc-furry-toggle input:checked + .pc-furry-check {
+  background: var(--pc-gold);
+  border-color: var(--pc-gold);
+}
+.pc-furry-toggle input:checked + .pc-furry-check svg { opacity: 1; }
+.pc-furry-toggle input:focus-visible + .pc-furry-check {
+  box-shadow: 0 0 0 3px rgba(200, 164, 92, 0.22);
+}
+.pc-furry-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pc-furry-title {
+  font-family: var(--pc-font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--pc-cream);
+}
+.pc-furry-sub {
+  font-family: var(--pc-font-sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--pc-cream-soft);
+}
+.pc-furry-sub em {
+  font-style: italic;
+  color: var(--pc-gold);
+}
+
+.pc-furry-reveal {
+  margin-top: 16px;
+  padding: 18px 20px 4px;
+  border-left: 2px solid var(--pc-gold-soft);
+}
+.pc-furry-reveal .pc-help { margin-top: 0; }

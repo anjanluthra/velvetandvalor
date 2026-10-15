@@ -3039,3 +3039,21 @@
   .home-commissions-media, .home-commissions-cta, .home-commissions-cta svg { transition: none; }
   .home-commissions-media:hover, .home-commissions-cta:hover { transform: none; }
 }
+
+/* ─── When the Private Commissions section leads the page, it needs
+     to clear the fixed nav and read as the brand's opening statement
+     rather than a mid-page feature. ─── */
+.home-commissions-top {
+  padding-top: calc(var(--nav-height, 70px) + 72px);
+  padding-bottom: 110px;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .home-commissions-top {
+    padding-top: calc(var(--nav-height, 70px) + 32px);
+    padding-bottom: 72px;
+    min-height: auto;
+  }
+}

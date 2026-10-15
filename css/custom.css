@@ -519,6 +519,15 @@ select.form-input {
   transform: scale(1.5);
 }
 
+/* Scottish Navy source is a wider-aspect shot than the other product
+   photos (0.77 vs 0.62), which left it displaying smaller than its
+   siblings inside the 3:4 container. Fill the frame + drop the inner
+   padding just for this card so it reads at the same visual size. */
+.colour-swatch-card[data-colour="Scottish Navy"] .colour-swatch-img img {
+  object-fit: cover;
+  padding: 0;
+}
+
 /* Zoom trigger — top-left magnifier icon, opens full-screen lightbox */
 .swatch-zoom-trigger {
   position: absolute;
